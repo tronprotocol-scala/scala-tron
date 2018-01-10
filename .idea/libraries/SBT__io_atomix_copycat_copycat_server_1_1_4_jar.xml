@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: io.atomix.copycat:copycat-server:1.1.4:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/io.atomix.copycat/copycat-server/bundles/copycat-server-1.1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/io.atomix.copycat/copycat-server/srcs/copycat-server-1.1.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

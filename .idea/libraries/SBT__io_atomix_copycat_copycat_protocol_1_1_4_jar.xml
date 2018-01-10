@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: io.atomix.copycat:copycat-protocol:1.1.4:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/io.atomix.copycat/copycat-protocol/bundles/copycat-protocol-1.1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/io.atomix.copycat/copycat-protocol/srcs/copycat-protocol-1.1.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

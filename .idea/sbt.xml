@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaSbtSettings">
+    <option name="linkedExternalProjectsSettings">
+      <SbtProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="jdk" value="1.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/project" />
+            <option value="$PROJECT_DIR$/tron-api" />
+            <option value="$PROJECT_DIR$/tron-api/project" />
+            <option value="$PROJECT_DIR$/tron-cli" />
+            <option value="$PROJECT_DIR$/tron-cli/project" />
+            <option value="$PROJECT_DIR$/tron-protocol" />
+            <option value="$PROJECT_DIR$/tron-protocol/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.1.0" />
+        <option name="useAutoImport" value="true" />
+        <option name="useOurOwnAutoImport" value="true" />
+        <option name="useSbtShell" value="true" />
+      </SbtProjectSettings>
+    </option>
+    <option name="maximumHeapSize" value="3768" />
+    <option name="vmParameters" value="-XX:MaxPermSize=2384M" />
+  </component>
+</project>
