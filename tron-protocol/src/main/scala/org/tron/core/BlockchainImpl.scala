@@ -10,7 +10,6 @@ import org.tron.storage.leveldb.LevelDbDataSourceImpl
 import org.tron.utils.ByteArray
 import sun.nio.ch.Net
 
-import scala.annotation.tailrec
 import scala.collection.mutable
 
 class BlockchainImpl(address: String) extends Blockchain {
@@ -22,33 +21,13 @@ class BlockchainImpl(address: String) extends Blockchain {
 
     val bi = new BlockchainIterator(this)
 
-    @tailrec
-    def next: Option[Transaction] = {
-      if (!bi.hasNext) None
-      else {
-        val block = bi.next()
-        val found = block.transactions.find { tx =>
-          val txID = ByteArray.toHexString(tx.id.toByteArray)
-          val idStr = ByteArray.toHexString(id)
-          txID == idStr
-        }
-
-        found match {
-          case Some(t) =>
-            Some(t)
-
-          // If there is no parent (genesis block) then stop searching
-          case _ if block.getBlockHeader.parentHash.isEmpty =>
-            None
-
-          // Nothing found, try next
-          case None =>
-            next
-        }
+    bi
+      .flatMap { block => block.transactions }
+      .find { tx =>
+        val txID = ByteArray.toHexString(tx.id.toByteArray)
+        val idStr = ByteArray.toHexString(id)
+        txID == idStr
       }
-    }
-
-    next
   }
 
   def findUTXO(): Map[String, TXOutputs] = {
@@ -60,36 +39,34 @@ class BlockchainImpl(address: String) extends Blockchain {
 
     def isSpent(txid: String, index: Long): Boolean = spenttxos.get(txid).exists(_.contains(index))
 
-    while (bi.hasNext) {
-      val block = bi.next()
+    for {
+      block <- bi
+      transaction <- block.transactions
+    } {
+      val txid = ByteArray.toHexString(transaction.id.toByteArray)
 
-      for (transaction <- block.transactions) {
-        val txid = ByteArray.toHexString(transaction.id.toByteArray)
-
-        for {
-          outIdx <- 0 to transaction.vout.size
-          out = transaction.vout(outIdx) if !isSpent(txid, outIdx)
-        } {
-          var outs = utxo.getOrElse(txid, TXOutputs())
-
-          outs = outs.addOutputs(out)
-          utxo.put(txid, outs)
-        }
-
-
-        if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
-          for (in <- transaction.vin) {
-            val inTxid = ByteArray.toHexString(in.txID.toByteArray)
-            val vindexs = spenttxos.getOrElse(inTxid, Array[Long]())
-            spenttxos.put(inTxid, vindexs :+ in.vout)
-          }
-        }
+      for {
+        outIdx <- 0 to transaction.vout.size
+        out = transaction.vout(outIdx) if !isSpent(txid, outIdx)
+      } {
+        var outs = utxo.getOrElse(txid, TXOutputs())
+        outs = outs.addOutputs(out)
+        utxo.put(txid, outs)
       }
 
+
+      if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
+        for (in <- transaction.vin) {
+          val inTxid = ByteArray.toHexString(in.txID.toByteArray)
+          val vindexs = spenttxos.getOrElse(inTxid, Array[Long]())
+          spenttxos.put(inTxid, vindexs :+ in.vout)
+        }
+      }
     }
 
     utxo.toMap
   }
+
 
   override def addBlock(block: Block): Unit = {
     val blockInDB = blockDB.getData(block.getBlockHeader.hash.toByteArray)
