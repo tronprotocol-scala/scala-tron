@@ -27,6 +27,11 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="SBT: org.scala-lang:scala-library:2.12.4:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.trueaccord.scalapb:scalapb-runtime_2.12:0.6.6:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.trueaccord.lenses:lenses_2.12:0.4.12:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.lihaoyi:sourcecode_2.12:0.1.4:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.lihaoyi:fastparse_2.12:0.4.4:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.lihaoyi:fastparse-utils_2.12:0.4.4:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="SBT: org.mockito:mockito-all:1.9.5:jar" level="project" />
     <orderEntry type="library" name="SBT: com.github.scopt:scopt_2.12:3.7.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.springframework:spring-expression:4.2.0.RELEASE:jar" level="project" />

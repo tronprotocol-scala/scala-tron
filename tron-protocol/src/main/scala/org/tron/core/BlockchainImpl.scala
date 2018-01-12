@@ -1,24 +1,22 @@
 package org.tron.core
-import java.util
-import java.util.{Arrays, HashMap}
-
-import cats.instances.long
+import com.google.protobuf.ByteString
+import org.tron.core.Constant.LAST_HASH
 import org.tron.crypto.ECKey
 import org.tron.protos.core.TronBlock.Block
-import org.tron.protos.core.TronTXInput.TXInput
-import org.tron.protos.core.TronTXOutput.TXOutput
 import org.tron.protos.core.TronTXOutputs.TXOutputs
+import org.tron.protos.core.TronTransaction
 import org.tron.protos.core.TronTransaction.Transaction
-import org.tron.protos.core.{TronBlock, TronTXOutputs, TronTransaction}
 import org.tron.storage.leveldb.LevelDbDataSourceImpl
 import org.tron.utils.ByteArray
 import sun.nio.ch.Net
 
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 class BlockchainImpl(address: String) extends Blockchain {
+
+  var lastHash: Array[Byte] = null
+  var currentHash: Array[Byte] = null
 
   def findTransaction(id: Array[Byte]): Option[Transaction] = {
 
@@ -29,8 +27,8 @@ class BlockchainImpl(address: String) extends Blockchain {
       if (!bi.hasNext) None
       else {
         val block = bi.next()
-        val found = block.getTransactionsList.asScala.find { tx =>
-          val txID = ByteArray.toHexString(tx.getId.toByteArray)
+        val found = block.transactions.find { tx =>
+          val txID = ByteArray.toHexString(tx.id.toByteArray)
           val idStr = ByteArray.toHexString(id)
           txID == idStr
         }
@@ -40,7 +38,7 @@ class BlockchainImpl(address: String) extends Blockchain {
             Some(t)
 
           // If there is no parent (genesis block) then stop searching
-          case _ if block.getBlockHeader.getParentHash.isEmpty =>
+          case _ if block.getBlockHeader.parentHash.isEmpty =>
             None
 
           // Nothing found, try next
@@ -65,25 +63,25 @@ class BlockchainImpl(address: String) extends Blockchain {
     while (bi.hasNext) {
       val block = bi.next()
 
-      for (transaction <- block.getTransactionsList.asScala) {
-        val txid = ByteArray.toHexString(transaction.getId.toByteArray)
+      for (transaction <- block.transactions) {
+        val txid = ByteArray.toHexString(transaction.id.toByteArray)
 
         for {
-          outIdx <- 0 to transaction.getVoutList.asScala.size
-          out = transaction.getVoutList.get(outIdx) if !isSpent(txid, outIdx)
+          outIdx <- 0 to transaction.vout.size
+          out = transaction.vout(outIdx) if !isSpent(txid, outIdx)
         } {
-          var outs = utxo.getOrElse(txid, TXOutputs.newBuilder.build)
+          var outs = utxo.getOrElse(txid, TXOutputs())
 
-          outs = outs.toBuilder.addOutputs(out).build
+          outs = outs.addOutputs(out)
           utxo.put(txid, outs)
         }
 
 
         if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
-          for (in <- transaction.getVinList.asScala) {
-            val inTxid = ByteArray.toHexString(in.getTxID.toByteArray)
+          for (in <- transaction.vin) {
+            val inTxid = ByteArray.toHexString(in.txID.toByteArray)
             val vindexs = spenttxos.getOrElse(inTxid, Array[Long]())
-            spenttxos.put(inTxid, vindexs :+ in.getVout)
+            spenttxos.put(inTxid, vindexs :+ in.vout)
           }
         }
       }
@@ -93,13 +91,42 @@ class BlockchainImpl(address: String) extends Blockchain {
     utxo.toMap
   }
 
-  override def addBlock(block: TronBlock.Block): Unit = ???
+  override def addBlock(block: Block): Unit = {
+    val blockInDB = blockDB.getData(block.getBlockHeader.hash.toByteArray)
+
+    if (blockInDB == null || blockInDB.isEmpty) {
+      return
+    }
+
+    blockDB.putData(block.getBlockHeader.hash.toByteArray, block.toByteArray)
+
+    val lashHash = ByteArray.fromString("lashHash")
+
+    val lastHash = blockDB.getData(lashHash)
+    val lastBlockData = blockDB.getData(lastHash)
+    val lastBlock = Block.parseFrom(lastBlockData)
+
+    if (block.getBlockHeader.number > lastBlock.getBlockHeader.number) {
+      blockDB.putData(lashHash, block.getBlockHeader.hash.toByteArray)
+      this.lastHash = block.getBlockHeader.hash.toByteArray
+      this.currentHash = this.lastHash
+    }
+  }
 
   override def signTransaction(transaction: TronTransaction.Transaction, key: ECKey): TronTransaction.Transaction = ???
 
-  override def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = ???
+  override def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
+    // get lastHash
+    val lastHash = blockDB.getData(LAST_HASH)
+    val parentHash = ByteString.copyFrom(lastHash)
+    // get number
+    val number = BlockUtils.getIncreaseNumber(this)
+    // get difficulty
+    val difficulty = ByteString.copyFromUtf8(Constant.DIFFICULTY)
 
-  override def currentHash: Array[Byte] = ???
+    BlockUtils.newBlock(transactions, parentHash, difficulty, number)
+    // TODO send to kafka
+  }
 
-  override def blockDb: LevelDbDataSourceImpl = ???
+  override def blockDB: LevelDbDataSourceImpl = ???
 }

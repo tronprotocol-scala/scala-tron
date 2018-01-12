@@ -28,11 +28,9 @@ public class TXOutputUtils {
      * @return {@link TXOutput}
      */
     public static TXOutput newTXOutput(long value, String address) {
-        return TXOutput.newBuilder()
-                .setValue(value)
-                .setPubKeyHash(ByteString.copyFrom(ByteArray.fromHexString
-                        (address)))
-                .build();
+        return new TXOutput(
+            value,
+            ByteString.copyFrom(ByteArray.fromHexString(address)));
     }
 
     /**
@@ -47,9 +45,8 @@ public class TXOutputUtils {
         }
 
         return "\nTXOutput {\n" +
-                "\tvalue=" + txo.getValue() +
-                ",\n\tpubKeyHash=" + ByteArray.toHexString(txo.getPubKeyHash
-                ().toByteArray()) +
+                "\tvalue=" + txo.value() +
+                ",\n\tpubKeyHash=" + ByteArray.toHexString(txo.pubKeyHash().toByteArray()) +
                 "\n}\n";
     }
 }

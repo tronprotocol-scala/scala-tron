@@ -49,23 +49,20 @@ val defaultSettings = Seq(
   "com.lightbend.akka" %% "akka-stream-alpakka-file" % "0.15.1",
 
   "com.google.inject" % "guice" % "4.1.0",
-
   "org.typelevel" %% "cats-core" % "1.0.1",
-
   "org.typelevel" %% "cats-effect" % "0.5",
-
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.18",
-
   "commons-io" % "commons-io" % "2.6"
 )
 
 
 lazy val protocol = (project in file("tron-protocol"))
   .settings(
-//    ProtobufPlugin.projectSettings,
-    libraryDependencies ++= defaultSettings
+    libraryDependencies ++= defaultSettings,
+    PB.targets in Compile := Seq(
+      scalapb.gen() -> (sourceManaged in Compile).value
+    )
   )
-
 
 lazy val api = (project in file("tron-api"))
   .dependsOn(protocol)

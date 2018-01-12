@@ -21,6 +21,6 @@ trait Blockchain {
 
   def currentHash: Array[Byte]
 
-  def blockDb: LevelDbDataSourceImpl
+  def blockDB: LevelDbDataSourceImpl
 
 }

@@ -29,13 +29,16 @@ public class TXInputUtils {
      * @param pubKey    byte[] pubKey
      * @return {@link TXInput}
      */
-    public static TXInput newTXInput(byte[] txID, long vout, byte[]
-            signature, byte[] pubKey) {
-        return TXInput.newBuilder()
-                .setTxID(ByteString.copyFrom(txID))
-                .setVout(vout)
-                .setSignature(ByteString.copyFrom(signature))
-                .setPubKey(ByteString.copyFrom(pubKey)).build();
+    public static TXInput newTXInput(
+            byte[] txID,
+            long vout,
+            byte[] signature,
+            byte[] pubKey) {
+        return new TXInput(
+                ByteString.copyFrom(txID),
+                vout,
+                ByteString.copyFrom(signature),
+                ByteString.copyFrom(pubKey));
     }
 
     /**
@@ -50,11 +53,11 @@ public class TXInputUtils {
         }
 
         return "\nTXInput {\n" +
-                "\ttxID=" + ByteArray.toHexString(txi.getTxID().toByteArray()) +
-                ",\n\tvout=" + txi.getVout() +
-                ",\n\tsignature=" + ByteArray.toHexString(txi.getSignature()
+                "\ttxID=" + ByteArray.toHexString(txi.txID().toByteArray()) +
+                ",\n\tvout=" + txi.vout() +
+                ",\n\tsignature=" + ByteArray.toHexString(txi.signature()
                 .toByteArray()) +
-                ",\n\tpubKey=" + ByteArray.toStr(txi.getPubKey().toByteArray
+                ",\n\tpubKey=" + ByteArray.toStr(txi.pubKey().toByteArray
                 ()) +
                 "\n}\n";
     }
