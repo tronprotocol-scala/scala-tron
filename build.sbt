@@ -7,6 +7,8 @@ version := "0.1"
 scalacOptions += "-Ypartial-unification"
 scalacOptions in Test ++= Seq("-Yrangepos")
 
+fork in Test := true
+
 val defaultSettings = Seq(
   // Test
 
@@ -53,7 +55,8 @@ lazy val protocol = (project in file("tron-protocol"))
     libraryDependencies ++= defaultSettings,
     PB.targets in Compile := Seq(
       scalapb.gen() -> (sourceManaged in Compile).value
-    )
+    ),
+    fork in Test := true
   )
 
 lazy val api = (project in file("tron-api"))
