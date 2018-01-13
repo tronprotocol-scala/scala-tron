@@ -1,4 +1,7 @@
 package org.tron.core
+import java.util
+import java.util.HashMap
+
 import com.google.protobuf.ByteString
 import org.tron.core.Constant.LAST_HASH
 import org.tron.crypto.ECKey
@@ -90,7 +93,17 @@ class BlockchainImpl(address: String) extends Blockchain {
     }
   }
 
-  override def signTransaction(transaction: TronTransaction.Transaction, key: ECKey): TronTransaction.Transaction = ???
+  override def signTransaction(transaction: Transaction, key: ECKey): Transaction = {
+
+    val prevTXs = transaction.vin.map { txInput =>
+      val txID: ByteString = txInput.txID
+      val prevTX = findTransaction(txID.toByteArray).get
+      val key = ByteArray.toHexString(txID.toByteArray)
+      (key, prevTX)
+    }.toMap
+
+    TransactionUtils.sign(transaction, key, prevTXs)
+  }
 
   override def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
     // get lastHash

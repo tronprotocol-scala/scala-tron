@@ -30,11 +30,22 @@ package org.tron.core
 import com.google.protobuf.ByteString
 import org.tron.crypto.ECKey
 import org.tron.crypto.Hash.sha256
+import org.tron.protos.core.TronTXInput.TXInput
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.utils.ByteArray
+import org.tron.utils.ByteStringUtils._
 import org.tron.utils.Utils.getRandom
 
 object TransactionUtils {
+
+  implicit class TransactionImplicits(transaction: Transaction) {
+    def hash = getHash(transaction)
+    def hashByteString = ByteString.copyFrom(getHash(transaction))
+    def setVin(index: Int, input: TXInput) = {
+      transaction.withVin(transaction.vin.updated(index, input))
+    }
+  }
+
 
   private val RESERVE_BALANCE = 10
 
@@ -58,7 +69,7 @@ object TransactionUtils {
       .addVin(txi)
       .addVout(txo)
 
-    coinbaseTransaction.withId(ByteString.copyFrom(getHash(coinbaseTransaction)))
+    coinbaseTransaction.withId(coinbaseTransaction.hash)
   }
 
   /**
@@ -83,18 +94,85 @@ object TransactionUtils {
   }
 
   def sign(transaction: Transaction, myKey: ECKey, prevTXs: Map[String, Transaction]): Transaction = {
-    // TODO implement
-    transaction
+
+    var mutableTransaction = transaction
+
+    // No need to sign coinbase transaction
+    if (TransactionUtils.isCoinbaseTransaction(mutableTransaction))
+      return null
+
+    for (vin <- mutableTransaction.vin) {
+      if (prevTXs(vin.txID.hex).id.toByteArray.length == 0) {
+        throw new Exception("Previous transaction is incorrect")
+      }
+    }
+
+    for (i <- 0 to mutableTransaction.vin.size) {
+      val vin = mutableTransaction.vin(i)
+      val prevTx = prevTXs(vin.txID.hex)
+      var transactionCopyBuilder = mutableTransaction
+      var vinBuilder = vin
+        .withSignature(ByteString.EMPTY)
+        .withPubKey(prevTx.vout(vin.vout.toInt).pubKeyHash)
+
+      transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
+
+      transactionCopyBuilder = transactionCopyBuilder
+        .withId(transactionCopyBuilder.hash)
+
+      vinBuilder = vinBuilder.withPubKey(ByteString.EMPTY)
+      transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
+
+      val signature = myKey.sign(transactionCopyBuilder.id).toByteArray
+
+      var transactionBuilder = mutableTransaction.setVin(i, vinBuilder.withSignature(signature))
+
+      transactionBuilder = transactionBuilder.withId(transactionBuilder.hashByteString)
+
+      mutableTransaction = transactionBuilder
+    }
+
+    mutableTransaction
   }
 
-  def verify(myKey: ECKey, transaction: Transaction, prevTXs: Map[String, Transaction]): Boolean = {
-    // TODO implement
+  def verify(key: ECKey, transaction: Transaction, prevTXs: Map[String, Transaction]): Boolean = {
+
+    // No need to sign coinbase transaction
+    if (TransactionUtils.isCoinbaseTransaction(transaction))
+      return true
+
+    for (vin <- transaction.vin) {
+      if (prevTXs(vin.txID.hex).id.toByteArray.length == 0) {
+        throw new Exception("Previous transaction is incorrect")
+      }
+    }
+
+    val k = for (i <- 0 to transaction.vin.size) {
+      val vin = transaction.vin(i)
+      val prevTx = prevTXs(vin.txID.hex)
+      var transactionCopyBuilder = transaction
+
+      var vinBuilder = vin
+        .withSignature(ByteString.EMPTY)
+        .withPubKey(prevTx.vout(vin.vout.toInt).pubKeyHash)
+
+      transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
+
+      transactionCopyBuilder = transactionCopyBuilder
+        .withId(transactionCopyBuilder.hash)
+
+      vinBuilder = vinBuilder.withPubKey(ByteString.EMPTY)
+      transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
+
+      if (!key.verify(transactionCopyBuilder.id, vin.signature))
+        return false
+    }
+
     true
   }
 
   // getData sender
   def getSender(tx: Transaction): Array[Byte] = {
-    val pubKey = tx.vin.head.pubKey.toByteArray
-    ECKey.computeAddress(pubKey)
+    ECKey.computeAddress(tx.vin.head.pubKey)
   }
 }
