@@ -1,7 +1,4 @@
 package org.tron.core
-import java.util
-import java.util.HashMap
-
 import com.google.protobuf.ByteString
 import org.tron.core.Constant.LAST_HASH
 import org.tron.crypto.ECKey
@@ -11,14 +8,13 @@ import org.tron.protos.core.TronTransaction
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.storage.leveldb.LevelDbDataSourceImpl
 import org.tron.utils.ByteArray
-import sun.nio.ch.Net
 
 import scala.collection.mutable
 
 class BlockchainImpl(address: String) extends Blockchain {
 
-  var lastHash: Array[Byte] = null
-  var currentHash: Array[Byte] = null
+  var lastHash = Array[Byte]()
+  var currentHash = Array[Byte]()
 
   def findTransaction(id: Array[Byte]): Option[Transaction] = {
 
@@ -72,25 +68,27 @@ class BlockchainImpl(address: String) extends Blockchain {
 
 
   override def addBlock(block: Block): Unit = {
-    val blockInDB = blockDB.getData(block.getBlockHeader.hash.toByteArray)
+    Option(blockDB.getData(block.getBlockHeader.hash.toByteArray)) match {
+      case Some(blockInDB) if blockInDB.nonEmpty =>
 
-    if (blockInDB == null || blockInDB.isEmpty) {
-      return
+        blockDB.putData(block.getBlockHeader.hash.toByteArray, block.toByteArray)
+
+        val lashHash = ByteArray.fromString("lashHash")
+
+        val lastHash = blockDB.getData(lashHash)
+        val lastBlockData = blockDB.getData(lastHash)
+        val lastBlock = Block.parseFrom(lastBlockData)
+
+        if (block.getBlockHeader.number > lastBlock.getBlockHeader.number) {
+          blockDB.putData(lashHash, block.getBlockHeader.hash.toByteArray)
+          this.lastHash = block.getBlockHeader.hash.toByteArray
+          this.currentHash = this.lastHash
+        }
+
+      case _ =>
+        // ignore
     }
 
-    blockDB.putData(block.getBlockHeader.hash.toByteArray, block.toByteArray)
-
-    val lashHash = ByteArray.fromString("lashHash")
-
-    val lastHash = blockDB.getData(lashHash)
-    val lastBlockData = blockDB.getData(lastHash)
-    val lastBlock = Block.parseFrom(lastBlockData)
-
-    if (block.getBlockHeader.number > lastBlock.getBlockHeader.number) {
-      blockDB.putData(lashHash, block.getBlockHeader.hash.toByteArray)
-      this.lastHash = block.getBlockHeader.hash.toByteArray
-      this.currentHash = this.lastHash
-    }
   }
 
   override def signTransaction(transaction: Transaction, key: ECKey): Transaction = {

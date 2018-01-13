@@ -5,7 +5,6 @@ import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.storage.leveldb.LevelDbDataSourceImpl
-import sun.nio.ch.Net
 
 trait Blockchain {
 
@@ -17,7 +16,7 @@ trait Blockchain {
 
   def signTransaction(transaction: Transaction, key: ECKey): Transaction
 
-  def addBlock(transactions: List[Transaction], net: Net): Unit
+//  def addBlock(transactions: List[Transaction], net: Net): Unit
 
   def currentHash: Array[Byte]
 

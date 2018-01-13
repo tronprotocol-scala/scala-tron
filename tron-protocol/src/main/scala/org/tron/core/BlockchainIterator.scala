@@ -9,7 +9,7 @@ class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
   var index = new Array[Byte](blockchain.currentHash.length)
   index = util.Arrays.copyOf(blockchain.currentHash, blockchain.currentHash.length)
 
-  def hasNext = index == null || index.length == 0
+  def hasNext = Option(index).isEmpty || index.length == 0
 
   override def next() = {
     if (hasNext) {
@@ -18,7 +18,7 @@ class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
       index = block.getBlockHeader.parentHash.toByteArray
       block
     } else {
-      null
+      null // scalastyle:ignore
     }
   }
 }

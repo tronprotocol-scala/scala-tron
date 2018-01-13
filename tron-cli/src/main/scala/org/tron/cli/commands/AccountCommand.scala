@@ -9,7 +9,7 @@ case class AccountCommand() extends Command {
 
     app match {
       case peer: PeerApplication =>
-        println(ByteArray.toHexString(peer.peer.key.getAddress))
+        println(ByteArray.toHexString(peer.peer.key.getAddress)) // scalastyle:ignore
     }
   }
 }

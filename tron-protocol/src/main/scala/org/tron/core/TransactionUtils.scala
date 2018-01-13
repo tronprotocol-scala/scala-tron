@@ -99,7 +99,7 @@ object TransactionUtils {
 
     // No need to sign coinbase transaction
     if (TransactionUtils.isCoinbaseTransaction(mutableTransaction))
-      return null
+      return transaction // scalastyle:ignore
 
     for (vin <- mutableTransaction.vin) {
       if (prevTXs(vin.txID.hex).id.toByteArray.length == 0) {
@@ -139,7 +139,7 @@ object TransactionUtils {
 
     // No need to sign coinbase transaction
     if (TransactionUtils.isCoinbaseTransaction(transaction))
-      return true
+      return true // scalastyle:ignore
 
     for (vin <- transaction.vin) {
       if (prevTXs(vin.txID.hex).id.toByteArray.length == 0) {
@@ -147,7 +147,7 @@ object TransactionUtils {
       }
     }
 
-    val k = for (i <- 0 to transaction.vin.size) {
+    for (i <- 0 to transaction.vin.size) {
       val vin = transaction.vin(i)
       val prevTx = prevTXs(vin.txID.hex)
       var transactionCopyBuilder = transaction
@@ -165,7 +165,7 @@ object TransactionUtils {
       transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
 
       if (!key.verify(transactionCopyBuilder.id, vin.signature))
-        return false
+        return false // scalastyle:ignore
     }
 
     true
