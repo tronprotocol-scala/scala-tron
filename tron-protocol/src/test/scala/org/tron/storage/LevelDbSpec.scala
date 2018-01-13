@@ -1,10 +1,6 @@
 package org.tron.storage
 
-import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
-import org.specs2.specification.ForEach
-import org.tron.BlockChainDb
-import org.tron.application.Module
 import org.tron.utils.ByteArray
 
 class LevelDbSpec extends Specification with DatabaseContext {
