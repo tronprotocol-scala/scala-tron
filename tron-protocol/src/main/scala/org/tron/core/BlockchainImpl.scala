@@ -67,7 +67,7 @@ class BlockchainImpl(address: String) extends Blockchain {
   }
 
 
-  override def addBlock(block: Block): Unit = {
+  def addBlock(block: Block): Unit = {
     Option(blockDB.getData(block.getBlockHeader.hash.toByteArray)) match {
       case Some(blockInDB) if blockInDB.nonEmpty =>
 
@@ -91,7 +91,7 @@ class BlockchainImpl(address: String) extends Blockchain {
 
   }
 
-  override def signTransaction(transaction: Transaction, key: ECKey): Transaction = {
+  def signTransaction(transaction: Transaction, key: ECKey): Transaction = {
 
     val prevTXs = transaction.vin.map { txInput =>
       val txID: ByteString = txInput.txID
@@ -103,7 +103,7 @@ class BlockchainImpl(address: String) extends Blockchain {
     TransactionUtils.sign(transaction, key, prevTXs)
   }
 
-  override def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
+  def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
     // get lastHash
     val lastHash = blockDB.getData(LAST_HASH)
     val parentHash = ByteString.copyFrom(lastHash)
@@ -116,5 +116,5 @@ class BlockchainImpl(address: String) extends Blockchain {
     // TODO send to kafka
   }
 
-  override def blockDB: LevelDbDataSourceImpl = ???
+  def blockDB: LevelDbDataSourceImpl = ???
 }
