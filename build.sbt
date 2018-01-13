@@ -5,6 +5,7 @@ scalaVersion := "2.12.4"
 version := "0.1"
 
 scalacOptions += "-Ypartial-unification"
+scalacOptions in Test ++= Seq("-Yrangepos")
 
 val defaultSettings = Seq(
   // Test
@@ -52,7 +53,9 @@ val defaultSettings = Seq(
   "org.typelevel" %% "cats-core" % "1.0.1",
   "org.typelevel" %% "cats-effect" % "0.5",
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.18",
-  "commons-io" % "commons-io" % "2.6"
+  "commons-io" % "commons-io" % "2.6",
+
+  "org.specs2" %% "specs2-core" % "4.0.2" % "test"
 )
 
 
