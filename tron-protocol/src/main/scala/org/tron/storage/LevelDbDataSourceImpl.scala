@@ -28,7 +28,6 @@
 package org.tron.storage
 
 import java.io.{File, IOException}
-import java.util
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 import org.fusesource.leveldbjni.JniDBFactory.factory
