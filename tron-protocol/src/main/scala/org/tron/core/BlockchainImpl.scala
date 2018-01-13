@@ -1,4 +1,6 @@
-package org.tron.core
+package org.tron
+package core
+
 import com.google.protobuf.ByteString
 import org.tron.core.Constant.LAST_HASH
 import org.tron.crypto.ECKey
@@ -6,7 +8,6 @@ import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction
 import org.tron.protos.core.TronTransaction.Transaction
-import org.tron.storage.leveldb.LevelDbDataSourceImpl
 import org.tron.utils.ByteArray
 
 import scala.collection.mutable
@@ -53,7 +54,6 @@ class BlockchainImpl(address: String) extends Blockchain {
         utxo.put(txid, outs)
       }
 
-
       if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
         for (in <- transaction.vin) {
           val inTxid = ByteArray.toHexString(in.txID.toByteArray)
@@ -66,21 +66,20 @@ class BlockchainImpl(address: String) extends Blockchain {
     utxo.toMap
   }
 
-
   def addBlock(block: Block): Unit = {
-    Option(blockDB.getData(block.getBlockHeader.hash.toByteArray)) match {
+    blockDB.get(block.getBlockHeader.hash.toByteArray) match {
       case Some(blockInDB) if blockInDB.nonEmpty =>
 
-        blockDB.putData(block.getBlockHeader.hash.toByteArray, block.toByteArray)
+        blockDB.put(block.getBlockHeader.hash.toByteArray, block.toByteArray)
 
         val lashHash = ByteArray.fromString("lashHash")
 
-        val lastHash = blockDB.getData(lashHash)
-        val lastBlockData = blockDB.getData(lastHash)
+        val lastHash = blockDB.get(lashHash).get
+        val lastBlockData = blockDB.get(lastHash).get
         val lastBlock = Block.parseFrom(lastBlockData)
 
         if (block.getBlockHeader.number > lastBlock.getBlockHeader.number) {
-          blockDB.putData(lashHash, block.getBlockHeader.hash.toByteArray)
+          blockDB.put(lashHash, block.getBlockHeader.hash.toByteArray)
           this.lastHash = block.getBlockHeader.hash.toByteArray
           this.currentHash = this.lastHash
         }
@@ -105,7 +104,7 @@ class BlockchainImpl(address: String) extends Blockchain {
 
   def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
     // get lastHash
-    val lastHash = blockDB.getData(LAST_HASH)
+    val lastHash = blockDB.get(LAST_HASH).get
     val parentHash = ByteString.copyFrom(lastHash)
     // get number
     val number = BlockUtils.getIncreaseNumber(this)
@@ -116,5 +115,5 @@ class BlockchainImpl(address: String) extends Blockchain {
     // TODO send to kafka
   }
 
-  def blockDB: LevelDbDataSourceImpl = ???
+  def blockDB: BlockChainDb = ???
 }

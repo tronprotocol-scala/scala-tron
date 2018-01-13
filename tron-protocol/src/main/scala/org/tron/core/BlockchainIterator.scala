@@ -13,7 +13,7 @@ class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
 
   override def next() = {
     if (hasNext) {
-      val value = blockchain.blockDB.getData(index)
+      val value = blockchain.blockDB.get(index).get
       val block: Block = Block.parseFrom(value)
       index = block.getBlockHeader.parentHash.toByteArray
       block

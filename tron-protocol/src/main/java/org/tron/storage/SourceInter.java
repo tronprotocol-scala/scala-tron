@@ -13,15 +13,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.tron.storage
+package org.tron.storage;
 
-trait SourceInter[K, V] {
 
-  def putData(key: K, value: V): Unit
+public interface SourceInter<K, V> {
 
-  def getData(key: K): V
 
-  def deleteData(key: K): Unit
+    void putData(K key, V val);
 
-  def flush: Boolean
+
+    V getData(K key);
+
+
+    void deleteData(K key);
+
+
+    boolean flush();
+
 }

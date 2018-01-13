@@ -128,8 +128,8 @@ object BlockUtils {
   def getIncreaseNumber(blockchain: Blockchain): Long = {
 
     val nextNumber = for {
-      lastHash <- Option(blockchain.blockDB.getData(Constant.LAST_HASH))
-      value <- Option(blockchain.blockDB.getData(lastHash))
+      lastHash <- blockchain.blockDB.get(Constant.LAST_HASH)
+      value <- blockchain.blockDB.get(lastHash)
     } yield Block.parseFrom(value).getBlockHeader.number + 1
 
     nextNumber.getOrElse(0)

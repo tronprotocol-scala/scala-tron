@@ -1,10 +1,9 @@
 .idea/
-
+tron-test/
 tron-data/
 project/project/
 project/target/
 target/
-tron-api/
 tron-cli/target/
-tron-protocol/src/test/
+
 tron-protocol/target/

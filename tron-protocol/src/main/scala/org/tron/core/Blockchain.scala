@@ -1,5 +1,6 @@
 package org.tron.core
 
+import org.tron.BlockChainDb
 import org.tron.crypto.ECKey
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
@@ -20,6 +21,6 @@ trait Blockchain {
 
   def currentHash: Array[Byte]
 
-  def blockDB: LevelDbDataSourceImpl
+  def blockDB: BlockChainDb
 
 }
