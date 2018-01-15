@@ -7,9 +7,9 @@ class LevelDbSpec extends Specification with DatabaseContext {
 
   sequential
 
-  "Level DB" >> {
+  "Level DB" should {
 
-    "put and get data" >> { db: LevelDbDataSourceImpl =>
+    "put and get data" in { db: LevelDbDataSourceImpl =>
       val key = "000134yyyhy".getBytes
 
       val value = "50000".getBytes
@@ -22,7 +22,7 @@ class LevelDbSpec extends Specification with DatabaseContext {
       ByteArray.toStr(value) must equalTo(s)
     }
 
-    "put data" >> { dataSource: LevelDbDataSourceImpl =>
+    "put data" in { dataSource: LevelDbDataSourceImpl =>
       val key1 = "000134yyyhy"
       val key = key1.getBytes
 
@@ -35,7 +35,7 @@ class LevelDbSpec extends Specification with DatabaseContext {
       dataSource.allKeys.size must equalTo(1)
     }
 
-    "reset data" >> { dataSource: LevelDbDataSourceImpl =>
+    "reset data" in { dataSource: LevelDbDataSourceImpl =>
       dataSource.resetDB()
       ok
     }
