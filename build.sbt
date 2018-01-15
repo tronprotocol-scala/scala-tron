@@ -46,9 +46,9 @@ val defaultSettings = Seq(
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.18",
   "commons-io" % "commons-io" % "2.6",
 
+  // Test
   "org.specs2" %% "specs2-core" % "4.0.2" % "test"
 )
-
 
 lazy val protocol = (project in file("tron-protocol"))
   .settings(
@@ -60,6 +60,12 @@ lazy val protocol = (project in file("tron-protocol"))
   )
 
 lazy val api = (project in file("tron-api"))
+    .settings(
+      libraryDependencies ++= defaultSettings ++ Seq(
+        "com.typesafe.play" %% "play" % "2.6.11",
+        "com.typesafe.play" %% "play-akka-http-server" % "2.6.11"
+      )
+    )
   .dependsOn(protocol)
 
 lazy val cli = (project in file("tron-cli"))
@@ -67,5 +73,5 @@ lazy val cli = (project in file("tron-cli"))
       mainClass in Compile := Some("org.tron.cli.App"),
       libraryDependencies ++= defaultSettings
     )
-  .dependsOn(protocol)
-  .aggregate(protocol)
+  .dependsOn(protocol, api)
+  .aggregate(protocol, api)

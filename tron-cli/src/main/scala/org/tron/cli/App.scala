@@ -2,8 +2,8 @@ package org.tron.cli
 
 import com.google.inject.Guice
 import org.tron.application.{Application, Module, PeerApplication}
-import org.tron.cli.commands.{AccountCommand, ExitCommand, VersionCommand}
-import org.tron.peer.{Peer, PeerBuilder}
+import org.tron.cli.commands.{AccountCommand, ExitCommand, ServerCommand, VersionCommand}
+import org.tron.peer.PeerBuilder
 
 import scala.io.StdIn
 
@@ -19,6 +19,9 @@ object App {
 
     cmd("account").action( (_, c) => c.copy(command = Some(AccountCommand()))).
       text("Shows the current account")
+
+    cmd("server").action( (_, c) => c.copy(command = Some(ServerCommand()))).
+      text("Start the API server")
 
     cmd("version").action( (_, c) => c.copy(command = Some(VersionCommand()))).
       text("Shows the current version")
