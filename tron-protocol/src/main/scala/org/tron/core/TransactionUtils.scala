@@ -135,7 +135,7 @@ object TransactionUtils {
     mutableTransaction
   }
 
-  def verify(key: ECKey, transaction: Transaction, prevTXs: Map[String, Transaction]): Boolean = {
+  def verify(transaction: Transaction, key: ECKey,  prevTXs: Map[String, Transaction]): Boolean = {
 
     // No need to sign coinbase transaction
     if (TransactionUtils.isCoinbaseTransaction(transaction))
