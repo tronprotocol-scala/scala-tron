@@ -16,8 +16,8 @@ class BlockchainImpl(
   val blockDB: BlockChainDb,
   address: String) extends Blockchain {
 
-  var lastHash = Array[Byte]()
-  var currentHash = Array[Byte]()
+  var lastHash = blockDB.get(Constant.LAST_HASH).get
+  var currentHash = lastHash
 
   def findTransaction(id: Array[Byte]): Option[Transaction] = {
 
@@ -38,6 +38,8 @@ class BlockchainImpl(
     val utxo = mutable.Map[String, TXOutputs]()
 
     val bi = new BlockchainIterator(this)
+
+    println("find", bi.toList)
 
     def isSpent(txid: String, index: Long): Boolean = spenttxos.get(txid).exists(_.contains(index))
 

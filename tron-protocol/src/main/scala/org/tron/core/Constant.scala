@@ -46,4 +46,6 @@ object Constant { // whole
   val NORMAL_CONF = "tron.conf"
   val TEST_CONF = "tron-test.conf"
   val DATABASE_DIR = "database.directory"
+
+  val GENESIS_COINBASE_DATA = "0x10"
 }
