@@ -2,6 +2,5 @@ package org.tron.cli
 
 import org.tron.cli.commands.Command
 
-case class Config(
-  peerType: String,
+case class CommandConfig(
   command: Option[Command] = None)
