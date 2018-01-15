@@ -12,7 +12,9 @@ import org.tron.utils.ByteArray
 
 import scala.collection.mutable
 
-class BlockchainImpl(address: String) extends Blockchain {
+class BlockchainImpl(
+  val blockDB: BlockChainDb,
+  address: String) extends Blockchain {
 
   var lastHash = Array[Byte]()
   var currentHash = Array[Byte]()
@@ -114,6 +116,4 @@ class BlockchainImpl(address: String) extends Blockchain {
     BlockUtils.newBlock(transactions, parentHash, difficulty, number)
     // TODO send to kafka
   }
-
-  def blockDB: BlockChainDb = ???
 }
