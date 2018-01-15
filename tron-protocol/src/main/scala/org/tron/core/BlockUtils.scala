@@ -43,12 +43,14 @@ object BlockUtils {
     */
   def newGenesisBlock(coinbase: Transaction): Block = {
 
-    val genesisBlock = Block()
-      .addTransactions(coinbase)
+    var blockHeader = BlockHeader(
+      difficulty = ByteString.copyFrom(ByteArray.fromHexString("2001")))
 
-    val blockHeader = BlockHeader(
-      difficulty = ByteString.copyFrom(ByteArray.fromHexString("2001")),
-      hash = ByteString.copyFrom(sha3(prepareData(genesisBlock))))
+    var genesisBlock = Block()
+      .addTransactions(coinbase)
+      .withBlockHeader(blockHeader)
+
+    blockHeader = blockHeader.withHash(ByteString.copyFrom(sha3(prepareData(genesisBlock))))
 
     genesisBlock.withBlockHeader(blockHeader)
   }

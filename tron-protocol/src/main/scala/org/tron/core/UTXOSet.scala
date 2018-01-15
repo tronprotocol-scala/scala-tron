@@ -59,6 +59,7 @@ class UTXOSet(
       // Find all outputs
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
+          println("checking", txOutput)
           val txOutputHex = txOutput.pubKeyHash.hex
           pubKeyHash.hex == txOutputHex
         })
