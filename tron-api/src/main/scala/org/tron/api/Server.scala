@@ -7,14 +7,14 @@ object Server {
 
   def main(args: Array[String]): Unit = {
 
-    val components = new HttpServer
-    val server = components.server
+//    val components = new HttpServer
+//    val server = components.server
 
     println("Press Enter to quit")
 
     StdIn.readLine()
 
-    server.stop()
+//    server.stop()
   }
 
 }

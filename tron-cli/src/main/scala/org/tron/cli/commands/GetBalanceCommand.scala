@@ -11,7 +11,7 @@ case class GetBalanceCommand() extends Command {
       case peerApp: PeerApplication =>
         val peer: Peer = peerApp.peer
 
-        val pubKeyHash = PublicKey(peer.wallet.address.key)
+        val pubKeyHash = PublicKey(peer.wallet.address.ecKey)
         val utxos = peer.uTXOSet.findUTXO(pubKeyHash)
 
         val balance = utxos.map(_.value).sum

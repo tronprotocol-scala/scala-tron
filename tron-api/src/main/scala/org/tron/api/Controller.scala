@@ -1,18 +1,30 @@
 package org.tron.api
 
+import org.tron.core.{Blockchain, PublicKey, UTXOSet}
+import org.tron.crypto.ECKey
+import org.tron.utils.ByteArray
+import play.api.libs.json.Json
+import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.routing.Router
 import play.api.routing.sird._
-import Results._
 
-class Controller {
+class Controller(
+  blockchain: Blockchain,
+  uTXOSet: UTXOSet) {
 
   val router: Router = Router.from {
-    case GET(p"/hello") => main
+    case GET(p"/wallet/$key") => walletBalance(key)
   }
 
-  def main = Action {
-    Ok("Hello World")
+  def walletBalance(key: String) = Action {
+
+    val ecKEy = ECKey.fromPublicOnly(ByteArray.fromHexString(key))
+    val balance = uTXOSet.getBalance(PublicKey(ecKEy))
+
+    Ok(Json.obj(
+      "balance" -> balance
+    ))
   }
 
 }

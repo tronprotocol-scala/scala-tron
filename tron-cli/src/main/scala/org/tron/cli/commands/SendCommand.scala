@@ -11,7 +11,7 @@ case class SendCommand() extends Command {
         val peer = peerApp.peer
         val to = parameters(0)
         val amount = parameters(1).toLong
-        val transaction = TransactionUtils.newTransaction(peer.wallet, to, amount, peer.uTXOSet)
+//        val transaction = TransactionUtils.newTransaction(peer.wallet, to, amount, peer.uTXOSet)
     }
   }
 }
