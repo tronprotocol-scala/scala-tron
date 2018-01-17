@@ -46,7 +46,7 @@ object BlockUtils {
     var blockHeader = BlockHeader(
       difficulty = ByteString.copyFrom(ByteArray.fromHexString("2001")))
 
-    var genesisBlock = Block()
+    val genesisBlock = Block()
       .addTransactions(coinbase)
       .withBlockHeader(blockHeader)
 
@@ -75,9 +75,10 @@ object BlockUtils {
     */
   def prepareData(block: Block): Array[Byte] = {
     val blockHeader = block
-      .blockHeader.get
-      .withHash(ByteString.EMPTY)
-      .withNonce(ByteString.EMPTY)
+      .blockHeader.map(_
+        .withHash(ByteString.EMPTY)
+        .withNonce(ByteString.EMPTY))
+      .getOrElse(BlockHeader())
 
     block
       .withBlockHeader(blockHeader)
