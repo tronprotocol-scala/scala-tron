@@ -21,23 +21,13 @@ class DbFactory(databaseFolder: Path) {
   /**
     * Get or create a new database
     * @param name database name
-    * @param account ugly hack
     * @return
     */
-  def buildOrCreate(name: String, account: String) = {
+  def buildOrCreate(name: String) = {
     if (exists(name)) {
       build(name)
     } else {
       val blockDB = build(name)
-
-      val transactions = TransactionUtils.newCoinbaseTransaction(account, Constant.GENESIS_COINBASE_DATA)
-
-      val genesisBlock = BlockUtils.newGenesisBlock(transactions)
-
-
-      blockDB.put(genesisBlock.blockHeader.get.hash.toByteArray, genesisBlock.toByteArray)
-      val lastHash = genesisBlock.blockHeader.get.hash.toByteArray
-      blockDB.put(Constant.LAST_HASH, lastHash)
       blockDB
     }
   }

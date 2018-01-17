@@ -101,7 +101,6 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
     finally resetDbLock.writeLock.unlock()
   }
 
-
   def get(key: Array[Byte]): Option[Array[Byte]] = {
     resetDbLock.readLock.lock()
     try {
