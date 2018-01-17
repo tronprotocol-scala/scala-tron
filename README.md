@@ -10,7 +10,9 @@
 </h4>
 
 <p align="center">
-  <img src="https://travis-ci.org/Rovak/scala-tron.svg?branch=master">
+  <a href="https://travis-ci.org/Rovak/scala-tron" target="_blank">
+    <img src="https://travis-ci.org/Rovak/scala-tron.svg?branch=master">
+  </a>
 </p>
 
 <p align="center">
