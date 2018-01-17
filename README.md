@@ -64,3 +64,17 @@ Show account balance
 Start the server using `sbt "project api" run`
 
 The API will then be available on http://localhost:9000
+
+
+### `/wallet/<public key>`
+
+Shows the balance of the wallet for the given public key
+
+__Response__
+
+```json
+{
+  balance: 10
+}
+```
+
