@@ -6,8 +6,7 @@ import org.tron.crypto.ECKey
 object KeyUtils {
 
   def newKey = {
-    val key = new ECKey()
-    PublicKey(key.getAddress)
+    PublicKey(new ECKey())
   }
 
 }

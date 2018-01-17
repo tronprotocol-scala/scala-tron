@@ -5,4 +5,6 @@ import org.tron.crypto.ECKey
 import org.tron.utils.Utils
 
 case class Wallet(
-  address: PublicKey = PublicKey(new ECKey(Utils.getRandom).getAddress))
+  key: ECKey = new ECKey(Utils.getRandom)) {
+  def address = PublicKey(key)
+}

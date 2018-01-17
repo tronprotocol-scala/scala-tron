@@ -8,7 +8,7 @@ import org.tron.utils.ByteArray
 import org.tron.utils.ByteStringUtils._
 
 class UTXOSet(
-  txDB: LevelDbDataSourceImpl,
+  val txDB: LevelDbDataSourceImpl,
   val blockchain: Blockchain) {
 
   def reindex(): Unit = {
