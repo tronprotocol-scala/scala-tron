@@ -13,10 +13,13 @@ case class ServerCommand() extends Command {
     val components = new HttpServer(new Controller(peerApp.peer.blockchain, peerApp.peer.uTXOSet))
     val server = components.server
 
+    println("Server running on: " + server.mainAddress)
     println("Press Enter to stop server")
 
     StdIn.readLine()
 
     server.stop()
+
+    println("Server Stopped!")
   }
 }
