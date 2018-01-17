@@ -62,7 +62,5 @@ class BlockchainSpec extends Specification {
 
       ok
     }
-
   }
-
 }

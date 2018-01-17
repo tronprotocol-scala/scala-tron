@@ -10,7 +10,7 @@ import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.utils.ByteArray
-
+import org.tron.utils.ByteStringUtils._
 import scala.collection.mutable
 
 class BlockchainImpl(
@@ -116,10 +116,12 @@ class BlockchainImpl(
     TransactionUtils.sign(transaction, key, prevTXs)
   }
 
+  /**
+    * Recieve block
+    */
   def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit = {
-    val lastHashKey = LAST_HASH
-    val lastHash = blockDB.get(lastHashKey).get
-    if (!(ByteArray.toHexString(block.getBlockHeader.parentHash.toByteArray) == ByteArray.toHexString(lastHash)))
+    val lastHash = blockDB.get(LAST_HASH).get
+    if (block.getBlockHeader.parentHash.hex != ByteArray.toHexString(lastHash))
       return
 
     // save the block into the database
@@ -128,7 +130,7 @@ class BlockchainImpl(
     blockDB.put(blockHashKey, blockVal)
     val ch = block.getBlockHeader.hash.toByteArray
 
-    blockDB.put(lastHashKey, ch)
+    blockDB.put(LAST_HASH, ch)
 
     this.lastHash = ch
     currentHash = ch
