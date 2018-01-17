@@ -74,7 +74,7 @@ __Response__
 
 ```json
 {
-  balance: 10
+  "balance": 10
 }
 ```
 
