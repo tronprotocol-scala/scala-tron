@@ -1,6 +1,4 @@
 <h1 align="center">
-  scala-tron
-  <br>
   <img src="docs/img/scala-tron.png">
   <br>
   <img src="https://travis-ci.org/Rovak/scala-tron.svg?branch=master">
