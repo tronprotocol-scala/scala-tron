@@ -12,7 +12,8 @@ trait Blockchain {
 
   def findUTXO(): Map[String, TXOutputs]
 
-  def addBlock(block: Block)
+  def addBlock(block: Block): Unit
+  def addBlock(transactions: List[Transaction]): Block
 
   def signTransaction(transaction: Transaction, key: ECKey): Transaction
 

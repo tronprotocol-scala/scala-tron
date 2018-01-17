@@ -27,14 +27,21 @@
  */
 package org.tron.core
 
+import java.util
+import java.util.{ArrayList, List, Set}
+
 import com.google.protobuf.ByteString
 import org.tron.crypto.ECKey
 import org.tron.crypto.Hash.sha256
 import org.tron.protos.core.TronTXInput.TXInput
+import org.tron.protos.core.TronTXOutput.TXOutput
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.utils.ByteArray
 import org.tron.utils.ByteStringUtils._
 import org.tron.utils.Utils.getRandom
+import org.tron.wallet.Wallet
+
+import scala.collection.mutable
 
 object TransactionUtils {
 
@@ -48,6 +55,37 @@ object TransactionUtils {
 
 
   private val RESERVE_BALANCE = 10
+
+  def newTransaction(wallet: Wallet, toKey: PublicKey, amount: Long, utxoSet: UTXOSet): Transaction = {
+
+    val txOutputs = mutable.ListBuffer[TXOutput]()
+    val pubKeyHash = wallet.key.getPubKey
+    val spendableOutputs = utxoSet.findSpendableOutputs(wallet.address, amount)
+    if (spendableOutputs.amount < amount) {
+      throw new Exception("Not enough funds")
+    }
+
+    val entrySet = spendableOutputs.unspentOutputs
+
+    val txInputs =  for {
+      (txID, outs) <- entrySet
+      out <- outs
+    } yield {
+      TXInputUtils.newTXInput(ByteArray.fromHexString(txID), out, new Array[Byte](0), pubKeyHash)
+    }
+
+    txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey.hex))
+
+    if (spendableOutputs.amount > amount) {
+      txOutputs.append(TXOutputUtils.newTXOutput(spendableOutputs.amount - amount, wallet.address.hex))
+    }
+
+    val newTransaction = Transaction(
+      vin = txInputs.toSeq,
+      vout = txOutputs)
+
+    utxoSet.blockchain.signTransaction(newTransaction, wallet.key)
+  }
 
   /**
     * new coinbase transaction

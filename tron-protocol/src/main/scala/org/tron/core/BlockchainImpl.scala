@@ -4,6 +4,7 @@ package core
 import com.google.protobuf.ByteString
 import org.tron.core.Constant.LAST_HASH
 import org.tron.crypto.ECKey
+import org.tron.peer.Peer
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction
@@ -91,6 +92,18 @@ class BlockchainImpl(
 
   }
 
+  def addBlock(transactions: List[Transaction]): Block = {
+    // get lastHash
+    val lastHash = blockDB.get(LAST_HASH).get
+    val parentHash = ByteString.copyFrom(lastHash)
+    // get number
+    val number = BlockUtils.getIncreaseNumber(this)
+    // get difficulty
+    val difficulty = ByteString.copyFromUtf8(Constant.DIFFICULTY)
+    val block = BlockUtils.newBlock(transactions, parentHash, difficulty, number)
+    block
+  }
+
   def signTransaction(transaction: Transaction, key: ECKey): Transaction = {
 
     val prevTXs = transaction.vin.map { txInput =>
@@ -101,6 +114,26 @@ class BlockchainImpl(
     }.toMap
 
     TransactionUtils.sign(transaction, key, prevTXs)
+  }
+
+  def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit = {
+    val lastHashKey = LAST_HASH
+    val lastHash = blockDB.get(lastHashKey).get
+    if (!(ByteArray.toHexString(block.getBlockHeader.parentHash.toByteArray) == ByteArray.toHexString(lastHash)))
+      return
+
+    // save the block into the database
+    val blockHashKey = block.getBlockHeader.hash.toByteArray
+    val blockVal = block.toByteArray
+    blockDB.put(blockHashKey, blockVal)
+    val ch = block.getBlockHeader.hash.toByteArray
+
+    blockDB.put(lastHashKey, ch)
+
+    this.lastHash = ch
+    currentHash = ch
+    // update UTXO cache
+    uTXOSet.reindex()
   }
 
   def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
