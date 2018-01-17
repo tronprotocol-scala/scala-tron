@@ -19,9 +19,7 @@ class PeerBuilder @Inject() (
     val wallet = Wallet(PublicKey(key.getAddress))
 
     // Build the blockhain
-    val blockchain = new BlockchainImpl(
-      dbFactory.buildOrCreate(Constant.BLOCK_DB_NAME, PublicKey(key.getAddress).hex),
-      ByteArray.toHexString(wallet.address.key))
+    val blockchain = new BlockchainImpl(dbFactory.buildOrCreate(Constant.BLOCK_DB_NAME))
 
     val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
     utxoSet.reindex()

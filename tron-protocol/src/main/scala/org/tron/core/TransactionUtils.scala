@@ -107,7 +107,7 @@ object TransactionUtils {
       }
     }
 
-    for (i <- 0 to mutableTransaction.vin.size) {
+    for (i <- mutableTransaction.vin.indices) {
       val vin = mutableTransaction.vin(i)
       val prevTx = prevTXs(vin.txID.hex)
       var transactionCopyBuilder = mutableTransaction
@@ -147,7 +147,7 @@ object TransactionUtils {
       }
     }
 
-    for (i <- 0 to transaction.vin.size) {
+    for (i <- transaction.vin.indices) {
       val vin = transaction.vin(i)
       val prevTx = prevTXs(vin.txID.hex)
       var transactionCopyBuilder = transaction
