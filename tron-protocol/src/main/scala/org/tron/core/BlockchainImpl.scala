@@ -13,10 +13,9 @@ import org.tron.utils.ByteArray
 import scala.collection.mutable
 
 class BlockchainImpl(
-  val blockDB: BlockChainDb,
-  address: String) extends Blockchain {
+  val blockDB: BlockChainDb) extends Blockchain {
 
-  var lastHash = blockDB.get(Constant.LAST_HASH).get
+  var lastHash = blockDB.get(Constant.LAST_HASH).getOrElse(null)
   var currentHash = lastHash
 
   def findTransaction(id: Array[Byte]): Option[Transaction] = {
@@ -39,8 +38,6 @@ class BlockchainImpl(
 
     val bi = new BlockchainIterator(this)
 
-    println("find", bi.toList)
-
     def isSpent(txid: String, index: Long): Boolean = spenttxos.get(txid).exists(_.contains(index))
 
     for {
@@ -50,7 +47,7 @@ class BlockchainImpl(
       val txid = ByteArray.toHexString(transaction.id.toByteArray)
 
       for {
-        outIdx <- 0 to transaction.vout.size
+        outIdx <- transaction.vout.indices
         out = transaction.vout(outIdx) if !isSpent(txid, outIdx)
       } {
         var outs = utxo.getOrElse(txid, TXOutputs())
@@ -117,5 +114,19 @@ class BlockchainImpl(
 
     BlockUtils.newBlock(transactions, parentHash, difficulty, number)
     // TODO send to kafka
+  }
+
+  def addGenesisBlock(account: String): Unit = {
+    println("Adding genesis block")
+    val transactions = TransactionUtils.newCoinbaseTransaction(account, Constant.GENESIS_COINBASE_DATA)
+
+    val genesisBlock = BlockUtils.newGenesisBlock(transactions)
+
+    blockDB.put(genesisBlock.blockHeader.get.hash.toByteArray, genesisBlock.toByteArray)
+    val lastHash = genesisBlock.blockHeader.get.hash.toByteArray
+    blockDB.put(Constant.LAST_HASH, lastHash)
+
+    this.lastHash = lastHash
+    this.currentHash = lastHash
   }
 }

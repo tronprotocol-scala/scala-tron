@@ -5,6 +5,7 @@ import javax.inject.Singleton
 
 import com.google.inject.{AbstractModule, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
+import org.tron.core.{Blockchain, BlockchainImpl, Constant, PublicKey}
 import org.tron.storage.DbFactory
 
 class Module(mode: String = "test") extends AbstractModule {
@@ -30,5 +31,12 @@ class Module(mode: String = "test") extends AbstractModule {
     val config = buildConfig()
     val file = config.getString("database.directory")
     new DbFactory(Paths.get(file))
+  }
+
+  @Provides
+  @Singleton
+  def buildBlockchain(): Blockchain = {
+    val dbFactory = buildDbFactory()
+    new BlockchainImpl(dbFactory.buildOrCreate(Constant.BLOCK_DB_NAME))
   }
 }
