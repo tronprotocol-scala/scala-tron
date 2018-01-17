@@ -1,12 +1,17 @@
 <h1 align="center">
   <img src="docs/img/scala-tron.png">
   <br>
-  <img src="https://travis-ci.org/Rovak/scala-tron.svg?branch=master">
+  scala-tron
+  <br>
 </h1>
 
 <h4 align="center">
     Scala implementation of the <a href="https://github.com/tronprotocol/wiki/blob/master/Home.md">Tron Protocol</a>
 </h4>
+
+<p align="center">
+  <img src="https://travis-ci.org/Rovak/scala-tron.svg?branch=master">
+</p>
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
