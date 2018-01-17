@@ -152,7 +152,6 @@ class BlockchainImpl(
   }
 
   def addGenesisBlock(account: String): Unit = {
-    println("Adding genesis block")
     val transactions = TransactionUtils.newCoinbaseTransaction(account, Constant.GENESIS_COINBASE_DATA)
 
     val genesisBlock = BlockUtils.newGenesisBlock(transactions)
