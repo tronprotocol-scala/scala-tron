@@ -14,7 +14,7 @@ case class ClusterCommand(seedNode: Option[String] = None) extends Command {
         peerCluster.start()
         seedNode match {
           case Some(seedNodeAddress) =>
-            println("JOING CLUSTER AS CLIENT")
+            println("JOINING CLUSTER AS CLIENT")
             peerCluster.joinSeedNode(seedNodeAddress)
           case None =>
             println("STARTING CLUSTER AS LEADER")
