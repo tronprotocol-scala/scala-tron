@@ -61,6 +61,14 @@ Show account key
 
 Show account balance
 
+### `cluster`
+ 
+Start cluster as leader
+
+### `cluster --join <address>`
+
+Join cluster as client
+
 ## Cluster
 
 Cluster is based on Akka. To start a cluster follow the following steps:
