@@ -21,17 +21,36 @@ object App {
 
     help("help").text("How to use")
 
-    cmd("account").action( (_, c) => c.copy(command = Some(AccountCommand()))).
-      text("Shows the current account")
+    cmd("account")
+      .action( (_, c) => c.copy(command = Some(AccountCommand())))
+      .text("Shows the current account")
 
-    cmd("server").action( (_, c) => c.copy(command = Some(ServerCommand()))).
-      text("Start the API server")
+    cmd("server")
+      .action( (_, c) => c.copy(command = Some(ServerCommand())))
+      .text("Start the API server")
 
-    cmd("version").action( (_, c) => c.copy(command = Some(VersionCommand()))).
-      text("Shows the current version")
+    cmd("version")
+      .action( (_, c) => c.copy(command = Some(VersionCommand())))
+      .text("Shows the current version")
 
-    cmd("balance").action( (_, c) => c.copy(command = Some(GetBalanceCommand()))).
-      text("show balance")
+    cmd("balance")
+      .action( (_, c) => c.copy(command = Some(GetBalanceCommand())))
+      .text("show balance")
+
+    cmd("cluster")
+      .action( (_, c) => c.copy(command = Some(ClusterCommand())))
+      . children(
+          opt[String]("join").action( (y, c) => {
+            val cmd = c.command.map {
+              case cluster: ClusterCommand =>
+                cluster.copy(seedNode = Some(y))
+              case x => x
+            }
+
+            c.copy(command = cmd)
+          }).text("disable keepalive"),
+        )
+      .text("start cluster")
 
     cmd("exit").action( (_, c) => c.copy(command = Some(ExitCommand()))).
       text("close tron")
@@ -47,15 +66,23 @@ object App {
         val peer = injector.getInstance(classOf[PeerBuilder]).build(config.peerType)
       }
 
-      handleCommandArgs(app, StdIn.readLine.trim.split("\\s+"))
+      readCommand(app)
     }
 
   }
 
+  def readCommand(app: Application) = handleCommandArgs(app, StdIn.readLine.trim.split("\\s+"))
+
   def handleCommandArgs(app: Application, args: Array[String]): Unit = {
-    commandParser.parse(args, CommandConfig()).foreach { config =>
-      handleCommand(app, config)
+    try {
+      commandParser.parse(args, CommandConfig()).foreach { config =>
+        handleCommand(app, config)
+      }
+    } catch {
+      case _: Throwable =>
+        readCommand(app)
     }
+
   }
 
   def handleCommand(app: Application, config: CommandConfig) = {
@@ -65,7 +92,7 @@ object App {
       case _ =>
     }
 
-    handleCommandArgs(app, StdIn.readLine.trim.split("\\s+"))
+    readCommand(app)
   }
 
 }
