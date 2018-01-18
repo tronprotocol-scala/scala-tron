@@ -17,7 +17,8 @@
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
-  <a href="#how-to-use">How To Use</a>
+  <a href="#how-to-use">How To Use</a> •
+  <a href="#cluster">Cluster</a> •
   <a href="#contact">Contact</a>
 </p>
 
