@@ -18,6 +18,7 @@
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
   <a href="#how-to-use">How To Use</a>
+  <a href="#contact">Contact</a>
 </p>
 
 
@@ -79,3 +80,6 @@ __Response__
 }
 ```
 
+## Contact
+
+* [Gitter](https://gitter.im/Rovak/scala-tron)
