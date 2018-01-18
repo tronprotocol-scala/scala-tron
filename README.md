@@ -66,7 +66,7 @@ Start the server using `sbt "project api" run`
 The API will then be available on http://localhost:9000
 
 
-### `/wallet/<public key>/balance`
+### `/wallet/<public key>`
 
 Shows the balance of the wallet for the given public key
 
