@@ -60,6 +60,25 @@ Show account key
 
 Show account balance
 
+## Cluster
+
+Cluster is based on Akka. To start a cluster follow the following steps:
+
+* Start tron-cli `sbt "project cli" run`
+* Run `cluster` which starts the node as leader
+* The console will show the following logs  
+```
+[INFO] [01/18/2018 22:59:28.399] [main] [akka.remote.Remoting] Starting remoting
+[INFO] [01/18/2018 22:59:28.553] [main] [akka.remote.Remoting] Remoting started; listening on addresses :[akka.tcp://TronCluster@127.0.0.1:41795]
+```
+* Copy the address (`127.0.0.1:41795`)
+* Start a second instance which will join the cluster. 
+  The second client has to have a different database directory to prevent conflicts.
+* Run `sbt -J-Ddatabase.directory=tron-data-client1 "project cli" run`.  
+  `-J-Ddatabase.directory=tron-data-client1` specifies the database directory
+* Run `cluster --join <address>` (example: `cluster --join 127.0.0.1:41795`)
+* The client will now be joining the cluster
+
 ## Web API
 
 Start the server using `sbt "project api" run`

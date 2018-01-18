@@ -15,6 +15,11 @@ class PeerCluster(peer: Peer, system: ActorSystem) {
 
   }
 
+  /**
+    * Join existing cluster
+    *
+    * @param seedNode address of active cluster node
+    */
   def joinSeedNode(seedNode: String) = {
 
     val Array(host, port) = seedNode.split(":")
@@ -28,6 +33,9 @@ class PeerCluster(peer: Peer, system: ActorSystem) {
     Cluster.get(system).registerOnMemberUp()
   }
 
+  /**
+    * Start cluster as leader
+    */
   def startLeader() = {
 
     val selfAddress = Cluster.get(system).selfAddress
