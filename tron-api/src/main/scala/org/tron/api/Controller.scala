@@ -23,6 +23,7 @@ class Controller(
     val balance = uTXOSet.getBalance(PublicKey(ecKEy))
 
     Ok(Json.obj(
+      "address" -> ByteArray.toHexString(ecKEy.getAddress),
       "balance" -> balance
     ))
   }

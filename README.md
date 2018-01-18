@@ -66,7 +66,7 @@ Start the server using `sbt "project api" run`
 The API will then be available on http://localhost:9000
 
 
-### `/wallet/<public key>`
+### `/wallet/<public key>/balance`
 
 Shows the balance of the wallet for the given public key
 
@@ -74,6 +74,7 @@ __Response__
 
 ```json
 {
+  "address": "a9c030dfbfb83f6c9454b5e1da5cecdb8737d4af",
   "balance": 10
 }
 ```
