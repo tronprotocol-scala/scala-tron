@@ -2,7 +2,7 @@ package org.tron.cli
 
 import com.google.inject.Guice
 import org.tron.application.{Application, Module, PeerApplication}
-import org.tron.cli.commands.{AccountCommand, ExitCommand, VersionCommand}
+import org.tron.cli.commands.{AccountCommand, Command, ExitCommand, VersionCommand}
 import org.tron.peer.{Peer, PeerBuilder}
 
 import scala.io.StdIn
@@ -27,12 +27,14 @@ object App {
       text("close tron")
   }
 
-
   def main(args: Array[String]) = {
     handleArgs(args)
 
     while(true){
-      handleArgs(StdIn.readLine.trim.split("\\s+"))
+      val args = StdIn.readLine.trim.split("\\s+")
+      if(args.nonEmpty) {
+        handleArgs(args)
+      }
     }
   }
 
