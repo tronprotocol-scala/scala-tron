@@ -1,8 +1,8 @@
 package org.tron.cluster
 
-import akka.actor
 import akka.actor.{ActorSystem, Address, Props}
 import akka.cluster.Cluster
+import org.tron.cluster.akkka.ClusterListener
 import org.tron.peer.{Peer, PeerActor}
 
 import scala.concurrent.duration._

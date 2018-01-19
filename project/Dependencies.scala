@@ -24,11 +24,10 @@ object Dependencies {
   )
 
   val akkaDeps = Seq(
-    "com.typesafe.akka" %% "akka-stream",
     "com.typesafe.akka" %% "akka-actor",
+    "com.typesafe.akka" %% "akka-stream",
     "com.typesafe.akka" %% "akka-cluster",
-    "com.typesafe.akka" %% "akka-cluster-tools",
-    "com.typesafe.akka" %% "akka-cluster-metrics"
+    "com.typesafe.akka" %% "akka-cluster-tools"
   ).map(_ % akkaVersion)
 
   val catsDeps = Seq(

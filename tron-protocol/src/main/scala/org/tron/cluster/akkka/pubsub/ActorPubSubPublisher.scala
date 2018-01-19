@@ -1,4 +1,4 @@
-package org.tron.cluster.pubsub
+package org.tron.cluster.akkka.pubsub
 
 import javax.inject.{Inject, Singleton}
 
