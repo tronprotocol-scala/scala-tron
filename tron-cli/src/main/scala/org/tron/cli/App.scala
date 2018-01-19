@@ -17,14 +17,18 @@ object App {
 
     help("help").text("How to use")
 
-    cmd("account").action( (_, c) => c.copy(command = Some(AccountCommand()))).
+    cmd("account").action( (_, c) => doCopy(c, AccountCommand())).
       text("Shows the current account")
 
-    cmd("version").action( (_, c) => c.copy(command = Some(VersionCommand()))).
+    cmd("version").action( (_, c) => doCopy(c, VersionCommand())).
       text("Shows the current version")
 
-    cmd("exit").action( (_, c) => c.copy(command = Some(ExitCommand()))).
+    cmd("exit").action( (_, c) => doCopy(c, ExitCommand())).
       text("close tron")
+  }
+
+  def doCopy(config: Config, command: Command): Config = {
+    config.copy(command = Some(command))
   }
 
   def main(args: Array[String]) = {
