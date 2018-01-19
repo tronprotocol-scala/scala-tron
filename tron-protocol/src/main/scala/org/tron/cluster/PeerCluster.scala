@@ -2,6 +2,7 @@ package org.tron.cluster
 
 import akka.actor.{ActorSystem, Address, Props}
 import akka.cluster.Cluster
+import org.tron.core.Constant
 import org.tron.peer.{Peer, PeerActor}
 
 import scala.concurrent.duration._
@@ -25,7 +26,7 @@ class PeerCluster(peer: Peer, system: ActorSystem) {
 
     val Array(host, port) = seedNode.split(":")
 
-    val seedNodeAddress = Address("akka.tcp", "TronCluster", host, port.toInt)
+    val seedNodeAddress = Address("akka.tcp", Constant.SYSTEM_NAME, host, port.toInt)
 
     system.scheduler.scheduleOnce(2.seconds) {
       Cluster.get(system).joinSeedNodes(List(seedNodeAddress))
