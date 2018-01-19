@@ -1,9 +1,8 @@
-package org.tron.cluster
+package org.tron.cluster.akkka
 
+import akka.actor.{Actor, ActorLogging}
 import akka.cluster.Cluster
 import akka.cluster.ClusterEvent._
-import akka.actor.ActorLogging
-import akka.actor.Actor
 
 class ClusterListener extends Actor with ActorLogging {
 
