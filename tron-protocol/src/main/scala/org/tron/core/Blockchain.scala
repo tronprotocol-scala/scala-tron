@@ -14,6 +14,7 @@ trait Blockchain {
 
   def addBlock(block: Block): Unit
   def addBlock(transactions: List[Transaction]): Block
+  def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit
 
   def signTransaction(transaction: Transaction, key: ECKey): Transaction
 
