@@ -3,13 +3,15 @@ package org.tron.cluster
 import akka.actor
 import akka.actor.{ActorSystem, Address, Props}
 import akka.cluster.Cluster
-import org.tron.peer.Peer
+import org.tron.peer.{Peer, PeerActor}
+
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class PeerCluster(peer: Peer, system: ActorSystem) {
 
   val clusterListener = system.actorOf(Props[ClusterListener], "listener")
+  val peerActor = system.actorOf(Props(new PeerActor(peer)), "peer")
 
   def start() = {
 

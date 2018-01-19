@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import org.tron.application.{Application, PeerApplication}
 import org.tron.cluster.PeerCluster
 
+// scalastyle:off regex
 case class ClusterCommand(seedNode: Option[String] = None) extends Command {
   def execute(app: Application, parameters: Array[String]): Unit = {
 
