@@ -24,8 +24,6 @@ class PeerBuilder @Inject() (
 
       val sender = KeyUtils.newKey
 
-      println("Adding genesis for address", ByteArray.toHexString(sender.ecKey.getPubKey))
-
       blockchain.addGenesisBlock(sender.hex)
     }
 
