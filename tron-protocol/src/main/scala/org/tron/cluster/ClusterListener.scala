@@ -1,4 +1,4 @@
-package org.tron.cluster.akkka
+package org.tron.cluster
 
 import akka.actor.{Actor, ActorLogging}
 import akka.cluster.Cluster
