@@ -30,6 +30,10 @@ object App {
 
   def main(args: Array[String]) = {
     handleArgs(args)
+
+    while(true){
+      handleArgs(StdIn.readLine.trim.split("\\s+"))
+    }
   }
 
   def handleArgs(args: Array[String]): Unit = {
@@ -51,8 +55,6 @@ object App {
         command.execute(app, Array())
       case _ =>
     }
-
-    handleArgs(StdIn.readLine.trim.split("\\s+"))
   }
 
 }
