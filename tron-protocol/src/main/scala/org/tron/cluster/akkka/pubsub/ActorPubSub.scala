@@ -1,4 +1,4 @@
-package org.tron.cluster.pubsub
+package org.tron.cluster.akkka.pubsub
 
 import akka.NotUsed
 import akka.actor.Actor
