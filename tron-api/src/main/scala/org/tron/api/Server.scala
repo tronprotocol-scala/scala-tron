@@ -2,7 +2,7 @@ package org.tron.api
 
 import scala.io.StdIn
 
-
+// scalastyle:off regex
 object Server {
 
   def main(args: Array[String]): Unit = {

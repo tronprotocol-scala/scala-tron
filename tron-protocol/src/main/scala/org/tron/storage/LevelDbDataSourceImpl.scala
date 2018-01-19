@@ -145,13 +145,12 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def close(): Unit = {
-    resetDbLock.writeLock.lock()
-    if (!alive)
-      return
-
     try {
-      database.close()
-      alive = false
+      resetDbLock.writeLock.lock()
+      if (alive) {
+        database.close()
+        alive = false
+      }
     } finally resetDbLock.writeLock.unlock()
   }
 }

@@ -5,6 +5,7 @@ import org.tron.application.{Application, PeerApplication}
 
 import scala.io.StdIn
 
+// scalastyle:off regex
 case class ServerCommand() extends Command {
   def execute(app: Application, parameters: Array[String]): Unit = {
 

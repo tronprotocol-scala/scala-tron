@@ -12,47 +12,50 @@ object App {
   val appParser = new scopt.OptionParser[AppConfig]("tron") {
     head("tron", "0.1")
 
-    opt[String]('t', "type").action( (x, c) =>
-      c.copy(peerType = x) ).text("type can be server or client")
+    help("help").text("How to use")
+
+    opt[String]('t', "type")
+      .action((x, c) => c.copy(peerType = x))
+      .text("type can be server or client")
   }
 
   val commandParser = new scopt.OptionParser[CommandConfig]("tron") {
-    head("tron", "0.1")
-
-    help("help").text("How to use")
 
     cmd("account")
-      .action( (_, c) => c.copy(command = Some(AccountCommand())))
+      .action((_, c) => c.copy(command = Some(AccountCommand())))
       .text("Shows the current account")
 
     cmd("server")
-      .action( (_, c) => c.copy(command = Some(ServerCommand())))
+      .action((_, c) => c.copy(command = Some(ServerCommand())))
       .text("Start the API server")
 
     cmd("version")
-      .action( (_, c) => c.copy(command = Some(VersionCommand())))
+      .action((_, c) => c.copy(command = Some(VersionCommand())))
       .text("Shows the current version")
 
     cmd("balance")
-      .action( (_, c) => c.copy(command = Some(GetBalanceCommand())))
+      .action((_, c) => c.copy(command = Some(GetBalanceCommand())))
       .text("show balance")
 
     cmd("cluster")
-      .action( (_, c) => c.copy(command = Some(ClusterCommand())))
-      . children(
-          opt[String]("join").action( (y, c) => {
+      .action((_, c) => c.copy(command = Some(ClusterCommand())))
+      .children {
+        opt[String]("join")
+          .action { (y, c) =>
             val cmd = c.command.map {
               case cluster: ClusterCommand =>
                 cluster.copy(seedNode = Some(y))
-              case x => x
+              case x =>
+                x
             }
 
             c.copy(command = cmd)
-          }).text("disable keepalive"),
-        )
+          }
+          .text("disable keepalive")
+      }
       .text("start cluster")
 
-    cmd("exit").action( (_, c) => c.copy(command = Some(ExitCommand()))).
+    cmd("exit").action((_, c) => c.copy(command = Some(ExitCommand()))).
       text("close tron")
   }
 
@@ -71,7 +74,9 @@ object App {
 
   }
 
-  def readCommand(app: Application) = handleCommandArgs(app, StdIn.readLine.trim.split("\\s+"))
+  def readCommand(app: Application) = {
+    handleCommandArgs(app, StdIn.readLine.trim.split("\\s+"))
+  }
 
   def handleCommandArgs(app: Application, args: Array[String]): Unit = {
     try {
