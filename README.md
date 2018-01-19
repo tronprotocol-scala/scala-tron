@@ -117,4 +117,5 @@ __Response__
 ## Contact
 
 * [Gitter](https://gitter.im/Rovak/scala-tron)
+* [Telegram](https://t.me/joinchat/CP8XKBIjEc0RqzJdl61OlQ)
 
