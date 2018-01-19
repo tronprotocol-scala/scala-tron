@@ -48,4 +48,6 @@ object Constant { // whole
   val DATABASE_DIR = "database.directory"
 
   val GENESIS_COINBASE_DATA = "0x10"
+
+  val SYSTEM_NAME = "TronCluster"
 }
