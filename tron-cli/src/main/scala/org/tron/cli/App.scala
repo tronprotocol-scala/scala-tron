@@ -2,7 +2,7 @@ package org.tron.cli
 
 import com.google.inject.Guice
 import org.tron.application.{Application, Module, PeerApplication}
-import org.tron.cli.commands.{AccountCommand, Command, ExitCommand, VersionCommand}
+import org.tron.cli.commands._
 import org.tron.peer.{Peer, PeerBuilder}
 
 import scala.io.StdIn
@@ -15,7 +15,7 @@ object App {
     opt[String]('t', "type").action( (x, c) =>
       c.copy(peerType = x) ).text("type can be server or client")
 
-    help("help").text("How to use")
+    cmd("help").action( (_, c) => doCopy(c, HelpCommand()))
 
     cmd("account").action( (_, c) => doCopy(c, AccountCommand())).
       text("Shows the current account")
