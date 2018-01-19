@@ -1,3 +1,5 @@
+import Dependencies._
+
 name := "scala-tron"
 
 scalaVersion := "2.12.4"
@@ -33,16 +35,11 @@ val defaultSettings = Seq(
 
   "org.apache.kafka" %% "kafka" % "0.11.0.2",
 
-  // Akka
-  "com.typesafe.akka" %% "akka-actor" % "2.5.9",
-  "com.typesafe.akka" %% "akka-stream" % "2.5.9",
-  "com.typesafe.akka" %% "akka-cluster" % "2.5.9",
-  "com.typesafe.akka" %% "akka-cluster-tools" % "2.5.9",
-
   // Alpakka
   "com.lightbend.akka" %% "akka-stream-alpakka-file" % "0.15.1",
 
   "com.google.inject" % "guice" % "4.1.0",
+
   "org.typelevel" %% "cats-core" % "1.0.1",
   "org.typelevel" %% "cats-effect" % "0.5",
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.18",
@@ -50,8 +47,7 @@ val defaultSettings = Seq(
 
   // Test
   "org.specs2" %% "specs2-core" % "4.0.2" % "test",
-
-)
+) ++ akkaDeps ++ grpcDeps
 
 lazy val protocol = (project in file("tron-protocol"))
   .settings(
