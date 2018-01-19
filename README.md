@@ -6,12 +6,28 @@
 </h1>
 
 <h4 align="center">
-    Scala implementation of the <a href="https://github.com/tronprotocol/wiki/blob/master/Home.md">Tron Protocol</a>
+  Scala implementation of the <a href="https://github.com/tronprotocol/wiki/blob/master/Home.md">Tron Protocol</a>
 </h4>
 
 <p align="center">
-  <a href="https://travis-ci.org/Rovak/scala-tron" target="_blank">
+  <a href="https://travis-ci.org/Rovak/scala-tron">
     <img src="https://travis-ci.org/Rovak/scala-tron.svg?branch=master">
+  </a>
+
+  <a href="https://gitter.im/rovak/scala-tron">
+    <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg">
+  </a>
+
+  <a href="https://github.com/rovak/scala-tron/issues">
+    <img src="https://img.shields.io/github/issues/rovak/scala-tron.svg">
+  </a>
+
+  <a href="https://github.com/rovak/scala-tron/pulls">
+    <img src="https://img.shields.io/github/issues-pr/rovak/scala-tron.svg">
+  </a>
+
+  <a href="https://github.com/rovak/scala-tron/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/rovak/scala-tron.svg">
   </a>
 </p>
 
