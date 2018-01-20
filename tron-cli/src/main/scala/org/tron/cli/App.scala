@@ -12,21 +12,20 @@ object App {
   val parser = new scopt.OptionParser[Config]("tron") {
     head("tron", "0.1")
 
-    cmd("help").action( (_, c) => doCopy(c, HelpCommand()))
+    cmd("help").action(withCommand(HelpCommand()))
 
-    cmd("account").action( (_, c) => doCopy(c, AccountCommand())).
+    cmd("account").action(withCommand(AccountCommand())).
       text("Shows the current account")
 
-    cmd("version").action( (_, c) => doCopy(c, VersionCommand())).
+    cmd("version").action(withCommand(VersionCommand())).
       text("Shows the current version")
 
-    cmd("exit").action( (_, c) => doCopy(c, ExitCommand())).
+    cmd("exit").action(withCommand(ExitCommand())).
       text("close tron")
   }
 
-  def doCopy(config: Config, command: Command): Config = {
-    config.copy(command = Some(command))
-  }
+  def withCommand(cmd: Command): (Unit, Config) => Config =
+    (_, c) => c.copy(command = Some(cmd))
 
   def main(args: Array[String]) = {
     while(true){
