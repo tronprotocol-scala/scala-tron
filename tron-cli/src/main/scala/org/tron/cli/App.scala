@@ -3,42 +3,39 @@ package org.tron.cli
 import com.google.inject.Guice
 import org.tron.application.{Application, Module, PeerApplication}
 import org.tron.cli.commands._
-import org.tron.peer.PeerBuilder
+import org.tron.peer.{Peer, PeerBuilder}
+import scopt.OptionParser
 
 import scala.io.StdIn
 
 object App {
 
-  val appParser = new scopt.OptionParser[AppConfig]("tron") {
+  val commandParser: OptionParser[CommandConfig]
+    = new scopt.OptionParser[CommandConfig]("tron") {
     head("tron", "0.1")
 
-    help("help").text("How to use")
-
-    opt[String]('t', "type")
-      .action((x, c) => c.copy(peerType = x))
-      .text("type can be server or client")
-  }
-
-  val commandParser = new scopt.OptionParser[CommandConfig]("tron") {
+    cmd("help")
+      .action(withCommand(HelpCommand()))
+      .text("Shows how to use the application")
 
     cmd("account")
-      .action((_, c) => c.copy(command = Some(AccountCommand())))
+      .action(withCommand(AccountCommand()))
       .text("Shows the current account")
 
     cmd("server")
-      .action((_, c) => c.copy(command = Some(ServerCommand())))
+      .action(withCommand(ServerCommand()))
       .text("Start the API server")
 
     cmd("version")
-      .action((_, c) => c.copy(command = Some(VersionCommand())))
+      .action(withCommand(VersionCommand()))
       .text("Shows the current version")
 
     cmd("balance")
-      .action((_, c) => c.copy(command = Some(GetBalanceCommand())))
+        .action(withCommand(GetBalanceCommand()))
       .text("show balance")
 
     cmd("cluster")
-      .action((_, c) => c.copy(command = Some(ClusterCommand())))
+      .action(withCommand(ClusterCommand()))
       .children {
         opt[String]("join")
           .action { (y, c) =>
@@ -51,31 +48,35 @@ object App {
 
             c.copy(command = cmd)
           }
-          .text("disable keepalive")
+          .text("disable keep alive")
       }
       .text("start cluster")
 
-    cmd("exit").action((_, c) => c.copy(command = Some(ExitCommand()))).
+    cmd("exit").action(withCommand(ExitCommand())).
       text("close tron")
   }
 
+  def withCommand(cmd: Command): (Unit, CommandConfig) => CommandConfig =
+    (_, c) => c.copy(command = Some(cmd))
 
-  def main(args: Array[String]) = {
-    appParser.parse(args, AppConfig(peerType = "client")).foreach { config =>
+  def main(args: Array[String]): Unit = {
 
-      val injector = Guice.createInjector(new Module())
+    val injector = Guice.createInjector(new Module())
 
-      val app = new Application(injector) with PeerApplication {
-        val peer = injector.getInstance(classOf[PeerBuilder]).build(config.peerType)
-      }
-
-      readCommand(app)
+    val app = new Application(injector) with PeerApplication {
+      val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build("client")
     }
 
+    while(true){
+      val args = readArgs()
+      if(args.nonEmpty) {
+        handleCommandArgs(app, args)
+      }
+    }
   }
 
-  def readCommand(app: Application) = {
-    handleCommandArgs(app, StdIn.readLine.trim.split("\\s+"))
+  def readArgs(): Array[String] = {
+    StdIn.readLine.trim.split("\\s+")
   }
 
   def handleCommandArgs(app: Application, args: Array[String]): Unit = {
@@ -85,19 +86,15 @@ object App {
       }
     } catch {
       case _: Throwable =>
-        readCommand(app)
+        handleCommandArgs(app, readArgs())
     }
-
   }
 
-  def handleCommand(app: Application, config: CommandConfig) = {
+  def handleCommand(app: Application, config: CommandConfig): Unit = {
     config.command match {
       case Some(command) =>
         command.execute(app, Array())
       case _ =>
     }
-
-    readCommand(app)
   }
-
 }
