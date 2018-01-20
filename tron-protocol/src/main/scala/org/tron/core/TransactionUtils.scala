@@ -27,9 +27,6 @@
  */
 package org.tron.core
 
-import java.util
-import java.util.{ArrayList, List, Set}
-
 import com.google.protobuf.ByteString
 import org.tron.crypto.ECKey
 import org.tron.crypto.Hash.sha256
@@ -56,7 +53,7 @@ object TransactionUtils {
 
   private val RESERVE_BALANCE = 10
 
-  def newTransaction(wallet: Wallet, toKey: PublicKey, amount: Long, utxoSet: UTXOSet): Transaction = {
+  def newTransaction(wallet: Wallet, toKey: String, amount: Long, utxoSet: UTXOSet): Transaction = {
 
     val txOutputs = mutable.ListBuffer[TXOutput]()
     val pubKeyHash = wallet.key.getPubKey
@@ -74,7 +71,7 @@ object TransactionUtils {
       TXInputUtils.newTXInput(ByteArray.fromHexString(txID), out, new Array[Byte](0), pubKeyHash)
     }
 
-    txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey.hex))
+    txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey))
 
     if (spendableOutputs.amount > amount) {
       txOutputs.append(TXOutputUtils.newTXOutput(spendableOutputs.amount - amount, wallet.address.hex))

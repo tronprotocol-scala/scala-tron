@@ -17,18 +17,4 @@ class DbFactory(databaseFolder: Path) {
     db.initDB()
     db
   }
-
-  /**
-    * Get or create a new database
-    * @param name database name
-    * @return
-    */
-  def buildOrCreate(name: String) = {
-    if (exists(name)) {
-      build(name)
-    } else {
-      val blockDB = build(name)
-      blockDB
-    }
-  }
 }

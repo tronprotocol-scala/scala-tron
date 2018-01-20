@@ -19,7 +19,7 @@ class PeerBuilder @Inject() (
     val wallet = Wallet(key)
 
     // Build the blockchain
-    val blockchain = new BlockchainImpl(dbFactory.buildOrCreate(Constant.BLOCK_DB_NAME))
+    val blockchain = new BlockchainImpl(dbFactory.build(Constant.BLOCK_DB_NAME))
     if (blockchain.lastHash == null) {
 
       val sender = KeyUtils.newKey

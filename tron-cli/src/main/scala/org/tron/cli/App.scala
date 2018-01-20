@@ -67,9 +67,9 @@ object App {
       val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build("client")
     }
 
-    while(true){
+    while (true) {
       val args = readArgs()
-      if(args.nonEmpty) {
+      if (args.nonEmpty) {
         handleCommandArgs(app, args)
       }
     }

@@ -37,6 +37,6 @@ class Module(mode: String = "test") extends AbstractModule {
   @Singleton
   def buildBlockchain(): Blockchain = {
     val dbFactory = buildDbFactory()
-    new BlockchainImpl(dbFactory.buildOrCreate(Constant.BLOCK_DB_NAME))
+    new BlockchainImpl(dbFactory.build(Constant.BLOCK_DB_NAME))
   }
 }
