@@ -8,7 +8,8 @@ import org.tron.wallet.Wallet
 class TransactionFacade(peer: Peer, transactionStrategy: TransactionStrategy) {
 
   def newTransaction(fromAddress: String, toAddress: String, amount: Int) = {
-    val from = Wallet(ECKey.fromPublicOnly(ByteArray.fromHexString(fromAddress)))
+    val pubKeyHash = ByteArray.fromHexString(fromAddress)
+    val from = Wallet(ECKey.fromPrivate(pubKeyHash))
 
     val transaction = TransactionUtils.newTransaction(from, toAddress, amount, peer.uTXOSet)
     transactionStrategy.newTransaction(transaction)

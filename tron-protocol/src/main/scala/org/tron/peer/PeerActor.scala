@@ -15,10 +15,8 @@ class PeerActor(peer: Peer) extends Actor with ActorPubSub {
 
   def receive = {
     case transaction: Transaction =>
-      println("received transaction")
       peer.addReceiveTransaction(transaction)
     case block: Block =>
-      println("received block")
       peer.addReceiveBlock(block)
   }
 

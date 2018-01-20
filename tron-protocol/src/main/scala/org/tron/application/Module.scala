@@ -3,6 +3,7 @@ package org.tron.application
 import java.nio.file.Paths
 import javax.inject.Singleton
 
+import akka.actor.ActorSystem
 import com.google.inject.{AbstractModule, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
 import org.tron.core.{Blockchain, BlockchainImpl, Constant, PublicKey}
@@ -38,5 +39,11 @@ class Module(mode: String = "test") extends AbstractModule {
   def buildBlockchain(): Blockchain = {
     val dbFactory = buildDbFactory()
     new BlockchainImpl(dbFactory.build(Constant.BLOCK_DB_NAME))
+  }
+
+  @Singleton
+  @Provides
+  def buildActorSystem(): ActorSystem = {
+    ActorSystem(Constant.SYSTEM_NAME)
   }
 }

@@ -20,7 +20,9 @@ case class Peer(
   peerType: String) {
 
   def addReceiveTransaction(transaction: Transaction): Unit = {
-    blockchain.addBlock(List(transaction))
+    val block = blockchain.addBlock(List(transaction))
+    blockchain.receiveBlock(block, uTXOSet)
+    uTXOSet.reindex()
   }
 
   def addReceiveBlock(block: Block): Unit = {

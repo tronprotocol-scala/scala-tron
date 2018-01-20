@@ -26,12 +26,42 @@ object App {
       .action(withCommand(ServerCommand()))
       .text("Start the API server")
 
+    cmd("send")
+      .action(withCommand(SendCommand()))
+      .children {
+        opt[String]("to")
+          .action { (y, c) =>
+            val cmd = c.command.map {
+              case cluster: SendCommand =>
+                cluster.copy(to = y)
+              case x =>
+                x
+            }
+
+            c.copy(command = cmd)
+          }
+          .text("from address")
+        opt[Int]("amount")
+          .action { (y, c) =>
+            val cmd = c.command.map {
+              case cluster: SendCommand =>
+                cluster.copy(amount = y)
+              case x =>
+                x
+            }
+
+            c.copy(command = cmd)
+          }
+          .text("amount to send")
+      }
+      .text("Start the API server")
+
     cmd("version")
       .action(withCommand(VersionCommand()))
       .text("Shows the current version")
 
     cmd("balance")
-        .action(withCommand(GetBalanceCommand()))
+      .action(withCommand(GetBalanceCommand()))
       .text("show balance")
 
     cmd("cluster")
@@ -80,12 +110,10 @@ object App {
   }
 
   def handleCommandArgs(app: Application, args: Array[String]): Unit = {
-    try {
-      commandParser.parse(args, CommandConfig()).foreach { config =>
+    commandParser.parse(args, CommandConfig()) match {
+      case Some(config) =>
         handleCommand(app, config)
-      }
-    } catch {
-      case _: Throwable =>
+      case _ =>
         handleCommandArgs(app, readArgs())
     }
   }

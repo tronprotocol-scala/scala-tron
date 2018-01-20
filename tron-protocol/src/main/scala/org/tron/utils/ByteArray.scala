@@ -46,7 +46,9 @@ object ByteArray {
         Hex.decode(x.substring(2))
       case Some(x) if data.length % 2 == 1 =>
         Hex.decode("0" + x)
-      case _ =>
+      case Some(x) =>
+        Hex.decode(x)
+      case None =>
         EMPTY_BYTE_ARRAY
     }
   }

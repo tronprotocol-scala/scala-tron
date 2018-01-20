@@ -21,12 +21,9 @@ class PeerBuilder @Inject() (
     // Build the blockchain
     val blockchain = new BlockchainImpl(dbFactory.build(Constant.BLOCK_DB_NAME))
     if (blockchain.lastHash == null) {
-
-      val sender = KeyUtils.newKey
-
+      val sender = PublicKey(key)
       blockchain.addGenesisBlock(sender.hex)
     }
-
 
     val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
     utxoSet.reindex()

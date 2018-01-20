@@ -28,7 +28,7 @@ class PeerCluster(peer: Peer, system: ActorSystem) {
 
     val seedNodeAddress = Address("akka.tcp", Constant.SYSTEM_NAME, host, port.toInt)
 
-    system.scheduler.scheduleOnce(2.seconds) {
+    system.scheduler.scheduleOnce(1.seconds) {
       Cluster.get(system).joinSeedNodes(List(seedNodeAddress))
     }
 
@@ -42,7 +42,7 @@ class PeerCluster(peer: Peer, system: ActorSystem) {
 
     val selfAddress = Cluster.get(system).selfAddress
 
-    system.scheduler.scheduleOnce(2.seconds) {
+    system.scheduler.scheduleOnce(1.seconds) {
       Cluster.get(system).joinSeedNodes(List(selfAddress))
     }
   }
