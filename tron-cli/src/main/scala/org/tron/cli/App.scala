@@ -10,13 +10,9 @@ import scala.io.StdIn
 
 object App {
 
-  val appParser: OptionParser[AppConfig]
-    = new scopt.OptionParser[AppConfig]("tron") {
-    head("tron", "0.1")
-  }
-
   val commandParser: OptionParser[CommandConfig]
     = new scopt.OptionParser[CommandConfig]("tron") {
+    head("tron", "0.1")
 
     cmd("help")
       .action(withCommand(HelpCommand()))
