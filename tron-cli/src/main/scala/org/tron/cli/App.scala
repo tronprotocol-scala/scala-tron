@@ -11,34 +11,32 @@ object App {
 
   val appParser = new scopt.OptionParser[AppConfig]("tron") {
     head("tron", "0.1")
-
-    help("help").text("How to use")
-
-    opt[String]('t', "type")
-      .action((x, c) => c.copy(peerType = x))
-      .text("type can be server or client")
   }
 
   val commandParser = new scopt.OptionParser[CommandConfig]("tron") {
 
+    cmd("help")
+      .action(withCommand(HelpCommand()))
+      .text("Shows how to use the application")
+
     cmd("account")
-      .action((_, c) => c.copy(command = Some(AccountCommand())))
+      .action(withCommand(AccountCommand()))
       .text("Shows the current account")
 
     cmd("server")
-      .action((_, c) => c.copy(command = Some(ServerCommand())))
+      .action(withCommand(ServerCommand()))
       .text("Start the API server")
 
     cmd("version")
-      .action((_, c) => c.copy(command = Some(VersionCommand())))
+      .action(withCommand(VersionCommand()))
       .text("Shows the current version")
 
     cmd("balance")
-      .action((_, c) => c.copy(command = Some(GetBalanceCommand())))
+        .action(withCommand(GetBalanceCommand()))
       .text("show balance")
 
     cmd("cluster")
-      .action((_, c) => c.copy(command = Some(ClusterCommand())))
+      .action(withCommand(ClusterCommand()))
       .children {
         opt[String]("join")
           .action { (y, c) =>
@@ -55,10 +53,12 @@ object App {
       }
       .text("start cluster")
 
-    cmd("exit").action((_, c) => c.copy(command = Some(ExitCommand()))).
+    cmd("exit").action(withCommand(ExitCommand())).
       text("close tron")
   }
 
+  def withCommand(cmd: Command): (Unit, CommandConfig) => CommandConfig =
+    (_, c) => c.copy(command = Some(cmd))
 
   def main(args: Array[String]) = {
     appParser.parse(args, AppConfig(peerType = "client")).foreach { config =>
