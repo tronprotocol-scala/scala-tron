@@ -4,12 +4,13 @@ import com.google.inject.Guice
 import org.tron.application.{Application, Module, PeerApplication}
 import org.tron.cli.commands._
 import org.tron.peer.{Peer, PeerBuilder}
+import scopt.OptionParser
 
 import scala.io.StdIn
 
 object App {
 
-  val parser = new scopt.OptionParser[Config]("tron") {
+  val parser: OptionParser[Config] = new scopt.OptionParser[Config]("tron") {
     head("tron", "0.1")
 
     cmd("help").action(withCommand(HelpCommand()))
@@ -27,7 +28,7 @@ object App {
   def withCommand(cmd: Command): (Unit, Config) => Config =
     (_, c) => c.copy(command = Some(cmd))
 
-  def main(args: Array[String]) = {
+  def main(args: Array[String]): Unit = {
     while(true){
       val args = StdIn.readLine.trim.split("\\s+")
       if(args.nonEmpty) {
@@ -42,14 +43,14 @@ object App {
       val injector = Guice.createInjector(new Module())
 
       val app = new Application(injector) with PeerApplication {
-        val peer = injector.getInstance(classOf[PeerBuilder]).build(config.peerType)
+        val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build(config.peerType)
       }
 
       handleCommand(app, config)
     }
   }
 
-  def handleCommand(app: Application, config: Config) = {
+  def handleCommand(app: Application, config: Config): Unit = {
     config.command match {
       case Some(command) =>
         command.execute(app, Array())
