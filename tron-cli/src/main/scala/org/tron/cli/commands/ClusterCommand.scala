@@ -11,8 +11,7 @@ case class ClusterCommand(seedNode: Option[String] = None) extends Command {
 
     app match {
       case peer: PeerApplication =>
-        val actorSystem = ActorSystem(Constant.SYSTEM_NAME)
-        val peerCluster = new PeerCluster(peer.peer, actorSystem)
+        val peerCluster = new PeerCluster(peer.peer, app.injector.getInstance(classOf[ActorSystem]))
         peerCluster.start()
         seedNode match {
           case Some(seedNodeAddress) =>

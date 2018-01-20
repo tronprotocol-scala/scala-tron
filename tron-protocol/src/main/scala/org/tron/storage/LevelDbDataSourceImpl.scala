@@ -39,6 +39,8 @@ import scala.collection.mutable
 class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends DataSource[Array[Byte], Array[Byte]] {
 
   var database: DB = null
+
+  @volatile
   var alive = false
   val resetDbLock = new ReentrantReadWriteLock
 

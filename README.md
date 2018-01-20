@@ -78,6 +78,12 @@ Show account key
 
 Show account balance
 
+### `send --to <address> --amount <amount>`
+
+Sends the given amount to the given address
+
+The cluster has to be up and running before using this command
+
 ### `cluster`
  
 Start cluster as leader

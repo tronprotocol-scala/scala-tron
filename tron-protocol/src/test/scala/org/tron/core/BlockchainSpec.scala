@@ -16,6 +16,8 @@ class BlockchainSpec extends Specification {
 
     "start blockchain with new genesis block" in {
 
+      println("CREATE 1")
+
       val blockchain = module.buildBlockchain()
       val key = KeyUtils.newKey
 
@@ -26,7 +28,9 @@ class BlockchainSpec extends Specification {
 
       utxoSet.getBalance(key) must equalTo(10L)
 
+      println("close 1")
       blockchain.blockDB.close()
+      println("close 2")
       utxoSet.txDB.close()
 
       ok
@@ -34,6 +38,7 @@ class BlockchainSpec extends Specification {
 
     "make a transaction between wallets" in {
 
+      println("CREATE 2")
       val blockchain = module.buildBlockchain().asInstanceOf[BlockchainImpl]
       val sender = KeyUtils.newKey
       val senderWallet = Wallet(sender.ecKey)
@@ -49,7 +54,7 @@ class BlockchainSpec extends Specification {
       utxoSet.getBalance(sender) must equalTo(10L)
 
       // Make transaction
-      val transaction = TransactionUtils.newTransaction(senderWallet, receiverWallet.address, 10, utxoSet)
+      val transaction = TransactionUtils.newTransaction(senderWallet, receiverWallet.address.hex, 10, utxoSet)
 
       val newBlock = blockchain.addBlock(List(transaction))
       blockchain.receiveBlock(newBlock, utxoSet)

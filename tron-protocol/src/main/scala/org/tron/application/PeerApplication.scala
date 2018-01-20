@@ -7,5 +7,4 @@ trait PeerApplication {
   this: Application =>
 
   val peer: Peer
-
 }

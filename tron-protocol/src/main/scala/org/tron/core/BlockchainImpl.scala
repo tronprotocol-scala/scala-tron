@@ -151,7 +151,7 @@ class BlockchainImpl(
     // TODO send to kafka
   }
 
-  def addGenesisBlock(account: String): Unit = {
+  def   addGenesisBlock(account: String): Unit = {
     val transactions = TransactionUtils.newCoinbaseTransaction(account, Constant.GENESIS_COINBASE_DATA)
 
     val genesisBlock = BlockUtils.newGenesisBlock(transactions)
