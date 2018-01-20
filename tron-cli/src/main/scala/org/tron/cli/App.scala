@@ -71,7 +71,6 @@ object App {
 
       readCommand(app)
     }
-
   }
 
   def readCommand(app: Application) = {
