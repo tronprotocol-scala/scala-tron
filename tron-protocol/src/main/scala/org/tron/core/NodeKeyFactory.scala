@@ -8,41 +8,70 @@ import com.typesafe.config.Config
 import org.spongycastle.util.encoders.Hex
 import org.tron.crypto.ECKey
 import org.tron.utils.ByteArray
+import scala.collection.JavaConverters._
 
 class NodeKeyFactory @Inject() (config: Config) {
+  val dbDir = config.getString("database.directory")
+  val file = new File(dbDir, "nodeId.properties")
 
-  def build(): ECKey = {
-    val dbDir = config.getString("database.directory")
-
-    val file = new File(dbDir, "nodeId.properties")
-    val props = new Properties
+  def load(): Option[Map[String, String]] = {
     if (file.exists()) {
+      val props = new Properties
+
       val r = new FileReader(file)
       try {
         props.load(r)
+        val fields = props.propertyNames().asScala.map {
+          case name: String =>
+            (name, props.getProperty(name))
+        }
+        Some(fields.toMap)
       } finally {
         if (r != null) r.close()
       }
     } else {
-      file.getParentFile.mkdirs()
-
-      val key = new ECKey()
-      val privKeyBytes = key.getPrivKeyBytes
-
-      val nodeIdPrivateKey = ByteArray.toHexString(privKeyBytes)
-
-      props.setProperty("nodeIdPrivateKey", nodeIdPrivateKey)
-      props.setProperty("nodeId", Hex.toHexString(key.getNodeId))
-
-      val w = new FileWriter(file)
-      try {
-        props.store(w, "Generated NodeID.")
-      }
-      finally if (w != null) {
-        w.close()
-      }
+      None
     }
-    val privateKey = props.getProperty("nodeIdPrivateKey")
+  }
+
+  def save(values: Map[String, String]) = {
+    val props = new Properties
+    file.getParentFile.mkdirs()
+
+    values.foreach {
+      case (key, value) =>
+        props.setProperty(key, value)
+    }
+
+    val w = new FileWriter(file)
+    try {
+      props.store(w, "Generated NodeID.")
+    }
+    finally if (w != null) {
+      w.close()
+    }
+  }
+
+  def build(): ECKey = {
+
+    val data = load() match {
+      case Some(props) =>
+        props
+      case None =>
+        val key = new ECKey()
+        val privKeyBytes = key.getPrivKeyBytes
+
+        val nodeIdPrivateKey = ByteArray.toHexString(privKeyBytes)
+
+        val values = Map(
+          "nodeIdPrivateKey" -> nodeIdPrivateKey,
+          "nodeId" -> Hex.toHexString(key.getNodeId))
+
+        save(values)
+        values
+    }
+
+    val privateKey = data("nodeIdPrivateKey")
     ECKey.fromPrivate(Hex.decode(privateKey))
   }
 }

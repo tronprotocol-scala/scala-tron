@@ -94,14 +94,6 @@ object BlockUtils {
   def isValidate(block: Block): Boolean = ???
 
   /**
-    * getData print string of the block
-    *
-    * @param block { @link Block} block
-    * @return String format string of the block
-    */
-  def toPrintString(block: Block): String = ???
-
-  /**
     * getData mine value
     *
     * @param block { @link Block} block
