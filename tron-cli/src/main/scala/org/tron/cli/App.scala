@@ -12,9 +12,6 @@ object App {
   val parser = new scopt.OptionParser[Config]("tron") {
     head("tron", "0.1")
 
-    opt[String]('t', "type").action( (x, c) =>
-      c.copy(peerType = x) ).text("type can be server or client")
-
     cmd("help").action( (_, c) => doCopy(c, HelpCommand()))
 
     cmd("account").action( (_, c) => doCopy(c, AccountCommand())).
@@ -32,8 +29,6 @@ object App {
   }
 
   def main(args: Array[String]) = {
-    handleArgs(args)
-
     while(true){
       val args = StdIn.readLine.trim.split("\\s+")
       if(args.nonEmpty) {
