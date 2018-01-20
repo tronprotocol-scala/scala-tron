@@ -3,17 +3,20 @@ package org.tron.cli
 import com.google.inject.Guice
 import org.tron.application.{Application, Module, PeerApplication}
 import org.tron.cli.commands._
-import org.tron.peer.PeerBuilder
+import org.tron.peer.{Peer, PeerBuilder}
+import scopt.OptionParser
 
 import scala.io.StdIn
 
 object App {
 
-  val appParser = new scopt.OptionParser[AppConfig]("tron") {
+  val appParser: OptionParser[AppConfig]
+    = new scopt.OptionParser[AppConfig]("tron") {
     head("tron", "0.1")
   }
 
-  val commandParser = new scopt.OptionParser[CommandConfig]("tron") {
+  val commandParser: OptionParser[CommandConfig]
+    = new scopt.OptionParser[CommandConfig]("tron") {
 
     cmd("help")
       .action(withCommand(HelpCommand()))
@@ -49,7 +52,7 @@ object App {
 
             c.copy(command = cmd)
           }
-          .text("disable keepalive")
+          .text("disable keep alive")
       }
       .text("start cluster")
 
@@ -60,21 +63,24 @@ object App {
   def withCommand(cmd: Command): (Unit, CommandConfig) => CommandConfig =
     (_, c) => c.copy(command = Some(cmd))
 
-  def main(args: Array[String]) = {
-    appParser.parse(args, AppConfig(peerType = "client")).foreach { config =>
+  def main(args: Array[String]): Unit = {
 
-      val injector = Guice.createInjector(new Module())
+    val injector = Guice.createInjector(new Module())
 
-      val app = new Application(injector) with PeerApplication {
-        val peer = injector.getInstance(classOf[PeerBuilder]).build(config.peerType)
+    val app = new Application(injector) with PeerApplication {
+      val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build("client")
+    }
+
+    while(true){
+      val args = readArgs()
+      if(args.nonEmpty) {
+        handleCommandArgs(app, args)
       }
-
-      readCommand(app)
     }
   }
 
-  def readCommand(app: Application) = {
-    handleCommandArgs(app, StdIn.readLine.trim.split("\\s+"))
+  def readArgs(): Array[String] = {
+    StdIn.readLine.trim.split("\\s+")
   }
 
   def handleCommandArgs(app: Application, args: Array[String]): Unit = {
@@ -84,19 +90,15 @@ object App {
       }
     } catch {
       case _: Throwable =>
-        readCommand(app)
+        handleCommandArgs(app, readArgs())
     }
-
   }
 
-  def handleCommand(app: Application, config: CommandConfig) = {
+  def handleCommand(app: Application, config: CommandConfig): Unit = {
     config.command match {
       case Some(command) =>
         command.execute(app, Array())
       case _ =>
     }
-
-    readCommand(app)
   }
-
 }
