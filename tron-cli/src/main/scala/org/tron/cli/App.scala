@@ -28,7 +28,7 @@ object App {
     cmd("wallet")
       .action(withCommand(WalletCommand()))
       .children {
-        opt[String]("key")
+        opt[String]("open")
           .action { (y, c) =>
             val cmd = c.command.map {
               case wallet: WalletCommand =>

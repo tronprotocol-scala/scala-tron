@@ -21,7 +21,7 @@ case class GetBalanceCommand() extends Command {
 
         println(balance) // scalastyle:ignore
       case _ =>
-        println("Before checking balance you need to open a wallet using 'wallet --key <private key>'")
+        println("Before checking balance you need to open a wallet using 'wallet --open <private key>'")
     }
   }
 }

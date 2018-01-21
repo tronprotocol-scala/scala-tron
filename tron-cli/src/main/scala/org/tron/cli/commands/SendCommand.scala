@@ -17,7 +17,7 @@ case class SendCommand(to: String = "", amount: Int = 0) extends Command {
             val transactionFacade = new TransactionFacade(peerApp.peer, app.injector.getInstance(classOf[ClusterTransactionStrategy]))
             transactionFacade.newTransaction(fromAddress, to, amount)
           case None =>
-            println("Before transferring funds you need to open a wallet using 'wallet --key <private key>'")
+            println("Before transferring funds you need to open a wallet using 'wallet --open <private key>'")
         }
     }
   }
