@@ -10,8 +10,7 @@ import scala.io.StdIn
 
 object App {
 
-  val commandParser: OptionParser[CommandConfig]
-    = new scopt.OptionParser[CommandConfig]("tron") {
+  val commandParser = new scopt.OptionParser[CommandConfig]("tron") {
     head("tron", "0.1")
 
     cmd("help")
@@ -101,7 +100,7 @@ object App {
 
             c.copy(command = cmd)
           }
-          .text("disable keep alive")
+          .text("join cluster as client")
       }
       .text("start cluster")
 
