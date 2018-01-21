@@ -74,6 +74,17 @@ To launch the project on a command line, First run:
 
 After that the following commands are available:
 
+### `wallet --key <private key>`
+
+Opens a wallet
+
+**Example**
+
+```bash
+> wallet --key BW4kf1Pyoi3XkKGF9FTMPFk8QBTezcb6QzD6EeYSXP73
+Opened wallet 25ace46c656fb98027caee704a7790c7ec0b32fe
+```
+
 ### `account`
 
 Show account key

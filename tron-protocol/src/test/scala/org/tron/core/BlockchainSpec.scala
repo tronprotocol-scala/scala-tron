@@ -16,21 +16,17 @@ class BlockchainSpec extends Specification {
 
     "start blockchain with new genesis block" in {
 
-      println("CREATE 1")
-
       val blockchain = module.buildBlockchain()
-      val key = KeyUtils.newKey
+      val key = KeyUtils.generateKey
 
-      blockchain.addGenesisBlock(key.hex)
+      blockchain.addGenesisBlock(key.addressHex)
 
       val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
       utxoSet.reindex()
 
       utxoSet.getBalance(key) must equalTo(10L)
 
-      println("close 1")
       blockchain.blockDB.close()
-      println("close 2")
       utxoSet.txDB.close()
 
       ok
@@ -38,14 +34,13 @@ class BlockchainSpec extends Specification {
 
     "make a transaction between wallets" in {
 
-      println("CREATE 2")
       val blockchain = module.buildBlockchain().asInstanceOf[BlockchainImpl]
-      val sender = KeyUtils.newKey
+      val sender = KeyUtils.generateKey
       val senderWallet = Wallet(sender.ecKey)
-      val receiver = KeyUtils.newKey
+      val receiver = KeyUtils.generateKey
       val receiverWallet = Wallet(receiver.ecKey)
 
-      blockchain.addGenesisBlock(sender.hex)
+      blockchain.addGenesisBlock(sender.addressHex)
 
       val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
       utxoSet.reindex()
@@ -54,7 +49,7 @@ class BlockchainSpec extends Specification {
       utxoSet.getBalance(sender) must equalTo(10L)
 
       // Make transaction
-      val transaction = TransactionUtils.newTransaction(senderWallet, receiverWallet.address.hex, 10, utxoSet)
+      val transaction = TransactionUtils.newTransaction(senderWallet, receiverWallet.address.addressHex, 10, utxoSet)
 
       val newBlock = blockchain.addBlock(List(transaction))
       blockchain.receiveBlock(newBlock, utxoSet)

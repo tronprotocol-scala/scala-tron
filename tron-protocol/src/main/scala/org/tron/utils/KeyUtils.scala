@@ -1,12 +1,15 @@
 package org.tron.utils
 
-import org.tron.core.PublicKey
+import org.tron.core.Key
 import org.tron.crypto.ECKey
 
 object KeyUtils {
 
-  def newKey = {
-    PublicKey(new ECKey())
+  def generateKey = Key(new ECKey())
+
+  def fromPrivateKey(key: String) = {
+    val wallet = org.tron.crypto.ECKey.fromPrivate(org.tron.core.Base58.decodeToBigInteger(key), true)
+    Key(wallet)
   }
 
 }
