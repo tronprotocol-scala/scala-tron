@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import org.tron.core._
 import org.tron.storage.DbFactory
-import org.tron.utils.{ByteArray, KeyUtils}
+import org.tron.utils.{ByteArrayUtils, KeyUtils}
 import org.tron.wallet.Wallet
 
 

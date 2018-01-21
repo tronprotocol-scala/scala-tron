@@ -9,7 +9,7 @@ import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction
 import org.tron.protos.core.TronTransaction.Transaction
-import org.tron.utils.ByteArray
+import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 import scala.collection.mutable
 
@@ -26,8 +26,8 @@ class BlockchainImpl(
     bi
       .flatMap { block => block.transactions }
       .find { tx =>
-        val txID = ByteArray.toHexString(tx.id.toByteArray)
-        val idStr = ByteArray.toHexString(id)
+        val txID = ByteArrayUtils.toHexString(tx.id.toByteArray)
+        val idStr = ByteArrayUtils.toHexString(id)
         txID == idStr
       }
   }
@@ -45,7 +45,7 @@ class BlockchainImpl(
       block <- bi
       transaction <- block.transactions
     } {
-      val txid = ByteArray.toHexString(transaction.id.toByteArray)
+      val txid = ByteArrayUtils.toHexString(transaction.id.toByteArray)
 
       for {
         outIdx <- transaction.vout.indices
@@ -58,7 +58,7 @@ class BlockchainImpl(
 
       if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
         for (in <- transaction.vin) {
-          val inTxid = ByteArray.toHexString(in.txID.toByteArray)
+          val inTxid = ByteArrayUtils.toHexString(in.txID.toByteArray)
           val vindexs = spenttxos.getOrElse(inTxid, Array[Long]())
           spenttxos.put(inTxid, vindexs :+ in.vout)
         }
@@ -74,7 +74,7 @@ class BlockchainImpl(
 
         blockDB.put(block.getBlockHeader.hash.toByteArray, block.toByteArray)
 
-        val lashHash = ByteArray.fromString("lashHash")
+        val lashHash = ByteArrayUtils.fromString("lashHash")
 
         val lastHash = blockDB.get(lashHash).get
         val lastBlockData = blockDB.get(lastHash).get
@@ -109,7 +109,7 @@ class BlockchainImpl(
     val prevTXs = transaction.vin.map { txInput =>
       val txID: ByteString = txInput.txID
       val prevTX = findTransaction(txID.toByteArray).get
-      val key = ByteArray.toHexString(txID.toByteArray)
+      val key = ByteArrayUtils.toHexString(txID.toByteArray)
       (key, prevTX)
     }.toMap
 
@@ -121,7 +121,7 @@ class BlockchainImpl(
     */
   def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit = {
     val lastHash = blockDB.get(LAST_HASH).get
-    if (block.getBlockHeader.parentHash.hex != ByteArray.toHexString(lastHash))
+    if (block.getBlockHeader.parentHash.hex != ByteArrayUtils.toHexString(lastHash))
       return
 
     // save the block into the database

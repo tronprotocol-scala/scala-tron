@@ -7,7 +7,7 @@ import javax.inject.Inject
 import com.typesafe.config.Config
 import org.spongycastle.util.encoders.Hex
 import org.tron.crypto.ECKey
-import org.tron.utils.ByteArray
+import org.tron.utils.ByteArrayUtils
 import scala.collection.JavaConverters._
 
 class NodeKeyFactory @Inject() (config: Config) {
@@ -61,7 +61,7 @@ class NodeKeyFactory @Inject() (config: Config) {
         val key = new ECKey()
         val privKeyBytes = key.getPrivKeyBytes
 
-        val nodeIdPrivateKey = ByteArray.toHexString(privKeyBytes)
+        val nodeIdPrivateKey = ByteArrayUtils.toHexString(privKeyBytes)
 
         val values = Map(
           "nodeIdPrivateKey" -> nodeIdPrivateKey,

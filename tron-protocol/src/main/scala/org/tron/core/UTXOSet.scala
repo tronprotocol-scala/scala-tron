@@ -3,7 +3,7 @@ package org.tron.core
 import org.tron.protos.core.TronTXOutput.TXOutput
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.storage.LevelDbDataSourceImpl
-import org.tron.utils.ByteArray
+import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 
 class UTXOSet(
@@ -14,7 +14,7 @@ class UTXOSet(
     txDB.resetDB()
 
     blockchain.findUTXO().foreach { case (key, value) =>
-      txDB.put(ByteArray.fromHexString(key), value.toByteArray)
+      txDB.put(ByteArrayUtils.fromHexString(key), value.toByteArray)
     }
   }
 
@@ -33,10 +33,10 @@ class UTXOSet(
       val len = txOutputs.outputs.size
       for (i <- 0 until len) {
         val txOutput = txOutputs.outputs(i)
-        if (pubKey.hex == ByteArray.toHexString(txOutput.pubKeyHash.toByteArray) && accumulated < amount) {
+        if (pubKey.hex == ByteArrayUtils.toHexString(txOutput.pubKeyHash.toByteArray) && accumulated < amount) {
           accumulated += txOutput.value
-          val v = unspentOutputs.getOrElse(ByteArray.toHexString(key), Array[Long]())
-          unspentOutputs.put(ByteArray.toHexString(key), v :+ i.toLong)
+          val v = unspentOutputs.getOrElse(ByteArrayUtils.toHexString(key), Array[Long]())
+          unspentOutputs.put(ByteArrayUtils.toHexString(key), v :+ i.toLong)
         }
       }
     }
