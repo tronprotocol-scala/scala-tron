@@ -33,7 +33,7 @@ class Controller(
 
     Ok(Json.obj(
       "address" -> key.addressHex,
-      "private_key" -> key.privateKeyCompressed,
+      "private_key" -> key.privateKeyCompressed
     ))
   }
 
