@@ -85,6 +85,19 @@ Opens a wallet
 Opened wallet 25ace46c656fb98027caee704a7790c7ec0b32fe
 ```
 
+### `wallet --create`
+
+Generates a new wallet/address
+
+**Example**
+
+```bash
+> wallet --create
+Wallet Generated!
+Address: c93a9fe9a04524d7cb1f1413ac5e75f77b179e27
+Private Key 67dsochCai4PdoLnzevHwXQWLeHiMKcEfoHEzLCDBu2X
+```
+
 ### `account`
 
 Show account key
@@ -136,7 +149,7 @@ Start the server using `sbt "project api" run`
 The API will then be available on http://localhost:9000
 
 
-### `/wallet/<address>`
+### `GET /wallet/<address>`
 
 Shows the balance of the wallet for the given public key
 
@@ -146,6 +159,19 @@ __Response__
 {
   "address": "a9c030dfbfb83f6c9454b5e1da5cecdb8737d4af",
   "balance": 10
+}
+```
+
+### `POST /wallet`
+
+Generates a new wallet/address
+
+__Response__
+
+```json
+{
+  "address": "fa7c845598653c11f01edda16d923b5ba7942e1e",
+  "private_key": "GWCuQQCz7v9vXkn3BJMTmA86kj58UCdHmSw1tBu4DLe1"
 }
 ```
 
