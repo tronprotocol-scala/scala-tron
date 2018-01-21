@@ -13,7 +13,7 @@ case class SendCommand(to: String = "", amount: Int = 0) extends Command {
       case globals: CliGlobals =>
         globals.activeWallet match {
           case Some(wallet) =>
-            val fromAddress = wallet.addressHex
+            val fromAddress = wallet.privateKeyCompressed
             val transactionFacade = new TransactionFacade(peerApp.peer, app.injector.getInstance(classOf[ClusterTransactionStrategy]))
             transactionFacade.newTransaction(fromAddress, to, amount)
           case None =>
