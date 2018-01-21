@@ -73,6 +73,10 @@ To launch the project on a command line, First run:
 
 After that the following commands are available:
 
+### `wallet --key <private key>`
+
+Opens a wallet
+
 ### `account`
 
 Show account key
