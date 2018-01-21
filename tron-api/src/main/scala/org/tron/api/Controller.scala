@@ -2,7 +2,7 @@ package org.tron.api
 
 import org.tron.core.{Blockchain, PublicKey, UTXOSet}
 import org.tron.crypto.ECKey
-import org.tron.utils.ByteArray
+import org.tron.utils.ByteArrayUtils
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -19,11 +19,11 @@ class Controller(
 
   def walletBalance(key: String) = Action {
 
-    val ecKEy = ECKey.fromPublicOnly(ByteArray.fromHexString(key))
+    val ecKEy = ECKey.fromPublicOnly(ByteArrayUtils.fromHexString(key))
     val balance = uTXOSet.getBalance(PublicKey(ecKEy))
 
     Ok(Json.obj(
-      "address" -> ByteArray.toHexString(ecKEy.getAddress),
+      "address" -> ByteArrayUtils.toHexString(ecKEy.getAddress),
       "balance" -> balance
     ))
   }

@@ -16,7 +16,7 @@ package org.tron.core;
 
 import com.google.protobuf.ByteString;
 import org.tron.protos.core.TronTXInput.TXInput;
-import org.tron.utils.ByteArray;
+import org.tron.utils.ByteArrayUtils;
 
 public class TXInputUtils {
 
@@ -53,11 +53,11 @@ public class TXInputUtils {
         }
 
         return "\nTXInput {\n" +
-                "\ttxID=" + ByteArray.toHexString(txi.txID().toByteArray()) +
+                "\ttxID=" + ByteArrayUtils.toHexString(txi.txID().toByteArray()) +
                 ",\n\tvout=" + txi.vout() +
-                ",\n\tsignature=" + ByteArray.toHexString(txi.signature()
+                ",\n\tsignature=" + ByteArrayUtils.toHexString(txi.signature()
                 .toByteArray()) +
-                ",\n\tpubKey=" + ByteArray.toString(txi.pubKey().toByteArray
+                ",\n\tpubKey=" + ByteArrayUtils.toString(txi.pubKey().toByteArray
                 ()) +
                 "\n}\n";
     }

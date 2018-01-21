@@ -27,10 +27,10 @@
  */
 package org.tron.core
 
-import org.tron.utils.ByteArray
+import org.tron.utils.ByteArrayUtils
 
 object Constant { // whole
-  val LAST_HASH = ByteArray.fromString("lastHash")
+  val LAST_HASH = ByteArrayUtils.fromString("lastHash")
   val DIFFICULTY = "2001"
 
   // DB
