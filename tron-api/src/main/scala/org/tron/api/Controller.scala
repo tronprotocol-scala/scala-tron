@@ -1,6 +1,7 @@
 package org.tron.api
 
-import org.tron.core.{Blockchain, PublicKey, UTXOSet}
+import org.tron.api.JsonFormat._
+import org.tron.core.{Blockchain, BlockchainIterator, PublicKey, UTXOSet}
 import org.tron.crypto.ECKey
 import org.tron.utils.ByteArray
 import play.api.libs.json.Json
@@ -15,6 +16,7 @@ class Controller(
 
   val router: Router = Router.from {
     case GET(p"/wallet/$key") => walletBalance(key)
+    case GET(p"/block") => blocks
   }
 
   def walletBalance(key: String) = Action {
@@ -25,6 +27,20 @@ class Controller(
     Ok(Json.obj(
       "address" -> ByteArray.toHexString(ecKEy.getAddress),
       "balance" -> balance
+    ))
+  }
+
+
+  def blocks = Action { request =>
+
+    val limit = request.getQueryString("limit").map(_.toInt).getOrElse(50)
+
+    val iterator = new BlockchainIterator(blockchain)
+
+    val blockList = iterator.toList.take(limit)
+
+    Ok(Json.obj(
+      "blocks" -> blockList
     ))
   }
 

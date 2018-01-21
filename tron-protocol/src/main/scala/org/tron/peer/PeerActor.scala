@@ -16,7 +16,7 @@ class PeerActor(peer: Peer) extends Actor with ActorPubSub {
   }
 
   def startInitialBlockDownload() = {
-
+    val lastBlock = peer.blockchain.bestBlock
   }
 
   def receive = {

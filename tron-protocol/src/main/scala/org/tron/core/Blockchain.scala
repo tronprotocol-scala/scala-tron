@@ -24,6 +24,8 @@ trait Blockchain {
 
   def blockDB: BlockChainDb
 
+  def bestBlock: Block
+
   def addGenesisBlock(account: String): Unit
 
 }
