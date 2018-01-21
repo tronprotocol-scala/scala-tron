@@ -48,7 +48,7 @@ TRON is a product of Web 4.0 and the decentralized internet of next generation.
 
 # Quick Start
 
-This project requires SBT to build. 
+This project requires SBT to build.
 Follow the instructions [installing SBT](http://www.scala-sbt.org/1.0/docs/Setup.html) to install SBT
 
 ```
@@ -60,7 +60,9 @@ sbt "project cli" run
 
 # How To Use
 
-The application has a web and cli interface
+The application can be interfaced in 2 ways:
+* Web Interface (API based)
+* Command Line Interface (CLI)
 
 ## Command Line
 
@@ -85,7 +87,7 @@ Sends the given amount to the given address
 The cluster has to be up and running before using this command
 
 ### `cluster`
- 
+
 Start cluster as leader
 
 ### `cluster --join <address>`
@@ -104,7 +106,7 @@ Cluster is based on Akka. To start a cluster follow the following steps:
 [INFO] [01/18/2018 22:59:28.553] [main] [akka.remote.Remoting] Remoting started; listening on addresses :[akka.tcp://TronCluster@127.0.0.1:41795]
 ```
 * Copy the address (`127.0.0.1:41795`)
-* Start a second instance which will join the cluster. 
+* Start a second instance which will join the cluster.
   The second client has to have a different database directory to prevent conflicts.
 * Run `sbt -J-Ddatabase.directory=tron-data-client1 "project cli" run`.  
   `-J-Ddatabase.directory=tron-data-client1` specifies the database directory
@@ -140,4 +142,3 @@ __Response__
 
 * [Gitter](https://gitter.im/Rovak/scala-tron)
 * [Telegram](https://t.me/joinchat/CP8XKBIjEc0RqzJdl61OlQ)
-
