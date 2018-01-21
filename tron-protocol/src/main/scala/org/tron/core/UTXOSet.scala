@@ -1,14 +1,14 @@
 package org.tron.core
 
+import org.tron.BlockChainDb
 import org.tron.protos.core.TronTXOutput.TXOutput
 import org.tron.protos.core.TronTXOutputs.TXOutputs
-import org.tron.storage.LevelDbDataSourceImpl
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 
 class UTXOSet(
-  val txDB: LevelDbDataSourceImpl,
-  val blockchain: Blockchain) {
+   val txDB: BlockChainDb,
+   val blockchain: Blockchain) {
 
   def reindex(): Unit = {
     txDB.resetDB()
