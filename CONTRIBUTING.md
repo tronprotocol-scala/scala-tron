@@ -14,14 +14,14 @@ When contributing to this repository, please first discuss the change you wish t
 email, or on [Gitter](https://gitter.im/tronprotocol/java-tron) with the owners of this repository before making a change. 
 
 Please note we have a code of conduct and you are requested to please follow it in all your interactions with the project.
-
+<br />
 ## Pull Request Process
 
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
    build.
 2. Scala-tron follows [gitflow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow). Please open pull  requests to the develop branch. Once approved, we will close the pull request and merge into master branch.
 4. If your pull request is not accepted on the first try, don't be discouraged as it can be a possible oversight. Please explain your code as detailed as possible to make it easier for us to understand.
-<br />
+
 
 ### Create issues
 
@@ -40,7 +40,7 @@ When filing an issue, make sure to answer these three questions:
 Please take a moment to check that your bug report or improvement proposal
 doesn't already exist. If it does, please add a quick "+1" or "I have this problem too".
 This will help prioritize the most common problems and requests.
-
+<br />
 ## Code of Conduct
 
 ### Our Pledge
