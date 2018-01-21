@@ -32,6 +32,7 @@ val defaultSettings = Seq(
   "org.apache.commons" % "commons-lang3" % "3.4",
   "org.apache.commons" % "commons-collections4" % "4.0",
   "com.beust" % "jcommander" % "1.72",
+  "com.github.etaty" %% "rediscala" % "1.8.0",
 
   "org.apache.kafka" %% "kafka" % "0.11.0.2",
 
