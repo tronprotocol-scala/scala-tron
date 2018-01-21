@@ -35,12 +35,17 @@ object App {
               case wallet: WalletCommand =>
                 wallet.copy(key = Some(y))
               case x =>
-                x
+                throw new Exception("Wrong command")
             }
 
             c.copy(command = cmd)
           }
           .text("private key")
+        opt[Unit]("create")
+          .action { (_, c) =>
+            c.copy(command = Some(CreateWalletCommand()))
+          }
+          .text("create wallet")
       }
       .text("Wallet")
 
