@@ -36,6 +36,7 @@
   <a href="#how-to-use">How To Use</a> •
   <a href="#cluster">Cluster</a> •
   <a href="#wiki">Wiki</a> •
+  <a href="CONTRIBUTING.md">Contributing</a> •
   <a href="#contact">Contact</a>
 </p>
 
