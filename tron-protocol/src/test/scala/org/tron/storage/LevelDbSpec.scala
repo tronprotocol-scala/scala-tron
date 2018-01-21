@@ -40,5 +40,4 @@ class LevelDbSpec extends Specification with DatabaseContext {
       ok
     }
   }
-
 }

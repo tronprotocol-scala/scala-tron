@@ -7,7 +7,7 @@ import org.tron.application.Module
 trait DatabaseContext extends ForEach[LevelDbDataSourceImpl] {
 
   val module = new Module()
-  val dbFactory = module.buildDbFactory()
+  val dbFactory: DbFactory = module.buildDbFactory()
 
   def foreach[R: AsResult](f: LevelDbDataSourceImpl => R): Result = {
     val db = openDb
@@ -16,7 +16,7 @@ trait DatabaseContext extends ForEach[LevelDbDataSourceImpl] {
   }
 
   // create and close a transaction
-  def openDb: LevelDbDataSourceImpl = dbFactory.build("test")
+  def openDb: LevelDbDataSourceImpl = dbFactory.build("test").asInstanceOf[LevelDbDataSourceImpl]
 
-  def closeDb(t: LevelDbDataSourceImpl) = t.close()
+  def closeDb(t: LevelDbDataSourceImpl): Unit = t.close()
 }
