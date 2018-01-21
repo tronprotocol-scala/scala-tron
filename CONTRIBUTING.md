@@ -4,7 +4,7 @@
 </h1>
 
 # Contributing
-java-tron is an open source project.
+scala-tron is an open source project.
 
 It is the work of contributors. We appreciate your help!
 
@@ -26,7 +26,7 @@ Please note we have a code of conduct and you are requested to please follow it 
 ### Create issues
 
 Any significant improvement should be documented as a [GitHub
-issue](https://github.com/tronprotocol/java-tron/issues) before anyone
+issue](https://github.com/Rovak/scala-tron/issues) before anyone
 starts working on it.
 
 When filing an issue, make sure to answer these three questions:
