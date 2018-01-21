@@ -32,8 +32,8 @@ object App {
         opt[String]("key")
           .action { (y, c) =>
             val cmd = c.command.map {
-              case cluster: WalletCommand =>
-                cluster.copy(key = Some(y))
+              case wallet: WalletCommand =>
+                wallet.copy(key = Some(y))
               case x =>
                 x
             }
@@ -50,8 +50,8 @@ object App {
         opt[String]("to")
           .action { (y, c) =>
             val cmd = c.command.map {
-              case cluster: SendCommand =>
-                cluster.copy(to = y)
+              case send: SendCommand =>
+                send.copy(to = y)
               case x =>
                 x
             }
