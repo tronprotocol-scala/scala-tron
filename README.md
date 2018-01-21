@@ -59,7 +59,6 @@ cd scala-tron
 sbt "project cli" run
 ```
 
-
 # How To Use
 
 The application can be interfaced in 2 ways:
@@ -106,6 +105,10 @@ Start cluster as leader
 ### `cluster --join <address>`
 
 Join cluster as client
+
+### `server`
+
+Starts the Web API server. After starting the API it can be reached at http://localhost:9000
 
 ## Cluster
 
