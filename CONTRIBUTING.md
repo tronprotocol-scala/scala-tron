@@ -11,7 +11,7 @@ It is the work of contributors. We appreciate your help!
 Here are instructions to get you started. They are not perfect, so please let us know if anything feels wrong or incomplete.
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
-email, [Gitter](https://gitter.im/Rovak/scala-tron) or join our [Telegram Group](https://gitter.im/Rovak/scala-tron) with the owners of this repository before making a change. 
+email, join our [Gitter](https://gitter.im/Rovak/scala-tron) or [Telegram Group](https://t.me/joinchat/CP8XKBIjEc0RqzJdl61OlQ) with the owners of this repository before making a change. 
 
 Please note we have a code of conduct and you are requested to please follow it in all your interactions with the project.
 <br />
