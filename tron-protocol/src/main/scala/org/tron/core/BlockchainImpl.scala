@@ -140,8 +140,8 @@ class BlockchainImpl(
     blockDB.put(LAST_HASH, ch)
 
     this.lastHash = ch
-    currentHash = ch
-    // update UTXO cache
+    this.currentHash = ch
+
     uTXOSet.reindex()
   }
 

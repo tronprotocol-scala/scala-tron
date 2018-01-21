@@ -37,6 +37,7 @@ import org.spongycastle.jce.spec.ECPublicKeySpec;
 import org.spongycastle.math.ec.ECAlgorithms;
 import org.spongycastle.math.ec.ECCurve;
 import org.spongycastle.math.ec.ECPoint;
+import org.spongycastle.math.ec.FixedPointCombMultiplier;
 import org.spongycastle.util.BigIntegers;
 import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.encoders.Hex;
@@ -282,6 +283,40 @@ public class ECKey implements Serializable {
      */
     public static ECKey fromPrivate(byte[] privKeyBytes) {
         return fromPrivate(new BigInteger(1, privKeyBytes));
+    }
+
+
+    /**
+     * Returns public key point from the given private key. To convert a byte array into a BigInteger, use <tt>
+     * new BigInteger(1, bytes);</tt>
+     */
+    public static ECPoint publicPointFromPrivate(BigInteger privKey) {
+        /*
+         * TODO: FixedPointCombMultiplier currently doesn't support scalars longer than the group order,
+         * but that could change in future versions.
+         */
+        if (privKey.bitLength() > CURVE.getN().bitLength()) {
+            privKey = privKey.mod(CURVE.getN());
+        }
+        return new FixedPointCombMultiplier().multiply(CURVE.getG(), privKey);
+    }
+
+    public static ECKey fromPrivate(BigInteger privKey, boolean compressed) {
+        ECPoint point = publicPointFromPrivate(privKey);
+        return new ECKey(privKey, getPointWithCompression(point, compressed));
+    }
+
+    public static ECKey fromPrivate(byte[] privKeyBytes, boolean compressed) {
+        return fromPrivate(new BigInteger(1, privKeyBytes), compressed);
+    }
+
+    private static ECPoint getPointWithCompression(ECPoint point, boolean compressed) {
+        if (point.isCompressed() == compressed)
+            return point;
+        point = point.normalize();
+        BigInteger x = point.getAffineXCoord().toBigInteger();
+        BigInteger y = point.getAffineYCoord().toBigInteger();
+        return CURVE.getCurve().createPoint(x, y, compressed);
     }
 
     /**

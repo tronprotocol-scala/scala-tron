@@ -48,7 +48,8 @@ TRON is a product of Web 4.0 and the decentralized internet of next generation.
 
 # Quick Start
 
-This project requires SBT to build. 
+This project requires SBT<br />
+SBT (Simple Build Tool) is an open-source build tool for Scala and Java projects, similar to Java's Maven and Ant.<br />
 Follow the instructions [installing SBT](http://www.scala-sbt.org/1.0/docs/Setup.html) to install SBT
 
 ```
@@ -60,11 +61,13 @@ sbt "project cli" run
 
 # How To Use
 
-The application has a web and cli interface
+The application can be interfaced in 2 ways:
+* Web Interface (API based)
+* Command Line Interface (CLI)
 
 ## Command Line
 
-To get started first run
+To launch the project on a command line, First run:
 
 `sbt "project cli" run`
 
@@ -82,10 +85,10 @@ Show account balance
 
 Sends the given amount to the given address
 
-The cluster has to be up and running before using this command
+In order to execute the following commands, the cluster has to be up and running properly
 
 ### `cluster`
- 
+
 Start cluster as leader
 
 ### `cluster --join <address>`
@@ -94,7 +97,10 @@ Join cluster as client
 
 ## Cluster
 
-Cluster is based on Akka. To start a cluster follow the following steps:
+Cluster is based on Akka.<br />
+Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala<br />
+
+To start a cluster follow the following steps:
 
 * Start tron-cli `sbt "project cli" run`
 * Run `cluster` which starts the node as leader
@@ -104,7 +110,7 @@ Cluster is based on Akka. To start a cluster follow the following steps:
 [INFO] [01/18/2018 22:59:28.553] [main] [akka.remote.Remoting] Remoting started; listening on addresses :[akka.tcp://TronCluster@127.0.0.1:41795]
 ```
 * Copy the address (`127.0.0.1:41795`)
-* Start a second instance which will join the cluster. 
+* Start a second instance which will join the cluster.
   The second client has to have a different database directory to prevent conflicts.
 * Run `sbt -J-Ddatabase.directory=tron-data-client1 "project cli" run`.  
   `-J-Ddatabase.directory=tron-data-client1` specifies the database directory
@@ -133,11 +139,10 @@ __Response__
 
 ## Wiki
 
-* [Introduction](https://github.com/tronprotocol/wiki/blob/master/Home.md)
+* [Introduction (Tron Protocol)](https://github.com/tronprotocol/wiki/blob/master/Home.md)
 * [ReadTheDocs](http://tron-wiki.readthedocs.io/introduction.html)
 
 ## Contact
 
 * [Gitter](https://gitter.im/Rovak/scala-tron)
 * [Telegram](https://t.me/joinchat/CP8XKBIjEc0RqzJdl61OlQ)
-
