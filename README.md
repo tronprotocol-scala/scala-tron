@@ -48,7 +48,8 @@ TRON is a product of Web 4.0 and the decentralized internet of next generation.
 
 # Quick Start
 
-This project requires SBT to build.
+This project requires SBT<br />
+SBT (Simple Build Tool) is an open-source build tool for Scala and Java projects, similar to Java's Maven and Ant.<br />
 Follow the instructions [installing SBT](http://www.scala-sbt.org/1.0/docs/Setup.html) to install SBT
 
 ```
@@ -66,7 +67,7 @@ The application can be interfaced in 2 ways:
 
 ## Command Line
 
-To get started first run
+To launch the project on a command line, First run:
 
 `sbt "project cli" run`
 
@@ -84,7 +85,7 @@ Show account balance
 
 Sends the given amount to the given address
 
-The cluster has to be up and running before using this command
+In order to execute the following commands, the cluster has to be up and running properly
 
 ### `cluster`
 
@@ -96,7 +97,10 @@ Join cluster as client
 
 ## Cluster
 
-Cluster is based on Akka. To start a cluster follow the following steps:
+Cluster is based on Akka.<br />
+Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala<br />
+
+To start a cluster follow the following steps:
 
 * Start tron-cli `sbt "project cli" run`
 * Run `cluster` which starts the node as leader
@@ -135,7 +139,7 @@ __Response__
 
 ## Wiki
 
-* [Introduction](https://github.com/tronprotocol/wiki/blob/master/Home.md)
+* [Introduction (Tron Protocol)](https://github.com/tronprotocol/wiki/blob/master/Home.md)
 * [ReadTheDocs](http://tron-wiki.readthedocs.io/introduction.html)
 
 ## Contact
