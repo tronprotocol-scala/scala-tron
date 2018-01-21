@@ -9,7 +9,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import org.tron.core.{Blockchain, BlockchainImpl, Constant, Key}
 import org.tron.storage.{DbFactory, LevelDbFactory, RedisDbFactory}
 
-class Module(mode: String = "test") extends AbstractModule {
+class Module(mode: String = Constant.TEST) extends AbstractModule {
 
   def configure() = {
 
