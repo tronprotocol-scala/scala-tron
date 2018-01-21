@@ -6,7 +6,7 @@ import javax.inject.Singleton
 import akka.actor.ActorSystem
 import com.google.inject.{AbstractModule, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
-import org.tron.core.{Blockchain, BlockchainImpl, Constant, PublicKey}
+import org.tron.core.{Blockchain, BlockchainImpl, Constant, Key}
 import org.tron.storage.DbFactory
 
 class Module(mode: String = "test") extends AbstractModule {

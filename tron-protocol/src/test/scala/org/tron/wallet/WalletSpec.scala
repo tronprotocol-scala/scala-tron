@@ -10,7 +10,7 @@ class WalletSpec extends Specification {
 
       val wallet = Wallet()
 
-      wallet.address.hex must not beEmpty
+      wallet.address.addressHex must not beEmpty
     }
   }
 }

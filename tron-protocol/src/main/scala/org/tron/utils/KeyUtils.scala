@@ -1,12 +1,10 @@
 package org.tron.utils
 
-import org.tron.core.PublicKey
+import org.tron.core.Key
 import org.tron.crypto.ECKey
 
 object KeyUtils {
 
-  def newKey = {
-    PublicKey(new ECKey())
-  }
+  def newKey = Key(new ECKey())
 
 }

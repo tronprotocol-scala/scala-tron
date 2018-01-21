@@ -1,7 +1,7 @@
 package org.tron.cli
 
 import com.google.inject.Guice
-import org.tron.application.{Application, Module, PeerApplication}
+import org.tron.application.{Application, CliGlobals, Module, PeerApplication}
 import org.tron.cli.commands._
 import org.tron.peer.{Peer, PeerBuilder}
 import scopt.OptionParser
@@ -25,6 +25,24 @@ object App {
     cmd("server")
       .action(withCommand(ServerCommand()))
       .text("Start the API server")
+
+    cmd("wallet")
+      .action(withCommand(WalletCommand()))
+      .children {
+        opt[String]("key")
+          .action { (y, c) =>
+            val cmd = c.command.map {
+              case cluster: WalletCommand =>
+                cluster.copy(key = Some(y))
+              case x =>
+                x
+            }
+
+            c.copy(command = cmd)
+          }
+          .text("private key")
+      }
+      .text("Wallet")
 
     cmd("send")
       .action(withCommand(SendCommand()))
@@ -93,7 +111,7 @@ object App {
 
     val injector = Guice.createInjector(new Module())
 
-    val app = new Application(injector) with PeerApplication {
+    val app = new Application(injector) with PeerApplication with CliGlobals {
       val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build("client")
     }
 

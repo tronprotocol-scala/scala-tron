@@ -21,7 +21,7 @@ class BlockchainSpec extends Specification {
       val blockchain = module.buildBlockchain()
       val key = KeyUtils.newKey
 
-      blockchain.addGenesisBlock(key.hex)
+      blockchain.addGenesisBlock(key.addressHex)
 
       val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
       utxoSet.reindex()
@@ -45,7 +45,7 @@ class BlockchainSpec extends Specification {
       val receiver = KeyUtils.newKey
       val receiverWallet = Wallet(receiver.ecKey)
 
-      blockchain.addGenesisBlock(sender.hex)
+      blockchain.addGenesisBlock(sender.addressHex)
 
       val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
       utxoSet.reindex()
@@ -54,7 +54,7 @@ class BlockchainSpec extends Specification {
       utxoSet.getBalance(sender) must equalTo(10L)
 
       // Make transaction
-      val transaction = TransactionUtils.newTransaction(senderWallet, receiverWallet.address.hex, 10, utxoSet)
+      val transaction = TransactionUtils.newTransaction(senderWallet, receiverWallet.address.addressHex, 10, utxoSet)
 
       val newBlock = blockchain.addBlock(List(transaction))
       blockchain.receiveBlock(newBlock, utxoSet)

@@ -18,11 +18,11 @@ class UTXOSet(
     }
   }
 
-  def getBalance(key: PublicKey) = {
+  def getBalance(key: Key) = {
     findUTXO(key).map(_.value).sum
   }
 
-  def findSpendableOutputs(pubKey: PublicKey, amount: Long): SpendableOutputs = {
+  def findSpendableOutputs(pubKey: Key, amount: Long): SpendableOutputs = {
     val unspentOutputs = scala.collection.mutable.Map[String, Array[Long]]()
 
     var accumulated = 0L
@@ -33,7 +33,7 @@ class UTXOSet(
       val len = txOutputs.outputs.size
       for (i <- 0 until len) {
         val txOutput = txOutputs.outputs(i)
-        if (pubKey.hex == ByteArray.toHexString(txOutput.pubKeyHash.toByteArray) && accumulated < amount) {
+        if (pubKey.addressHex == ByteArray.toHexString(txOutput.pubKeyHash.toByteArray) && accumulated < amount) {
           accumulated += txOutput.value
           val v = unspentOutputs.getOrElse(ByteArray.toHexString(key), Array[Long]())
           unspentOutputs.put(ByteArray.toHexString(key), v :+ i.toLong)
@@ -44,7 +44,7 @@ class UTXOSet(
     SpendableOutputs(accumulated, unspentOutputs.toMap)
   }
 
-  def findUTXO(pubKeyHash: PublicKey): Set[TXOutput] = {
+  def findUTXO(pubKeyHash: Key): Set[TXOutput] = {
 
     txDB
       // Take all keys
@@ -55,7 +55,7 @@ class UTXOSet(
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
           val txOutputHex = txOutput.pubKeyHash.hex
-          pubKeyHash.hex == txOutputHex
+          pubKeyHash.addressHex == txOutputHex
         })
       }
   }
