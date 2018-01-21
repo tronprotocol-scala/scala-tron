@@ -15,7 +15,7 @@ case class GetBalanceCommand() extends Command {
         val wallet = cli.activeWallet.get
 
         val pubKeyHash = Key(wallet.ecKey)
-        val utxos = peer.uTXOSet.findUTXO(pubKeyHash)
+        val utxos = peer.uTXOSet.findUTXO(pubKeyHash.addressHex)
 
         val balance = utxos.map(_.value).sum
 

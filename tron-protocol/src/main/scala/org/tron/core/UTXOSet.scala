@@ -19,7 +19,11 @@ class UTXOSet(
   }
 
   def getBalance(key: Key) = {
-    findUTXO(key).map(_.value).sum
+    findUTXO(key.addressHex).map(_.value).sum
+  }
+
+  def getBalance(address: String) = {
+    findUTXO(address).map(_.value).sum
   }
 
   def findSpendableOutputs(pubKey: Key, amount: Long): SpendableOutputs = {
@@ -44,7 +48,7 @@ class UTXOSet(
     SpendableOutputs(accumulated, unspentOutputs.toMap)
   }
 
-  def findUTXO(pubKeyHash: Key): Set[TXOutput] = {
+  def findUTXO(address: String): Set[TXOutput] = {
 
     txDB
       // Take all keys
@@ -55,7 +59,7 @@ class UTXOSet(
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
           val txOutputHex = txOutput.pubKeyHash.hex
-          pubKeyHash.addressHex == txOutputHex
+          address == txOutputHex
         })
       }
   }

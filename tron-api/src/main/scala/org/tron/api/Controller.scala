@@ -14,16 +14,15 @@ class Controller(
   uTXOSet: UTXOSet) {
 
   val router: Router = Router.from {
-    case GET(p"/wallet/$key") => walletBalance(key)
+    case GET(p"/wallet/$address") => walletBalance(address)
   }
 
-  def walletBalance(key: String) = Action {
+  def walletBalance(address: String) = Action {
 
-    val ecKEy = ECKey.fromPublicOnly(ByteArray.fromHexString(key))
-    val balance = uTXOSet.getBalance(Key(ecKEy))
+    val balance = uTXOSet.getBalance(address)
 
     Ok(Json.obj(
-      "address" -> ByteArray.toHexString(ecKEy.getAddress),
+      "address" -> address,
       "balance" -> balance
     ))
   }
