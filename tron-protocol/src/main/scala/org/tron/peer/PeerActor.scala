@@ -11,6 +11,12 @@ class PeerActor(peer: Peer) extends Actor with ActorPubSub {
   override def preStart(): Unit = {
     subscribeTo("transaction")
     subscribeTo("block")
+
+    startInitialBlockDownload()
+  }
+
+  def startInitialBlockDownload() = {
+    val lastBlock = peer.blockchain.bestBlock
   }
 
   def receive = {

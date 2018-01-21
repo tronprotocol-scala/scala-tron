@@ -116,6 +116,12 @@ class BlockchainImpl(
     TransactionUtils.sign(transaction, key, prevTXs)
   }
 
+  def bestBlock: Block = {
+    val lastHash = blockDB.get(LAST_HASH).get
+    val lastBlock = blockDB.get(lastHash).get
+    Block.parseFrom(lastBlock)
+  }
+
   /**
     * Recieve block
     */
@@ -128,6 +134,7 @@ class BlockchainImpl(
     val blockHashKey = block.getBlockHeader.hash.toByteArray
     val blockVal = block.toByteArray
     blockDB.put(blockHashKey, blockVal)
+
     val ch = block.getBlockHeader.hash.toByteArray
 
     blockDB.put(LAST_HASH, ch)
@@ -148,7 +155,6 @@ class BlockchainImpl(
     val difficulty = ByteString.copyFromUtf8(Constant.DIFFICULTY)
 
     BlockUtils.newBlock(transactions, parentHash, difficulty, number)
-    // TODO send to kafka
   }
 
   def   addGenesisBlock(account: String): Unit = {
