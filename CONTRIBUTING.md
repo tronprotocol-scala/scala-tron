@@ -1,8 +1,6 @@
 <h1 align="center">
   <img src="docs/img/scala-tron.png">
   <br>
-  scala-tron
-  <br>
 </h1>
 
 # Contributing
@@ -27,7 +25,7 @@ Please note we have a code of conduct and you are requested to please follow it 
 
 ### Create issues
 
-Any significant improvement should be documented as [a GitHub
+Any significant improvement should be documented as a [GitHub
 issue](https://github.com/tronprotocol/java-tron/issues) before anyone
 starts working on it.
 
