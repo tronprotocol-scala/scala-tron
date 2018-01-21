@@ -11,7 +11,7 @@ It is the work of contributors. We appreciate your help!
 Here are instructions to get you started. They are not perfect, so please let us know if anything feels wrong or incomplete.
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or on [Gitter](https://gitter.im/tronprotocol/java-tron) with the owners of this repository before making a change. 
+email, [Gitter](https://gitter.im/Rovak/scala-tron) or join our [Telegram Group](https://gitter.im/Rovak/scala-tron) with the owners of this repository before making a change. 
 
 Please note we have a code of conduct and you are requested to please follow it in all your interactions with the project.
 <br />
@@ -20,7 +20,7 @@ Please note we have a code of conduct and you are requested to please follow it 
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
    build.
 2. Scala-tron follows [gitflow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow). Please open pull  requests to the develop branch. Once approved, we will close the pull request and merge into master branch.
-4. If your pull request is not accepted on the first try, don't be discouraged as it can be a possible oversight. Please explain your code as detailed as possible to make it easier for us to understand.
+3. If your pull request is not accepted on the first try, don't be discouraged as it can be a possible oversight. Please explain your code as detailed as possible to make it easier for us to understand.
 
 
 ### Create issues
