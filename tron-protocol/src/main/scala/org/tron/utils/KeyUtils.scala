@@ -5,6 +5,6 @@ import org.tron.crypto.ECKey
 
 object KeyUtils {
 
-  def newKey = Key(new ECKey())
+  def generateKey = Key(new ECKey())
 
 }

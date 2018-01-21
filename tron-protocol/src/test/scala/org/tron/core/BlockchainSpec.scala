@@ -19,7 +19,7 @@ class BlockchainSpec extends Specification {
       println("CREATE 1")
 
       val blockchain = module.buildBlockchain()
-      val key = KeyUtils.newKey
+      val key = KeyUtils.generateKey
 
       blockchain.addGenesisBlock(key.addressHex)
 
@@ -40,9 +40,9 @@ class BlockchainSpec extends Specification {
 
       println("CREATE 2")
       val blockchain = module.buildBlockchain().asInstanceOf[BlockchainImpl]
-      val sender = KeyUtils.newKey
+      val sender = KeyUtils.generateKey
       val senderWallet = Wallet(sender.ecKey)
-      val receiver = KeyUtils.newKey
+      val receiver = KeyUtils.generateKey
       val receiverWallet = Wallet(receiver.ecKey)
 
       blockchain.addGenesisBlock(sender.addressHex)

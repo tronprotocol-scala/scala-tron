@@ -33,7 +33,7 @@ class UTXOSet(
       val len = txOutputs.outputs.size
       for (i <- 0 until len) {
         val txOutput = txOutputs.outputs(i)
-        if (pubKey.addressHex == ByteArray.toHexString(txOutput.pubKeyHash.toByteArray) && accumulated < amount) {
+        if (accumulated < amount && pubKey.addressHex == txOutput.pubKeyHash.hex) {
           accumulated += txOutput.value
           val v = unspentOutputs.getOrElse(ByteArray.toHexString(key), Array[Long]())
           unspentOutputs.put(ByteArray.toHexString(key), v :+ i.toLong)
