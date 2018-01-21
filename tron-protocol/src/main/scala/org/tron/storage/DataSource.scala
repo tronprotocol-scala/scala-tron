@@ -1,6 +1,10 @@
 package org.tron.storage
 
 trait DataSource[K, V] {
+  def resetDB(): Unit
+
+  def allKeys: Set[Array[Byte]]
+
 
   def put(key: K, value: V): Unit
 
@@ -9,4 +13,5 @@ trait DataSource[K, V] {
   def delete(key: K): Unit
 
   def close(): Unit
+
 }
