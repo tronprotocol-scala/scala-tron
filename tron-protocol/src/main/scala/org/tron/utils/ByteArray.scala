@@ -35,16 +35,16 @@ import org.spongycastle.util.encoders.Hex
 object ByteArray {
   val EMPTY_BYTE_ARRAY = new Array[Byte](0)
 
-  def toHexString(data: Array[Byte]): String = {
-    if (data == null) ""
-    else Hex.toHexString(data)
+  def toHexString(byteArray: Array[Byte]): String = {
+    if (byteArray == null) ""
+    else Hex.toHexString(byteArray)
   }
 
-  def fromHexString(data: String): Array[Byte] = {
-    Option(data) match {
-      case Some(x) if data.startsWith("0x") =>
+  def fromHexString(string: String): Array[Byte] = {
+    Option(string) match {
+      case Some(x) if string.startsWith("0x") =>
         Hex.decode(x.substring(2))
-      case Some(x) if data.length % 2 == 1 =>
+      case Some(x) if string.length % 2 == 1 =>
         Hex.decode("0" + x)
       case Some(x) =>
         Hex.decode(x)
@@ -53,23 +53,23 @@ object ByteArray {
     }
   }
 
-  def toLong(b: Array[Byte]): Long = {
-    if (b == null || b.length == 0) 0
-    else new BigInteger(1, b).longValue
-  }
-
-  def fromString(str: String): Array[Byte] = {
-    if (str == null) null
-    else str.getBytes
-  }
-
-  def toStr(byteArray: Array[Byte]): String = {
-    if (byteArray == null) null
-    else new String(byteArray)
+  def toLong(byteArray: Array[Byte]): Long = {
+    if (byteArray == null || byteArray.length == 0) 0
+    else new BigInteger(1, byteArray).longValue
   }
 
   def fromLong(value: Long): Array[Byte] = {
     ByteBuffer.allocate(8).putLong(value).array
+  }
+
+  def toString(byteArray: Array[Byte]): String = {
+    if (byteArray == null) ""
+    else new String(byteArray)
+  }
+
+  def fromString(string: String): Array[Byte] = {
+    if (string == null) new Array[Byte](0)
+    else string.getBytes
   }
 
   def reverseBytes(bytes: Array[Byte]): Array[Byte] = { // We could use the XOR trick here but it's easier to understand if we don't. If we find this is really a

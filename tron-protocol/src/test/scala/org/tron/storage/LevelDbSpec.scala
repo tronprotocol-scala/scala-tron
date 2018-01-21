@@ -17,9 +17,9 @@ class LevelDbSpec extends Specification with DatabaseContext {
       db.put(key, value)
 
       val storedValue = db.get(key).get
-      val s = ByteArray.toStr(storedValue)
+      val s = ByteArray.toString(storedValue)
 
-      ByteArray.toStr(value) must equalTo(s)
+      ByteArray.toString(value) must equalTo(s)
     }
 
     "put data" in { dataSource: LevelDbDataSourceImpl =>

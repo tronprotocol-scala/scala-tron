@@ -57,7 +57,7 @@ public class TXInputUtils {
                 ",\n\tvout=" + txi.vout() +
                 ",\n\tsignature=" + ByteArray.toHexString(txi.signature()
                 .toByteArray()) +
-                ",\n\tpubKey=" + ByteArray.toStr(txi.pubKey().toByteArray
+                ",\n\tpubKey=" + ByteArray.toString(txi.pubKey().toByteArray
                 ()) +
                 "\n}\n";
     }
