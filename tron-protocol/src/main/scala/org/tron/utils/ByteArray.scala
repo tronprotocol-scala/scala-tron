@@ -71,4 +71,9 @@ object ByteArray {
   def fromLong(value: Long): Array[Byte] = {
     ByteBuffer.allocate(8).putLong(value).array
   }
+
+  def reverseBytes(bytes: Array[Byte]): Array[Byte] = { // We could use the XOR trick here but it's easier to understand if we don't. If we find this is really a
+    // performance issue the matter can be revisited.
+    bytes.reverse
+  }
 }
