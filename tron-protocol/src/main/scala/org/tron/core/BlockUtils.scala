@@ -8,7 +8,7 @@ import org.tron.crypto.Hash.sha3
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronBlockHeader.BlockHeader
 import org.tron.protos.core.TronTransaction.Transaction
-import org.tron.utils.ByteArray
+import org.tron.utils.ByteArrayUtils
 
 object BlockUtils {
 
@@ -44,7 +44,7 @@ object BlockUtils {
   def newGenesisBlock(coinbase: Transaction): Block = {
 
     var blockHeader = BlockHeader(
-      difficulty = ByteString.copyFrom(ByteArray.fromHexString("2001")))
+      difficulty = ByteString.copyFrom(ByteArrayUtils.fromHexString("2001")))
 
     val genesisBlock = Block()
       .addTransactions(coinbase)
@@ -61,7 +61,7 @@ object BlockUtils {
       .withTransactions(transactions)
 
     val blockHeader = BlockHeader(
-      difficulty = ByteString.copyFrom(ByteArray.fromHexString("2001")),
+      difficulty = ByteString.copyFrom(ByteArrayUtils.fromHexString("2001")),
       hash = ByteString.copyFrom(sha3(prepareData(genesisBlock))))
 
     genesisBlock.withBlockHeader(blockHeader)
