@@ -31,8 +31,8 @@ object App {
         opt[String]("open")
           .action { (y, c) =>
             val cmd = c.command.map {
-              case wallet: AddressCommand =>
-                wallet.copy(key = Some(y))
+              case address: AddressCommand =>
+                address.copy(key = Some(y))
               case x =>
                 throw new Exception("Wrong command")
             }
