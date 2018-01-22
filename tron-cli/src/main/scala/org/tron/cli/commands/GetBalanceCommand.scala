@@ -11,8 +11,8 @@ case class GetBalanceCommand() extends Command {
     val peer = peerApp.peer
 
     app match  {
-      case cli: CliGlobals if cli.activeWallet.nonEmpty =>
-        val wallet = cli.activeWallet.get
+      case cli: CliGlobals if cli.activeAddress.nonEmpty =>
+        val wallet = cli.activeAddress.get
 
         val pubKeyHash = Key(wallet.ecKey)
         val utxos = peer.uTXOSet.findUTXO(pubKeyHash.addressHex)
@@ -21,7 +21,7 @@ case class GetBalanceCommand() extends Command {
 
         println(balance) // scalastyle:ignore
       case _ =>
-        println("Before checking balance you need to open a wallet using 'wallet --key <private key>'")
+        println(AddressCommand.openAddressInstructions)
     }
   }
 }

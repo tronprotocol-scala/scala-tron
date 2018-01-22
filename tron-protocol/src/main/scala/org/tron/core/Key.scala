@@ -9,8 +9,7 @@ case class Key(ecKey: ECKey) {
   def privateKeyCompressed = Base58.encode(ecKey.getPrivKeyBytes)
 
   def info =
-    s"""
-      |Address: $addressHex
+    s"""Address: $addressHex
       |Private Key $privateKeyCompressed
-    """.stripMargin
+    """.stripMargin.trim
 }

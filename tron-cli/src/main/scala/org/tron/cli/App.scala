@@ -10,8 +10,7 @@ import scala.io.StdIn
 
 object App {
 
-  val commandParser: OptionParser[CommandConfig]
-    = new scopt.OptionParser[CommandConfig]("tron") {
+  val commandParser = new scopt.OptionParser[CommandConfig]("tron") {
     head("tron", "0.1")
 
     cmd("help")
@@ -26,23 +25,28 @@ object App {
       .action(withCommand(ServerCommand()))
       .text("Start the API server")
 
-    cmd("wallet")
-      .action(withCommand(WalletCommand()))
+    cmd("address")
+      .action(withCommand(AddressCommand()))
       .children {
-        opt[String]("key")
+        opt[String]("open")
           .action { (y, c) =>
             val cmd = c.command.map {
-              case wallet: WalletCommand =>
-                wallet.copy(key = Some(y))
+              case address: AddressCommand =>
+                address.copy(key = Some(y))
               case x =>
-                x
+                throw new Exception("Wrong command")
             }
 
             c.copy(command = cmd)
           }
           .text("private key")
+        opt[Unit]("create")
+          .action { (_, c) =>
+            c.copy(command = Some(CreateAddressCommand()))
+          }
+          .text("create address")
       }
-      .text("Wallet")
+      .text("Address")
 
     cmd("send")
       .action(withCommand(SendCommand()))
@@ -96,7 +100,7 @@ object App {
 
             c.copy(command = cmd)
           }
-          .text("disable keep alive")
+          .text("join cluster as client")
       }
       .text("start cluster")
 
