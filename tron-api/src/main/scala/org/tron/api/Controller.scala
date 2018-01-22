@@ -13,11 +13,11 @@ class Controller(
   uTXOSet: UTXOSet) {
 
   val router: Router = Router.from {
-    case GET(p"/wallet/$address") => walletBalance(address)
-    case POST(p"/wallet") => walletCreate
+    case GET(p"/address/$address") => addressBalance(address)
+    case POST(p"/address") => addressCreate
   }
 
-  def walletBalance(address: String) = Action {
+  def addressBalance(address: String) = Action {
 
     val balance = uTXOSet.getBalance(address)
 
@@ -27,7 +27,7 @@ class Controller(
     ))
   }
 
-  def walletCreate = Action {
+  def addressCreate = Action {
 
     val key = KeyUtils.generateKey
 

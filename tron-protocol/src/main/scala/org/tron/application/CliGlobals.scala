@@ -6,5 +6,5 @@ trait CliGlobals {
 
   this: Application =>
 
-  var activeWallet: Option[Key] = None
+  var activeAddress: Option[Key] = None
 }

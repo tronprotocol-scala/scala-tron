@@ -25,13 +25,13 @@ object App {
       .action(withCommand(ServerCommand()))
       .text("Start the API server")
 
-    cmd("wallet")
-      .action(withCommand(WalletCommand()))
+    cmd("address")
+      .action(withCommand(AddressCommand()))
       .children {
         opt[String]("open")
           .action { (y, c) =>
             val cmd = c.command.map {
-              case wallet: WalletCommand =>
+              case wallet: AddressCommand =>
                 wallet.copy(key = Some(y))
               case x =>
                 throw new Exception("Wrong command")
@@ -42,11 +42,11 @@ object App {
           .text("private key")
         opt[Unit]("create")
           .action { (_, c) =>
-            c.copy(command = Some(CreateWalletCommand()))
+            c.copy(command = Some(CreateAddressCommand()))
           }
-          .text("create wallet")
+          .text("create address")
       }
-      .text("Wallet")
+      .text("Address")
 
     cmd("send")
       .action(withCommand(SendCommand()))

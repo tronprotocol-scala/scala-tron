@@ -74,26 +74,26 @@ To launch the project on a command line, First run:
 
 After that the following commands are available:
 
-### `wallet --open <private key>`
+### `address --open <private key>`
 
-Opens a wallet
+Opens a address
 
 **Example**
 
 ```bash
-> wallet --open BW4kf1Pyoi3XkKGF9FTMPFk8QBTezcb6QzD6EeYSXP73
-Opened wallet 25ace46c656fb98027caee704a7790c7ec0b32fe
+> address --open BW4kf1Pyoi3XkKGF9FTMPFk8QBTezcb6QzD6EeYSXP73
+Opened address 25ace46c656fb98027caee704a7790c7ec0b32fe
 ```
 
-### `wallet --create`
+### `address --create`
 
-Generates a new wallet/address
+Generates a new address
 
 **Example**
 
 ```bash
-> wallet --create
-Wallet Generated!
+> address --create
+Address Generated!
 Address: c93a9fe9a04524d7cb1f1413ac5e75f77b179e27
 Private Key 67dsochCai4PdoLnzevHwXQWLeHiMKcEfoHEzLCDBu2X
 ```
@@ -149,9 +149,9 @@ Start the server using `sbt "project api" run`
 The API will then be available on http://localhost:9000
 
 
-### `GET /wallet/<address>`
+### `GET /address/<address>`
 
-Shows the balance of the wallet for the given public key
+Shows the balance of the address for the given public key
 
 __Response__
 
@@ -162,9 +162,9 @@ __Response__
 }
 ```
 
-### `POST /wallet`
+### `POST /address`
 
-Generates a new wallet/address
+Generates a new address
 
 __Response__
 

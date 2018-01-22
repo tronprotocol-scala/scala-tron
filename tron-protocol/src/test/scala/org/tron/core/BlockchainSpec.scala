@@ -32,7 +32,7 @@ class BlockchainSpec extends Specification {
       ok
     }
 
-    "make a transaction between wallets" in {
+    "make a transaction between addresses" in {
 
       val blockchain = module.buildBlockchain().asInstanceOf[BlockchainImpl]
       val sender = KeyUtils.generateKey
