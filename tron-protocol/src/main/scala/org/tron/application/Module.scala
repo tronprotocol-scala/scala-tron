@@ -8,6 +8,8 @@ import com.google.inject.{AbstractModule, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
 import org.tron.core.{Blockchain, BlockchainImpl, Constant, Key}
 import org.tron.storage.{DbFactory, LevelDbFactory, RedisDbFactory}
+import org.tron.grpc.GrpcServer
+import org.tron.storage.DbFactory
 
 class Module(mode: String = Constant.TEST) extends AbstractModule {
 
@@ -43,8 +45,7 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
 
   @Provides
   @Singleton
-  def buildBlockchain(): Blockchain = {
-    val dbFactory = buildDbFactory()
+  def buildBlockchain(dbFactory: DbFactory): Blockchain = {
     new BlockchainImpl(dbFactory.build(Constant.BLOCK_DB_NAME))
   }
 
@@ -52,5 +53,12 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
   @Provides
   def buildActorSystem(): ActorSystem = {
     ActorSystem(Constant.SYSTEM_NAME)
+  }
+
+  @Provides
+  @Inject
+  def buildGrpcServer(config: Config): GrpcServer = {
+    val port = config.getInt("grpc.port")
+    new GrpcServer(port)
   }
 }
