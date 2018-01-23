@@ -16,7 +16,7 @@ package org.tron.core;
 
 import com.google.protobuf.ByteString;
 import org.tron.protos.core.TronTXOutput.TXOutput;
-import org.tron.utils.ByteArray;
+import org.tron.utils.ByteArrayUtils;
 
 public class TXOutputUtils {
 
@@ -30,7 +30,7 @@ public class TXOutputUtils {
     public static TXOutput newTXOutput(long value, String address) {
         return new TXOutput(
             value,
-            ByteString.copyFrom(ByteArray.fromHexString(address)));
+            ByteString.copyFrom(ByteArrayUtils.fromHexString(address)));
     }
 
     /**
@@ -46,7 +46,7 @@ public class TXOutputUtils {
 
         return "\nTXOutput {\n" +
                 "\tvalue=" + txo.value() +
-                ",\n\tpubKeyHash=" + ByteArray.toHexString(txo.pubKeyHash().toByteArray()) +
+                ",\n\tpubKeyHash=" + ByteArrayUtils.toHexString(txo.pubKeyHash().toByteArray()) +
                 "\n}\n";
     }
 }

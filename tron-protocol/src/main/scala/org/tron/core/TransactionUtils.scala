@@ -33,7 +33,7 @@ import org.tron.crypto.Hash.sha256
 import org.tron.protos.core.TronTXInput.TXInput
 import org.tron.protos.core.TronTXOutput.TXOutput
 import org.tron.protos.core.TronTransaction.Transaction
-import org.tron.utils.ByteArray
+import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 import org.tron.utils.Utils.getRandom
 import org.tron.wallet.Wallet
@@ -68,7 +68,7 @@ object TransactionUtils {
       (txID, outs) <- entrySet
       out <- outs
     } yield {
-      TXInputUtils.newTXInput(ByteArray.fromHexString(txID), out, new Array[Byte](0), pubKeyHash)
+      TXInputUtils.newTXInput(ByteArrayUtils.fromHexString(txID), out, new Array[Byte](0), pubKeyHash)
     }
 
     txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey))
@@ -95,10 +95,10 @@ object TransactionUtils {
     val key = if (data == null || data == "") {
       val randBytes = Array.fill(20)(0.byteValue)
       getRandom.nextBytes(randBytes)
-      ByteArray.toHexString(randBytes)
+      ByteArrayUtils.toHexString(randBytes)
     } else data
 
-    val txi = TXInputUtils.newTXInput(Array[Byte](), -1, Array[Byte](), ByteArray.fromHexString(key))
+    val txi = TXInputUtils.newTXInput(Array[Byte](), -1, Array[Byte](), ByteArrayUtils.fromHexString(key))
     val txo = TXOutputUtils.newTXOutput(RESERVE_BALANCE, to)
     val coinbaseTransaction = Transaction()
       .addVin(txi)
