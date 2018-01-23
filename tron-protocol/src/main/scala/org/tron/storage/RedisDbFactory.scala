@@ -6,6 +6,8 @@ import org.tron.BlockChainDb
 
 class RedisDbFactory (databaseFolder: Path) extends DbFactory(databaseFolder){
   override def build(name: String): BlockChainDb = {
-    new RedisDbDataSourceImpl(databaseFolder.toFile, name)
+    val db = new RedisDbDataSourceImpl(databaseFolder.toFile, name)
+    db.initDB()
+    db
   }
 }
