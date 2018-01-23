@@ -33,6 +33,7 @@
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
+  <a href="#goals">Goals</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#cluster">Cluster</a> •
   <a href="#wiki">Wiki</a> •
@@ -47,10 +48,17 @@ TRON is a block chain-based decentralized smart protocol and an application deve
 
 TRON is a product of Web 4.0 and the decentralized internet of next generation.
 
+# Goals
+
+* Compatible with [java-tron](https://github.com/tronprotocol/java-tron)
+* Non-blocking
+* Functional programming approach
+* User-friendly interface
+
 # Quick Start
 
-This project requires SBT<br />
-SBT (Simple Build Tool) is an open-source build tool for Scala and Java projects, similar to Java's Maven and Ant.<br />
+This project requires SBT  
+SBT (Simple Build Tool) is an open-source build tool for Scala and Java projects, similar to Java's Maven and Ant.  
 Follow the instructions [installing SBT](http://www.scala-sbt.org/1.0/docs/Setup.html) to install SBT
 
 ```
@@ -125,8 +133,8 @@ Starts the Web API server. After starting the API it can be reached at http://lo
 
 ## Cluster
 
-Cluster is based on Akka.<br />
-Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala<br />
+Cluster is based on Akka.  
+Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala  
 
 To start a cluster follow the following steps:
 
