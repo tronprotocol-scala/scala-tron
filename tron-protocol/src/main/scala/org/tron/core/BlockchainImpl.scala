@@ -11,7 +11,10 @@ import org.tron.protos.core.TronTransaction
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
+
 import scala.collection.mutable
+import TransactionUtils._
+import org.tron.core.Exceptions.TransactionException
 
 class BlockchainImpl(
   val blockDB: BlockChainDb) extends Blockchain {
@@ -61,7 +64,7 @@ class BlockchainImpl(
         utxo.put(txId, outs)
       }
 
-      if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
+      if (!transaction.isCoinbase) {
         for (in <- transaction.vin) {
           val inTxid = in.txID.hex
           val vindexs = spenttxos.getOrElse(inTxid, Array[Long]())
@@ -109,7 +112,7 @@ class BlockchainImpl(
     block
   }
 
-  def signTransaction(transaction: Transaction, key: ECKey): Transaction = {
+  def signTransaction(transaction: Transaction, key: ECKey): Either[TransactionException, Transaction] = {
 
     val prevTXs = transaction.vin.map { txInput =>
       val txID: ByteString = txInput.txID

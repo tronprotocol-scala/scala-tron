@@ -10,8 +10,9 @@ class TransactionFacade(peer: Peer, transactionStrategy: TransactionStrategy) {
     val from = KeyUtils.fromPrivateKey(fromAddress)
     val fromWallet = Wallet(from.ecKey)
 
-    val transaction = TransactionUtils.newTransaction(fromWallet, toAddress, amount, peer.uTXOSet)
-    transactionStrategy.newTransaction(transaction)
+    for {
+      transaction <- TransactionUtils.newTransaction(fromWallet, toAddress, amount, peer.uTXOSet)
+    } transactionStrategy.newTransaction(transaction)
   }
 
 }
