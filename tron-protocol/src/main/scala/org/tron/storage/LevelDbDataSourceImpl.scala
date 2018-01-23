@@ -59,7 +59,6 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def initDB(): Unit = {
-    println("open", name)
     resetDbLock.writeLock.lock()
     try {
       if (alive)
@@ -149,7 +148,6 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def close(): Unit = {
-
     try {
       resetDbLock.writeLock.lock()
       if (alive) {
