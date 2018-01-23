@@ -74,7 +74,7 @@ object TransactionUtils {
       txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey))
 
       if (spendableOutputs.amount > amount) {
-        txOutputs.append(TXOutputUtils.newTXOutput(spendableOutputs.amount - amount, wallet.address.addressHex))
+        txOutputs.append(TXOutputUtils.newTXOutput(spendableOutputs.amount - amount, wallet.address.hex))
       }
 
       val newTransaction = Transaction(

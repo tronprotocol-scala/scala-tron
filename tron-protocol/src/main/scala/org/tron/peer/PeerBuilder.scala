@@ -23,7 +23,7 @@ class PeerBuilder @Inject() (
     if (blockchain.lastHash == null) {
       val sender = Key(key)
       println(sender.info)
-      blockchain.addGenesisBlock(sender.addressHex)
+      blockchain.addGenesisBlock(sender.address.hex)
     }
 
     val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)

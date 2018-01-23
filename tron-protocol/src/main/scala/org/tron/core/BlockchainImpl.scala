@@ -3,8 +3,9 @@ package core
 
 import com.google.protobuf.ByteString
 import org.tron.core.Constant.LAST_HASH
+import org.tron.core.Exceptions.TransactionException
+import org.tron.core.TransactionUtils._
 import org.tron.crypto.ECKey
-import org.tron.peer.Peer
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction
@@ -13,14 +14,13 @@ import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 
 import scala.collection.mutable
-import TransactionUtils._
-import org.tron.core.Exceptions.TransactionException
 
-class BlockchainImpl(
-  val blockDB: BlockChainDb) extends Blockchain {
+class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable[Block] {
 
   var lastHash = blockDB.get(Constant.LAST_HASH).getOrElse(null)
   var currentHash = lastHash
+
+  def iterator = new BlockchainIterator(this)
 
   def findTransaction(id: Array[Byte]): Option[Transaction] = {
 
@@ -171,4 +171,5 @@ class BlockchainImpl(
     this.lastHash = lastHash
     this.currentHash = lastHash
   }
+
 }
