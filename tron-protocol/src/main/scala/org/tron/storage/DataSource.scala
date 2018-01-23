@@ -1,6 +1,8 @@
 package org.tron.storage
 
 trait DataSource[K, V] {
+
+  def initDB(): Unit
   def resetDB(): Unit
 
   def allKeys: Set[Array[Byte]]
