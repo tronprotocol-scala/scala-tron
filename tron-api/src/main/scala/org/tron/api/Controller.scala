@@ -1,8 +1,5 @@
 package org.tron.api
 
-import org.tron.core.{Blockchain, PublicKey, UTXOSet}
-import org.tron.crypto.ECKey
-import org.tron.utils.ByteArrayUtils
 import org.tron.core.{Blockchain, UTXOSet}
 import org.tron.utils.KeyUtils
 import play.api.libs.json.Json
