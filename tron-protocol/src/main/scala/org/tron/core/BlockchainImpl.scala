@@ -39,26 +39,31 @@ class BlockchainImpl(
 
     val bi = new BlockchainIterator(this)
 
-    def isSpent(txid: String, index: Long): Boolean = spenttxos.get(txid).exists(_.contains(index))
+    def isSpent(txId: String, index: Long) = {
+      spenttxos.get(txId).exists(_.contains(index))
+    }
 
     for {
       block <- bi
       transaction <- block.transactions
     } {
-      val txid = ByteArray.toHexString(transaction.id.toByteArray)
+      val txId = transaction.id.hex
 
       for {
-        outIdx <- transaction.vout.indices
-        out = transaction.vout(outIdx) if !isSpent(txid, outIdx)
+        outIndex <- transaction.vout.indices
+        out = transaction.vout(outIndex)
+        if !isSpent(txId, outIndex)
       } {
-        var outs = utxo.getOrElse(txid, TXOutputs())
-        outs = outs.addOutputs(out)
-        utxo.put(txid, outs)
+        val outs = utxo
+          .getOrElse(txId, TXOutputs())
+          .addOutputs(out)
+
+        utxo.put(txId, outs)
       }
 
       if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
         for (in <- transaction.vin) {
-          val inTxid = ByteArray.toHexString(in.txID.toByteArray)
+          val inTxid = in.txID.hex
           val vindexs = spenttxos.getOrElse(inTxid, Array[Long]())
           spenttxos.put(inTxid, vindexs :+ in.vout)
         }
@@ -151,13 +156,13 @@ class BlockchainImpl(
     // TODO send to kafka
   }
 
-  def   addGenesisBlock(account: String): Unit = {
+  def addGenesisBlock(account: String): Unit = {
     val transactions = TransactionUtils.newCoinbaseTransaction(account, Constant.GENESIS_COINBASE_DATA)
 
     val genesisBlock = BlockUtils.newGenesisBlock(transactions)
-
-    blockDB.put(genesisBlock.blockHeader.get.hash.toByteArray, genesisBlock.toByteArray)
-    val lastHash = genesisBlock.blockHeader.get.hash.toByteArray
+    val hashArray = genesisBlock.blockHeader.get.hash.toByteArray
+    blockDB.put(hashArray, genesisBlock.toByteArray)
+    val lastHash = hashArray
     blockDB.put(Constant.LAST_HASH, lastHash)
 
     this.lastHash = lastHash

@@ -18,8 +18,6 @@ trait Blockchain {
 
   def signTransaction(transaction: Transaction, key: ECKey): Transaction
 
-//  def addBlock(transactions: List[Transaction], net: Net): Unit
-
   def currentHash: Array[Byte]
 
   def blockDB: BlockChainDb
