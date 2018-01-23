@@ -45,7 +45,9 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
 
   @Provides
   @Singleton
+  @Inject
   def buildBlockchain(dbFactory: DbFactory): Blockchain = {
+    println("build blockchain")
     new BlockchainImpl(dbFactory.build(Constant.BLOCK_DB_NAME))
   }
 

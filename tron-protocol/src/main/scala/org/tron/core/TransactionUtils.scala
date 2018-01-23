@@ -62,11 +62,11 @@ object TransactionUtils {
     } else {
       val entrySet = spendableOutputs.unspentOutputs
 
-      val txInputs =  for {
+      val txInputs = for {
         (txID, outs) <- entrySet
         out <- outs
       } yield {
-        TXInputUtils.newTXInput(ByteArrayUtils.fromHexString(txID), out, new Array[Byte](0), wallet.key.getPubKey)
+        TXInputUtils.newTXInput(ByteArrayUtils.fromHexString(txID), out, Array[Byte](), wallet.key.getPubKey)
       }
 
       val txOutputs = mutable.ListBuffer[TXOutput]()

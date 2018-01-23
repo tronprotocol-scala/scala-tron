@@ -1,7 +1,6 @@
 package org.tron.cli.commands
 
 import org.tron.application.{Application, PeerApplication}
-import org.tron.peer.Peer
 import org.tron.utils.ByteArrayUtils
 
 case class AccountCommand() extends Command {

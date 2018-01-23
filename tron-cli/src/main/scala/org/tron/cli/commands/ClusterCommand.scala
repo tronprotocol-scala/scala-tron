@@ -3,7 +3,6 @@ package org.tron.cli.commands
 import akka.actor.ActorSystem
 import org.tron.application.{Application, PeerApplication}
 import org.tron.cluster.PeerCluster
-import org.tron.core.Constant
 
 // scalastyle:off regex
 case class ClusterCommand(seedNode: Option[String] = None) extends Command {

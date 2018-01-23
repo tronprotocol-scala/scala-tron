@@ -2,7 +2,6 @@ package org.tron.cli.commands
 
 import org.tron.application.{Application, CliGlobals, PeerApplication}
 import org.tron.core.Key
-import org.tron.peer.Peer
 
 case class GetBalanceCommand() extends Command {
   def execute(app: Application, parameters: Array[String]): Unit = {
