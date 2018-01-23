@@ -23,9 +23,13 @@ import java.util
 object FileUtil {
 
   def recursiveList(path: String): util.List[String] = {
+    val paths = Paths.get(path)
+
+    require(paths.toFile.exists(), "path must exist")
+
     val files = new util.ArrayList[String]
 
-    Files.walkFileTree(Paths.get(path), new FileVisitor[Path]() {
+    Files.walkFileTree(paths, new FileVisitor[Path]() {
 
       def preVisitDirectory(dir: Path, attrs: BasicFileAttributes) = FileVisitResult.CONTINUE
 

@@ -12,7 +12,7 @@ class PeerBuilder @Inject() (
   nodeKeyFactory: NodeKeyFactory,
   dbFactory: DbFactory) {
 
-  def build(peerType: String) = {
+  def build() = {
     val key = nodeKeyFactory.build()
 
     // Build the wallet
@@ -23,12 +23,12 @@ class PeerBuilder @Inject() (
     if (blockchain.lastHash == null) {
       val sender = Key(key)
       println(sender.info)
-      blockchain.addGenesisBlock(sender.address.hex)
+      blockchain.addGenesisBlock(sender.address)
     }
 
     val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
     utxoSet.reindex()
 
-    Peer(key, wallet, blockchain, utxoSet, peerType)
+    Peer(key, wallet, blockchain, utxoSet)
   }
 }

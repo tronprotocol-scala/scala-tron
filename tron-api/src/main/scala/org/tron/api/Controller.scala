@@ -19,7 +19,7 @@ class Controller(
 
   def addressBalance(address: String) = Action {
 
-    val balance = uTXOSet.getBalance(Address.fromString(address))
+    val balance = uTXOSet.getBalance(Address(address))
 
     Ok(Json.obj(
       "address" -> address,

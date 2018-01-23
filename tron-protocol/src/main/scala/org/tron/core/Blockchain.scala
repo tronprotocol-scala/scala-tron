@@ -1,6 +1,6 @@
-package org.tron.core
+package org.tron
+package core
 
-import org.tron.BlockChainDb
 import org.tron.core.Exceptions.TransactionException
 import org.tron.crypto.ECKey
 import org.tron.protos.core.TronBlock.Block
@@ -9,7 +9,7 @@ import org.tron.protos.core.TronTransaction.Transaction
 
 trait Blockchain {
 
-  def findTransaction(id: Array[Byte]): Option[Transaction]
+  def findTransaction(id: TXID): Option[Transaction]
 
   def findUTXO(): Map[String, TXOutputs]
 
@@ -23,6 +23,6 @@ trait Blockchain {
 
   def blockDB: BlockChainDb
 
-  def addGenesisBlock(account: String): Unit
+  def addGenesisBlock(account: Address): Unit
 
 }

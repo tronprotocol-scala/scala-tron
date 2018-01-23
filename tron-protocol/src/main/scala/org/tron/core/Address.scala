@@ -3,9 +3,7 @@ package org.tron.core
 import org.tron.utils.ByteArrayUtils
 
 object Address {
-  def fromString(address: String) = {
-    Address(ByteArrayUtils.fromHexString(address))
-  }
+  def apply(address: String): Address = Address(ByteArrayUtils.fromHexString(address))
 }
 
 case class Address(value: Array[Byte]) extends AnyVal {

@@ -55,7 +55,7 @@ object TransactionUtils {
 
   private val RESERVE_BALANCE = 10
 
-  def newTransaction(wallet: Wallet, toKey: String, amount: Long, utxoSet: UTXOSet): Either[TransactionException, Transaction] = {
+  def newTransaction(wallet: Wallet, toKey: Address, amount: Long, utxoSet: UTXOSet): Either[TransactionException, Transaction] = {
 
     val spendableOutputs = utxoSet.findSpendableOutputs(wallet.address, amount)
     if (spendableOutputs.amount < amount) {
@@ -71,7 +71,7 @@ object TransactionUtils {
       }
 
       val txOutputs = mutable.ListBuffer[TXOutput]()
-      txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey))
+      txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey.hex))
 
       if (spendableOutputs.amount > amount) {
         txOutputs.append(TXOutputUtils.newTXOutput(spendableOutputs.amount - amount, wallet.address.hex))
@@ -92,7 +92,7 @@ object TransactionUtils {
     * @param data String transaction data
     * @return { @link Transaction}
     */
-  def newCoinbaseTransaction(to: String, data: String): Transaction = {
+  def newCoinbaseTransaction(to: Address, data: String): Transaction = {
     val key = if (data == null || data == "") {
       val randBytes = Array.fill(20)(0.byteValue)
       getRandom.nextBytes(randBytes)
@@ -100,7 +100,7 @@ object TransactionUtils {
     } else data
 
     val txi = TXInputUtils.newTXInput(Array[Byte](), -1, Array[Byte](), ByteArrayUtils.fromHexString(key))
-    val txo = TXOutputUtils.newTXOutput(RESERVE_BALANCE, to)
+    val txo = TXOutputUtils.newTXOutput(RESERVE_BALANCE, to.hex)
     val coinbaseTransaction = Transaction()
       .addVin(txi)
       .addVout(txo)

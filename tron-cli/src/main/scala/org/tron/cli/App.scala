@@ -16,7 +16,7 @@ object App {
     val injector = Guice.createInjector(new Module())
 
     val app = new Application(injector) with PeerApplication with CliGlobals {
-      val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build("client")
+      val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build()
     }
 
     while (true) {

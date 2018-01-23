@@ -22,7 +22,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
 
   def iterator = new BlockchainIterator(this)
 
-  def findTransaction(id: Array[Byte]): Option[Transaction] = {
+  def findTransaction(id: TXID): Option[Transaction] = {
 
     val bi = new BlockchainIterator(this)
 
@@ -159,7 +159,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
     // TODO send to kafka
   }
 
-  def addGenesisBlock(account: String): Unit = {
+  def addGenesisBlock(account: Address): Unit = {
     val transactions = TransactionUtils.newCoinbaseTransaction(account, Constant.GENESIS_COINBASE_DATA)
 
     val genesisBlock = BlockUtils.newGenesisBlock(transactions)

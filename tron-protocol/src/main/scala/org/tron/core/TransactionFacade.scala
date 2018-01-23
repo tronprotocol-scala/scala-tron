@@ -6,8 +6,8 @@ import org.tron.wallet.Wallet
 
 class TransactionFacade(peer: Peer, transactionStrategy: TransactionStrategy) {
 
-  def newTransaction(fromAddress: String, toAddress: String, amount: Int) = {
-    val from = KeyUtils.fromPrivateKey(fromAddress)
+  def newTransaction(fromAddressPrivateKey: String, toAddress: Address, amount: Int) = {
+    val from = KeyUtils.fromPrivateKey(fromAddressPrivateKey)
     val fromWallet = Wallet(from.ecKey)
 
     for {
