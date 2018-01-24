@@ -22,25 +22,25 @@ class UTXOSet(
   }
 
   def getBalance(key: Key) = {
-    findUTXO(key.addressHex).map(_.value).sum
+    findUTXO(key.address).map(_.value).sum
   }
 
-  def getBalance(address: String) = {
+  def getBalance(address: Address) = {
     findUTXO(address).map(_.value).sum
   }
 
-  def findSpendableOutputs(pubKey: Key, amount: Long): SpendableOutputs = {
+  def findSpendableOutputs(address: Address, amount: Long): SpendableOutputs = {
     val unspentOutputs = scala.collection.mutable.Map[String, Array[Long]]()
 
     var accumulated = 0L
-    val keySet = Await.result(txDB.allKeys, 5 seconds).map(key => ByteArrayUtils.fromString(key))
+    val keySet = txDB.allKeys
     for (key <- keySet) {
-      val txOutputsData = Await.result(txDB.get(Array()), 5 seconds).get
+      val txOutputsData = txDB.get(key).get
       val txOutputs = TXOutputs.parseFrom(txOutputsData)
       val len = txOutputs.outputs.size
       for (i <- 0 until len) {
         val txOutput = txOutputs.outputs(i)
-        if (accumulated < amount && pubKey.addressHex == txOutput.pubKeyHash.hex) {
+        if (accumulated < amount && address.hex == txOutput.pubKeyHash.hex) {
           accumulated += txOutput.value
           val v = unspentOutputs.getOrElse(ByteArrayUtils.toHexString(key), Array[Long]())
           unspentOutputs.put(ByteArrayUtils.toHexString(key), v :+ i.toLong)
@@ -51,14 +51,19 @@ class UTXOSet(
     SpendableOutputs(accumulated, unspentOutputs.toMap)
   }
 
-  def findUTXO(address: String): Set[TXOutput] = {
-    Await.result(txDB.allKeys, 5 seconds)
-      .flatMap(key => Await.result(txDB.get(ByteArrayUtils.fromString(key)), 5 seconds))
+  def findUTXO(address: Address): Set[TXOutput] = {
+
+    txDB
+      // Take all keys
+      .allKeys
+      // Retrieve data for each key
+      .flatMap(key => txDB.get(key))
+      // Find all outputs
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
-          val tXOutputHex = txOutput.pubKeyHash.hex
-          address == tXOutputHex
+          val txOutputHex = txOutput.pubKeyHash.hex
+          address.hex == txOutputHex
         })
-      }.toSet
+      }
   }
 }

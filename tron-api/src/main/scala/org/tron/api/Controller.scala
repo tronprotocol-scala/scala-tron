@@ -1,6 +1,6 @@
 package org.tron.api
 
-import org.tron.core.{Blockchain, UTXOSet}
+import org.tron.core.{Address, Blockchain, UTXOSet}
 import org.tron.utils.KeyUtils
 import play.api.libs.json.Json
 import play.api.mvc.Results._
@@ -19,7 +19,7 @@ class Controller(
 
   def addressBalance(address: String) = Action {
 
-    val balance = uTXOSet.getBalance(address)
+    val balance = uTXOSet.getBalance(Address(address))
 
     Ok(Json.obj(
       "address" -> address,
@@ -32,7 +32,7 @@ class Controller(
     val key = KeyUtils.generateKey
 
     Ok(Json.obj(
-      "address" -> key.addressHex,
+      "address" -> key.address.hex,
       "private_key" -> key.privateKeyCompressed
     ))
   }

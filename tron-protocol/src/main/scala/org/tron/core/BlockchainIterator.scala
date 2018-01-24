@@ -11,14 +11,10 @@ class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
 
   def hasNext = Option(index).exists(_.length > 0)
 
-  override def next() = {
-    if (hasNext) {
-      val value = Await.result(blockchain.blockDB.get(index), 5 seconds).get
-      val block = Block.parseFrom(value)
-      index = block.blockHeader.get.parentHash.toByteArray
-      block
-    } else {
-      null // scalastyle:ignore
-    }
+  def next() = {
+    val value = blockchain.blockDB.get(index).get
+    val block = Block.parseFrom(value)
+    index = block.blockHeader.get.parentHash.toByteArray
+    block
   }
 }

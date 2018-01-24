@@ -6,7 +6,7 @@
 </h1>
 
 <h4 align="center">
-  Scala implementation of the <a href="https://github.com/tronprotocol/wiki/blob/master/Home.md">Tron Protocol</a>
+  Scala implementation of the <a href="http://wiki.tron.network">Tron Protocol</a>
 </h4>
 
 <p align="center">
@@ -188,8 +188,7 @@ __Response__
 
 ## Wiki
 
-* [Introduction (Tron Protocol)](https://github.com/tronprotocol/wiki/blob/master/Home.md)
-* [ReadTheDocs](http://tron-wiki.readthedocs.io/introduction.html)
+* [Introduction (Tron Protocol)](http://wiki.tron.network)
 
 ## Contact
 

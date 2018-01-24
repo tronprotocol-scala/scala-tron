@@ -48,40 +48,40 @@ object TransactionUtils {
     def setVin(index: Int, input: TXInput) = {
       transaction.withVin(transaction.vin.updated(index, input))
     }
+    def hasId = transaction.id.toByteArray.length > 0
+    def isCoinbase = transaction.vin.size == 1 && (transaction.vin.head.txID.size == 0) && (transaction.vin.head.vout == -1)
   }
-
 
   private val RESERVE_BALANCE = 10
 
-  def newTransaction(wallet: Wallet, toKey: String, amount: Long, utxoSet: UTXOSet): Transaction = {
+  def newTransaction(wallet: Wallet, toKey: Address, amount: Long, utxoSet: UTXOSet): Either[Exception, Transaction] = {
 
-    val txOutputs = mutable.ListBuffer[TXOutput]()
-    val pubKeyHash = wallet.key.getPubKey
     val spendableOutputs = utxoSet.findSpendableOutputs(wallet.address, amount)
     if (spendableOutputs.amount < amount) {
-      throw new Exception("Not enough funds")
+      Left(InsufficientFunds)
+    } else {
+      val entrySet = spendableOutputs.unspentOutputs
+
+      val txInputs =  for {
+        (txID, outs) <- entrySet
+        out <- outs
+      } yield {
+        TXInputUtils.newTXInput(ByteArrayUtils.fromHexString(txID), out, new Array[Byte](0), wallet.key.getPubKey)
+      }
+
+      val txOutputs = mutable.ListBuffer[TXOutput]()
+      txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey.hex))
+
+      if (spendableOutputs.amount > amount) {
+        txOutputs.append(TXOutputUtils.newTXOutput(spendableOutputs.amount - amount, wallet.address.hex))
+      }
+
+      val newTransaction = Transaction(
+        vin = txInputs.toSeq,
+        vout = txOutputs)
+
+      utxoSet.blockchain.signTransaction(newTransaction, wallet.key)
     }
-
-    val entrySet = spendableOutputs.unspentOutputs
-
-    val txInputs =  for {
-      (txID, outs) <- entrySet
-      out <- outs
-    } yield {
-      TXInputUtils.newTXInput(ByteArrayUtils.fromHexString(txID), out, new Array[Byte](0), pubKeyHash)
-    }
-
-    txOutputs.append(TXOutputUtils.newTXOutput(amount, toKey))
-
-    if (spendableOutputs.amount > amount) {
-      txOutputs.append(TXOutputUtils.newTXOutput(spendableOutputs.amount - amount, wallet.address.addressHex))
-    }
-
-    val newTransaction = Transaction(
-      vin = txInputs.toSeq,
-      vout = txOutputs)
-
-    utxoSet.blockchain.signTransaction(newTransaction, wallet.key)
   }
 
   /**
@@ -91,7 +91,7 @@ object TransactionUtils {
     * @param data String transaction data
     * @return { @link Transaction}
     */
-  def newCoinbaseTransaction(to: String, data: String): Transaction = {
+  def newCoinbaseTransaction(to: Address, data: String): Transaction = {
     val key = if (data == null || data == "") {
       val randBytes = Array.fill(20)(0.byteValue)
       getRandom.nextBytes(randBytes)
@@ -99,7 +99,7 @@ object TransactionUtils {
     } else data
 
     val txi = TXInputUtils.newTXInput(Array[Byte](), -1, Array[Byte](), ByteArrayUtils.fromHexString(key))
-    val txo = TXOutputUtils.newTXOutput(RESERVE_BALANCE, to)
+    val txo = TXOutputUtils.newTXOutput(RESERVE_BALANCE, to.hex)
     val coinbaseTransaction = Transaction()
       .addVin(txi)
       .addVout(txo)
@@ -128,58 +128,53 @@ object TransactionUtils {
     transaction.vin.size == 1 && (transaction.vin.head.txID.size == 0) && (transaction.vin.head.vout == -1)
   }
 
-  def sign(transaction: Transaction, myKey: ECKey, prevTXs: Map[String, Transaction]): Transaction = {
+  def sign(transaction: Transaction, myKey: ECKey, prevTXs: Map[String, Transaction]): Either[TransactionException, Transaction] = {
 
     var mutableTransaction = transaction
 
     // No need to sign coinbase transaction
-    if (TransactionUtils.isCoinbaseTransaction(mutableTransaction))
-      return transaction // scalastyle:ignore
+    if (mutableTransaction.isCoinbase) {
+      Left(TransactionException("Can't sign coinbase transaction"))
+    } else if (mutableTransaction.vin.exists(vin => !prevTXs(vin.txID.hex).hasId)) {
+      Left(TransactionException("Previous transaction is incorrect"))
+    } else {
+      for (i <- mutableTransaction.vin.indices) {
+        val vin = mutableTransaction.vin(i)
+        val prevTx = prevTXs(vin.txID.hex)
+        var transactionCopyBuilder = mutableTransaction
+        var vinBuilder = vin
+          .withSignature(ByteString.EMPTY)
+          .withPubKey(prevTx.vout(vin.vout.toInt).pubKeyHash)
 
-    for (vin <- mutableTransaction.vin) {
-      if (prevTXs(vin.txID.hex).id.toByteArray.length == 0) {
-        throw new Exception("Previous transaction is incorrect")
+        transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
+
+        transactionCopyBuilder = transactionCopyBuilder
+          .withId(transactionCopyBuilder.hash)
+
+        vinBuilder = vinBuilder.withPubKey(ByteString.EMPTY)
+        transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
+
+        val signature = myKey.sign(transactionCopyBuilder.id).toByteArray
+
+        var transactionBuilder = mutableTransaction.setVin(i, vinBuilder.withSignature(signature))
+
+        transactionBuilder = transactionBuilder.withId(transactionBuilder.hashByteString)
+
+        mutableTransaction = transactionBuilder
       }
+
+      Right(mutableTransaction)
     }
-
-    for (i <- mutableTransaction.vin.indices) {
-      val vin = mutableTransaction.vin(i)
-      val prevTx = prevTXs(vin.txID.hex)
-      var transactionCopyBuilder = mutableTransaction
-      var vinBuilder = vin
-        .withSignature(ByteString.EMPTY)
-        .withPubKey(prevTx.vout(vin.vout.toInt).pubKeyHash)
-
-      transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
-
-      transactionCopyBuilder = transactionCopyBuilder
-        .withId(transactionCopyBuilder.hash)
-
-      vinBuilder = vinBuilder.withPubKey(ByteString.EMPTY)
-      transactionCopyBuilder = transactionCopyBuilder.setVin(i, vinBuilder)
-
-      val signature = myKey.sign(transactionCopyBuilder.id).toByteArray
-
-      var transactionBuilder = mutableTransaction.setVin(i, vinBuilder.withSignature(signature))
-
-      transactionBuilder = transactionBuilder.withId(transactionBuilder.hashByteString)
-
-      mutableTransaction = transactionBuilder
-    }
-
-    mutableTransaction
   }
 
-  def verify(transaction: Transaction, key: ECKey,  prevTXs: Map[String, Transaction]): Boolean = {
+  def verify(transaction: Transaction, key: ECKey, prevTXs: Map[String, Transaction]): Boolean = {
 
     // No need to sign coinbase transaction
-    if (TransactionUtils.isCoinbaseTransaction(transaction))
+    if (transaction.isCoinbase)
       return true // scalastyle:ignore
 
-    for (vin <- transaction.vin) {
-      if (prevTXs(vin.txID.hex).id.toByteArray.length == 0) {
-        throw new Exception("Previous transaction is incorrect")
-      }
+    if (transaction.vin.exists(vin => !prevTXs(vin.txID.hex).hasId)) {
+      return false
     }
 
     for (i <- transaction.vin.indices) {

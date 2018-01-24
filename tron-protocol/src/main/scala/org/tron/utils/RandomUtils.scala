@@ -1,6 +1,7 @@
 package org.tron.utils
 
 object RandomUtils {
+
   /**
     * Random number within range
     */

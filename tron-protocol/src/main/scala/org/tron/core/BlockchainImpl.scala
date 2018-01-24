@@ -3,8 +3,8 @@ package core
 
 import com.google.protobuf.ByteString
 import org.tron.core.Constant.LAST_HASH
+import org.tron.core.TransactionUtils._
 import org.tron.crypto.ECKey
-import org.tron.peer.Peer
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction
@@ -17,13 +17,14 @@ import scala.concurrent
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class BlockchainImpl(
-  val blockDB: BlockChainDb) extends Blockchain {
+class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable[Block] {
 
   var lastHash = Await.result(blockDB.get(Constant.LAST_HASH), 5 seconds).getOrElse(null)
   var currentHash = lastHash
 
-  def findTransaction(id: Array[Byte]): Option[Transaction] = {
+  def iterator = new BlockchainIterator(this)
+
+  def findTransaction(id: TXID): Option[Transaction] = {
 
     val bi = new BlockchainIterator(this)
 
@@ -65,7 +66,7 @@ class BlockchainImpl(
         utxo.put(txId, outs)
       }
 
-      if (!TransactionUtils.isCoinbaseTransaction(transaction)) {
+      if (!transaction.isCoinbase) {
         for (in <- transaction.vin) {
           val inTxid = in.txID.hex
           val vindexs = spenttxos.getOrElse(inTxid, Array[Long]())
@@ -113,7 +114,7 @@ class BlockchainImpl(
     block
   }
 
-  def signTransaction(transaction: Transaction, key: ECKey): Transaction = {
+  def signTransaction(transaction: Transaction, key: ECKey): Either[TransactionException, Transaction] = {
 
     val prevTXs = transaction.vin.map { txInput =>
       val txID: ByteString = txInput.txID
@@ -160,7 +161,7 @@ class BlockchainImpl(
     // TODO send to kafka
   }
 
-  def addGenesisBlock(account: String): Unit = {
+  def addGenesisBlock(account: Address): Unit = {
     val transactions = TransactionUtils.newCoinbaseTransaction(account, Constant.GENESIS_COINBASE_DATA)
 
     val genesisBlock = BlockUtils.newGenesisBlock(transactions)
@@ -172,4 +173,5 @@ class BlockchainImpl(
     this.lastHash = lastHash
     this.currentHash = lastHash
   }
+
 }
