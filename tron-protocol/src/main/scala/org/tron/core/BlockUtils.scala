@@ -10,6 +10,9 @@ import org.tron.protos.core.TronBlockHeader.BlockHeader
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.utils.ByteArrayUtils
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 object BlockUtils {
 
   /**
@@ -121,10 +124,9 @@ object BlockUtils {
     * @return long number
     */
   def getIncreaseNumber(blockchain: Blockchain): Long = {
-
     val nextNumber = for {
-      lastHash <- blockchain.blockDB.get(Constant.LAST_HASH)
-      value <- blockchain.blockDB.get(lastHash)
+      lastHash <- Await.result(blockchain.blockDB.get(Constant.LAST_HASH), 5 seconds)
+      value <- Await.result(blockchain.blockDB.get(lastHash), 5 seconds)
     } yield Block.parseFrom(value).getBlockHeader.number + 1
 
     nextNumber.getOrElse(0)

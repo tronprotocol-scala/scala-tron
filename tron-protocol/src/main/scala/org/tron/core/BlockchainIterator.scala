@@ -2,6 +2,9 @@ package org.tron.core
 
 import org.tron.protos.core.TronBlock.Block
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
 
   var index = blockchain.currentHash
@@ -10,7 +13,7 @@ class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
 
   override def next() = {
     if (hasNext) {
-      val value = blockchain.blockDB.get(index).get
+      val value = Await.result(blockchain.blockDB.get(index), 5 seconds).get
       val block = Block.parseFrom(value)
       index = block.blockHeader.get.parentHash.toByteArray
       block
