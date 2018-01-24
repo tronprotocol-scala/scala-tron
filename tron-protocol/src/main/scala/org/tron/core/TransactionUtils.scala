@@ -28,7 +28,6 @@
 package org.tron.core
 
 import com.google.protobuf.ByteString
-import org.tron.core.Exceptions.TransactionException
 import org.tron.crypto.ECKey
 import org.tron.crypto.Hash.sha256
 import org.tron.protos.core.TronTXInput.TXInput
@@ -55,11 +54,11 @@ object TransactionUtils {
 
   private val RESERVE_BALANCE = 10
 
-  def newTransaction(wallet: Wallet, toKey: Address, amount: Long, utxoSet: UTXOSet): Either[TransactionException, Transaction] = {
+  def newTransaction(wallet: Wallet, toKey: Address, amount: Long, utxoSet: UTXOSet): Either[Exception, Transaction] = {
 
     val spendableOutputs = utxoSet.findSpendableOutputs(wallet.address, amount)
     if (spendableOutputs.amount < amount) {
-      Left(TransactionException("Not enough funds"))
+      Left(InsufficientFunds)
     } else {
       val entrySet = spendableOutputs.unspentOutputs
 
@@ -175,7 +174,7 @@ object TransactionUtils {
       return true // scalastyle:ignore
 
     if (transaction.vin.exists(vin => !prevTXs(vin.txID.hex).hasId)) {
-      throw new Exception("Previous transaction is incorrect")
+      return false
     }
 
     for (i <- transaction.vin.indices) {

@@ -1,7 +1,6 @@
 package org.tron
 package core
 
-import org.tron.core.Exceptions.TransactionException
 import org.tron.crypto.ECKey
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
@@ -17,7 +16,7 @@ trait Blockchain {
   def addBlock(transactions: List[Transaction]): Block
   def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit
 
-  def signTransaction(transaction: Transaction, key: ECKey): Either[TransactionException, Transaction]
+  def signTransaction(transaction: Transaction, key: ECKey): Either[Exception, Transaction]
 
   def currentHash: Array[Byte]
 

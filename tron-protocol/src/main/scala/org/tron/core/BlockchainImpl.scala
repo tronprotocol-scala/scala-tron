@@ -3,7 +3,6 @@ package core
 
 import com.google.protobuf.ByteString
 import org.tron.core.Constant.LAST_HASH
-import org.tron.core.Exceptions.TransactionException
 import org.tron.core.TransactionUtils._
 import org.tron.crypto.ECKey
 import org.tron.protos.core.TronBlock.Block
