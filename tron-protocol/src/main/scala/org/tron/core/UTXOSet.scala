@@ -51,18 +51,13 @@ class UTXOSet(
     SpendableOutputs(accumulated, unspentOutputs.toMap)
   }
 
-  def findUTXO(address: Address): Set[TXOutput] = {
-
-    txDB
-      // Take all keys
-      .allKeys
-      // Retrieve data for each key
-      .flatMap(key => txDB.get(key))
-      // Find all outputs
+  def findUTXO(address: String): Set[TXOutput] = {
+    Await.result(txDB.allKeys, 5 seconds)
+      .flatMap(key => Await.result(txDB.get(ByteArrayUtils.fromString(key)), 5 seconds))
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
-          val txOutputHex = txOutput.pubKeyHash.hex
-          address.hex == txOutputHex
+          val tXOutputHex = txOutput.pubKeyHash.hex
+          address == tXOutputHex
         })
       }.toSet
   }
