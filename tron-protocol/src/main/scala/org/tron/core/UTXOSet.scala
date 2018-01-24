@@ -1,13 +1,10 @@
-package org.tron.core
+package org.tron
+package core
 
-import org.tron.BlockChainDb
 import org.tron.protos.core.TronTXOutput.TXOutput
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 class UTXOSet(
    val txDB: BlockChainDb,
@@ -33,9 +30,9 @@ class UTXOSet(
     val unspentOutputs = scala.collection.mutable.Map[String, Array[Long]]()
 
     var accumulated = 0L
-    val keySet = Await.result(txDB.allKeys, 5 seconds).map(key => ByteArrayUtils.fromString(key))
+    val keySet = awaitResult(txDB.allKeys)
     for (key <- keySet) {
-      val txOutputsData = Await.result(txDB.get(Array()), 5 seconds).get
+      val txOutputsData = awaitResult(txDB.get(key)).get
       val txOutputs = TXOutputs.parseFrom(txOutputsData)
       val len = txOutputs.outputs.size
       for (i <- 0 until len) {
@@ -51,9 +48,12 @@ class UTXOSet(
     SpendableOutputs(accumulated, unspentOutputs.toMap)
   }
 
-  def findUTXO(address: String): Set[TXOutput] = {
-    Await.result(txDB.allKeys, 5 seconds)
-      .flatMap(key => Await.result(txDB.get(ByteArrayUtils.fromString(key)), 5 seconds))
+  def findUTXO(address: Address): Set[TXOutput] = {
+
+    awaitResult(txDB.allKeys)
+      // Retrieve data for each key
+      .map(key => awaitResult(txDB.get(key)).get)
+      // Find all outputs
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
           val tXOutputHex = txOutput.pubKeyHash.hex

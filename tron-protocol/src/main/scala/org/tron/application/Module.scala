@@ -1,7 +1,7 @@
 package org.tron.application
 
 import java.nio.file.Paths
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 import akka.actor.ActorSystem
 import com.google.inject.{AbstractModule, Provides}
@@ -28,6 +28,7 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
 
   @Provides
   @Singleton
+  @Inject
   def buildDbFactory(): DbFactory = {
     val config = buildConfig()
     val file = config.getString(Constant.DATABASE_DIR)
@@ -38,7 +39,7 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
       case Constant.DATABASE_TYPE_LEVELDB =>
         new LevelDbFactory(name)
       case Constant.DATABASE_TYPE_REDIS =>
-        new RedisDbFactory(name)
+        new RedisDbFactory(buildActorSystem(), name)
     }
   }
 

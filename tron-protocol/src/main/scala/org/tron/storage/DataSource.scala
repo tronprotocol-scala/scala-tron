@@ -1,21 +1,19 @@
 package org.tron.storage
 
-import akka.util.ByteString
-
 import scala.concurrent.Future
 
 trait DataSource[K, V] {
 
   def initDB(): Unit
-  def resetDB(): Future[Boolean]
+  def resetDB(): Future[Unit]
 
-  def allKeys: Future[Seq[String]]
+  def allKeys: Future[Set[Array[Byte]]]
 
-  def put(key: K, value: V): Future[Boolean]
+  def put(key: K, value: V): Future[Unit]
 
   def get(key: K): Future[Option[V]]
 
-  def delete(key: K): Future[Long]
+  def delete(key: K): Future[Unit]
 
   def close(): Unit
 

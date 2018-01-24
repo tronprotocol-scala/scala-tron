@@ -2,42 +2,56 @@ package org.tron.storage
 
 import java.io.File
 
+import akka.actor.ActorSystem
 import akka.util.ByteString
 import org.tron.utils.{ByteArrayUtils, ByteStringUtils}
 import redis.RedisClient
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RedisDbDataSourceImpl(dbFolder: File, name: String = "default") extends DataSource[Array[Byte], ByteString] {
+class RedisDbDataSourceImpl(
+  system: ActorSystem,
+  dbFolder: File,
+  name: String = "default") extends DataSource[Array[Byte], Array[Byte]] {
 
   var database: Option[RedisClient] = None
 
-  override def initDB(): Unit = {
-    implicit val akkaSystem = akka.actor.ActorSystem()
+  def initDB(): Unit = {
+    implicit val actorSystem = system
     database = Some(RedisClient())
   }
 
-  override def get(key: Array[Byte]): Future[Option[ByteString]] = {
-    database.get.hget(name,ByteArrayUtils.toString(key))
+  def get(key: Array[Byte]): Future[Option[Array[Byte]]] = {
+    database.get.hget(name, ByteArrayUtils.toString(key)).map {
+      case Some(result) =>
+        Some(result.toArray)
+      case None =>
+        None
+    }
   }
 
-  override def put(key: Array[Byte], value: ByteString): Future[Boolean] = {
-    database.get.hset(name,ByteArrayUtils.toString(key),ByteArrayUtils.toString(key))
+  def put(key: Array[Byte], value: Array[Byte]): Future[Unit] = {
+    database.get.hset(name, ByteArrayUtils.toString(key), ByteArrayUtils.toString(key))
+      .flatMap(_ => Future.unit)
   }
 
-  override def delete(key: Array[Byte]): Future[Long] = {
-    database.get.hdel(name,ByteArrayUtils.toString(key))
+  def delete(key: Array[Byte]): Future[Unit] = {
+    database.get.hdel(name, ByteArrayUtils.toString(key))
+      .flatMap(_ => Future.unit)
   }
 
-  override def close(): Unit = {
+  def close(): Unit = {
     database.get.stop()
   }
 
-  override def allKeys: Future[Seq[String]] = {
+  def allKeys = {
     database.get.hkeys(name)
+      .map(keys => keys.map(ByteArrayUtils.fromHexString).toSet)
   }
 
-  override def resetDB(): Future[Boolean] = {
+  def resetDB(): Future[Unit] = {
     database.get.flushdb()
+      .flatMap(_ => Future.unit)
   }
 }
