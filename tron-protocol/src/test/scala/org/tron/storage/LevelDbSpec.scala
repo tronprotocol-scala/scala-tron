@@ -1,7 +1,9 @@
-package org.tron.storage
+package org.tron
+package storage
 
 import org.specs2.mutable.Specification
 import org.tron.utils.ByteArrayUtils
+
 
 class LevelDbSpec extends Specification with DatabaseContext {
 
@@ -16,7 +18,7 @@ class LevelDbSpec extends Specification with DatabaseContext {
 
       db.put(key, value)
 
-      val storedValue = db.get(key).get
+      val storedValue = awaitResult(db.get(key)).get
       val s = ByteArrayUtils.toString(storedValue)
 
       ByteArrayUtils.toString(value) must equalTo(s)
@@ -31,8 +33,8 @@ class LevelDbSpec extends Specification with DatabaseContext {
 
       dataSource.put(key, value)
 
-      dataSource.get(key) must beSome
-      dataSource.allKeys.size must equalTo(1)
+      awaitResult(dataSource.get(key)) must beSome
+      awaitResult(dataSource.allKeys).size must equalTo(1)
     }
 
     "reset data" in { dataSource: LevelDbDataSourceImpl =>

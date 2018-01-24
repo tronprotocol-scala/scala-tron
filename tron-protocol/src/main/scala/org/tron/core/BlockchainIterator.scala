@@ -1,9 +1,7 @@
-package org.tron.core
+package org.tron
+package core
 
 import org.tron.protos.core.TronBlock.Block
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
 
@@ -12,7 +10,7 @@ class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
   def hasNext = Option(index).exists(_.length > 0)
 
   def next() = {
-    val value = blockchain.blockDB.get(index).get
+    val value = awaitResult(blockchain.blockDB.get(index)).get
     val block = Block.parseFrom(value)
     index = block.blockHeader.get.parentHash.toByteArray
     block
