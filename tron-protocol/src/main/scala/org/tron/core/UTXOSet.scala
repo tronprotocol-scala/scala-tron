@@ -6,6 +6,9 @@ import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 class UTXOSet(
    val txDB: BlockChainDb,
    val blockchain: Blockchain) {
@@ -30,9 +33,9 @@ class UTXOSet(
     val unspentOutputs = scala.collection.mutable.Map[String, Array[Long]]()
 
     var accumulated = 0L
-    val keySet = txDB.allKeys
+    val keySet = Await.result(txDB.allKeys, 5 seconds).map(key => ByteArrayUtils.fromString(key))
     for (key <- keySet) {
-      val txOutputsData = txDB.get(key).get
+      val txOutputsData = Await.result(txDB.get(Array()), 5 seconds).get
       val txOutputs = TXOutputs.parseFrom(txOutputsData)
       val len = txOutputs.outputs.size
       for (i <- 0 until len) {
@@ -61,6 +64,6 @@ class UTXOSet(
           val txOutputHex = txOutput.pubKeyHash.hex
           address.hex == txOutputHex
         })
-      }
+      }.toSet
   }
 }

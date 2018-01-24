@@ -2,6 +2,9 @@ package org.tron.core
 
 import org.tron.protos.core.TronBlock.Block
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
 
   var index = blockchain.currentHash
