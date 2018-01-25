@@ -1,4 +1,5 @@
-package org.tron.storage
+package org.tron
+package storage
 
 import java.io.File
 
@@ -15,19 +16,20 @@ class RedisDbDataSourceImpl(
   dbFolder: File,
   name: String = "default") extends DataSource[Array[Byte], Array[Byte]] {
 
-  def initDB() = {}
+  def initDB() = {
+  }
 
   def get(key: Array[Byte]): Future[Option[Array[Byte]]] = {
-    client.hget(name, ByteArrayUtils.toString(key)).map {
+    client.hget[Array[Byte]](name, ByteArrayUtils.toString(key)).map {
       case Some(result) =>
-        Some(result.toArray)
+        Some(result)
       case None =>
         None
     }
   }
 
   def put(key: Array[Byte], value: Array[Byte]): Future[Unit] = {
-    client.hset(name, ByteArrayUtils.toString(key), ByteArrayUtils.toString(key))
+    client.hset(name, ByteArrayUtils.toString(key), value)
       .flatMap(_ => Future.unit)
   }
 
@@ -41,12 +43,13 @@ class RedisDbDataSourceImpl(
   }
 
   def allKeys = {
-    client.hkeys(name)
-      .map(keys => keys.map(ByteArrayUtils.fromHexString).toSet)
+    client
+      .hkeys(name)
+      .map(keys => keys.map(ByteArrayUtils.fromString).toSet)
   }
 
   def resetDB(): Future[Unit] = {
-    client.flushdb()
+    client.del(name)
       .flatMap(_ => Future.unit)
   }
 }
