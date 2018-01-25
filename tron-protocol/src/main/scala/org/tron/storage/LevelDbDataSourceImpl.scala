@@ -148,7 +148,6 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def close(): Unit = {
-
     try {
       resetDbLock.writeLock.lock()
       if (alive) {

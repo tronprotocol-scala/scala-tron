@@ -1,23 +1,21 @@
 package org.tron.core
 
 import org.specs2.mutable._
-import org.tron.application.Module
+import org.tron.application.{AppFactory, Module}
+import org.tron.storage.DbFactory
 import org.tron.utils.KeyUtils
 import org.tron.wallet.Wallet
 
 class BlockchainSpec extends Specification {
-
 
   sequential
 
   "Blockchain" should {
 
     "start blockchain with new genesis block" in {
-
-      val module = new Module()
-      val dbFactory = module.buildDbFactory()
-
-      val blockchain = module.buildBlockchain()
+      val injector = AppFactory.buildInjector
+      val dbFactory = injector.getInstance(classOf[DbFactory])
+      val blockchain = injector.getInstance(classOf[Blockchain])
       val key = KeyUtils.generateKey
 
       blockchain.addGenesisBlock(key.address)
@@ -34,11 +32,10 @@ class BlockchainSpec extends Specification {
     }
 
     "make a transaction between addresses" in {
+      val injector = AppFactory.buildInjector
+      val dbFactory = injector.getInstance(classOf[DbFactory])
+      val blockchain = injector.getInstance(classOf[Blockchain]).asInstanceOf[BlockchainImpl]
 
-      val module = new Module()
-      val dbFactory = module.buildDbFactory()
-
-      val blockchain = module.buildBlockchain().asInstanceOf[BlockchainImpl]
       val sender = KeyUtils.generateKey
       val senderWallet = Wallet(sender.ecKey)
       val receiver = KeyUtils.generateKey
