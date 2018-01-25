@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 
 class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable[Block] {
 
-  var lastHash = Await.result(blockDB.get(Constant.LAST_HASH), 5 seconds).getOrElse(null)
+  var lastHash = awaitResult(blockDB.get(Constant.LAST_HASH)).getOrElse(null)
   var currentHash = lastHash
 
   def iterator = new BlockchainIterator(this)
@@ -79,15 +79,15 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
   }
 
   def addBlock(block: Block): Unit = {
-    Await.result(blockDB.get(block.getBlockHeader.hash.toByteArray), 5 seconds) match {
+    awaitResult(blockDB.get(block.getBlockHeader.hash.toByteArray)) match {
       case Some(blockInDB) if blockInDB.nonEmpty =>
 
         blockDB.put(block.getBlockHeader.hash.toByteArray, block.toByteArray)
 
         val lashHash = ByteArrayUtils.fromString("lashHash")
 
-        val lastHash = Await.result(blockDB.get(lashHash), 5 seconds).get
-        val lastBlockData = Await.result(blockDB.get(lastHash), 5 seconds).get
+        val lastHash = awaitResult(blockDB.get(lashHash)).get
+        val lastBlockData = awaitResult(blockDB.get(lastHash)).get
         val lastBlock = Block.parseFrom(lastBlockData)
 
         if (block.getBlockHeader.number > lastBlock.getBlockHeader.number) {
@@ -104,7 +104,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
 
   def addBlock(transactions: List[Transaction]): Block = {
     // get lastHash
-    val lastHash = Await.result(blockDB.get(LAST_HASH), 5 seconds).get
+    val lastHash = awaitResult(blockDB.get(LAST_HASH)).get
     val parentHash = ByteString.copyFrom(lastHash)
     // get number
     val number = BlockUtils.getIncreaseNumber(this)
@@ -130,7 +130,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
     * Recieve block
     */
   def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit = {
-    val lastHash = Await.result(blockDB.get(LAST_HASH), 5 seconds).get
+    val lastHash = awaitResult(blockDB.get(LAST_HASH)).get
     if (block.getBlockHeader.parentHash.hex != ByteArrayUtils.toHexString(lastHash))
       return
 
@@ -150,7 +150,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
 
   def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
     // get lastHash
-    val lastHash = Await.result(blockDB.get(LAST_HASH), 5 seconds).get
+    val lastHash = awaitResult(blockDB.get(LAST_HASH)).get
     val parentHash = ByteString.copyFrom(lastHash)
     // get number
     val number = BlockUtils.getIncreaseNumber(this)

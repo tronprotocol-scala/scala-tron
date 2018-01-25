@@ -11,9 +11,7 @@ import org.tron.storage.{DbFactory, LevelDbFactory, RedisDbFactory}
 
 class Module(mode: String = Constant.TEST) extends AbstractModule {
 
-  def configure() = {
-
-  }
+  def configure() = {}
 
   @Provides
   @Singleton
@@ -33,8 +31,8 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
     val config = buildConfig()
     val file = config.getString(Constant.DATABASE_DIR)
     val name = Paths.get(file)
-
     val dbType = config.getString(Constant.DATABASE_TYPE)
+
     dbType match {
       case Constant.DATABASE_TYPE_LEVELDB =>
         new LevelDbFactory(name)

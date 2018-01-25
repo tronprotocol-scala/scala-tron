@@ -11,7 +11,7 @@ class UTXOSet(
    val blockchain: Blockchain) {
 
   def reindex(): Unit = {
-    txDB.resetDB()
+    awaitResult(txDB.resetDB())
 
     blockchain.findUTXO().foreach { case (key, value) =>
       txDB.put(ByteArrayUtils.fromHexString(key), value.toByteArray)
@@ -57,7 +57,7 @@ class UTXOSet(
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
           val tXOutputHex = txOutput.pubKeyHash.hex
-          address == tXOutputHex
+          address.hex == tXOutputHex
         })
       }.toSet
   }

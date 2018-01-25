@@ -16,7 +16,7 @@ class LevelDbSpec extends Specification with DatabaseContext {
 
       val value = "50000".getBytes
 
-      db.put(key, value)
+      awaitResult(db.put(key, value))
 
       val storedValue = awaitResult(db.get(key)).get
       val s = ByteArrayUtils.toString(storedValue)
@@ -31,14 +31,14 @@ class LevelDbSpec extends Specification with DatabaseContext {
       val value1 = "50000"
       val value = value1.getBytes
 
-      dataSource.put(key, value)
+      awaitResult(dataSource.put(key, value))
 
       awaitResult(dataSource.get(key)) must beSome
       awaitResult(dataSource.allKeys).size must equalTo(1)
     }
 
     "reset data" in { dataSource: LevelDbDataSourceImpl =>
-      dataSource.resetDB()
+      awaitResult(dataSource.resetDB())
       ok
     }
   }

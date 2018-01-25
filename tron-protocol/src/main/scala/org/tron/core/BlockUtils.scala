@@ -4,6 +4,7 @@ import java.math.BigInteger
 
 import com.google.protobuf.ByteString
 import org.spongycastle.util.{Arrays, BigIntegers}
+import org.tron.awaitResult
 import org.tron.crypto.Hash.sha3
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronBlockHeader.BlockHeader
@@ -125,8 +126,8 @@ object BlockUtils {
     */
   def getIncreaseNumber(blockchain: Blockchain): Long = {
     val nextNumber = for {
-      lastHash <- Await.result(blockchain.blockDB.get(Constant.LAST_HASH), 5 seconds)
-      value <- Await.result(blockchain.blockDB.get(lastHash), 5 seconds)
+      lastHash <- awaitResult(blockchain.blockDB.get(Constant.LAST_HASH))
+      value <- awaitResult(blockchain.blockDB.get(lastHash))
     } yield Block.parseFrom(value).getBlockHeader.number + 1
 
     nextNumber.getOrElse(0)
