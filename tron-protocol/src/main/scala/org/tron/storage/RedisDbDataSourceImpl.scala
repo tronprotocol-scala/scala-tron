@@ -20,7 +20,7 @@ class RedisDbDataSourceImpl(
   }
 
   def get(key: Array[Byte]): Future[Option[Array[Byte]]] = {
-    client.hget[Array[Byte]](name, ByteArrayUtils.toString(key)).map {
+    client.hget[Array[Byte]](name, ByteArrayUtils.toHexString(key)).map {
       case Some(result) =>
         Some(result)
       case None =>
@@ -29,7 +29,7 @@ class RedisDbDataSourceImpl(
   }
 
   def put(key: Array[Byte], value: Array[Byte]): Future[Unit] = {
-    client.hset(name, ByteArrayUtils.toString(key), value)
+    client.hset(name, ByteArrayUtils.toHexString(key), value)
       .flatMap(_ => Future.unit)
   }
 
@@ -45,7 +45,7 @@ class RedisDbDataSourceImpl(
   def allKeys = {
     client
       .hkeys(name)
-      .map(keys => keys.map(ByteArrayUtils.fromString).toSet)
+      .map(keys => keys.map(ByteArrayUtils.fromHexString).toSet)
   }
 
   def resetDB(): Future[Unit] = {

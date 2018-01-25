@@ -52,7 +52,10 @@ class UTXOSet(
 
     awaitResult(txDB.allKeys)
       // Retrieve data for each key
-      .map(key => awaitResult(txDB.get(key)).get)
+      .flatMap(key => {
+        val result = awaitResult(txDB.get(key))
+        result
+      })
       // Find all outputs
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
