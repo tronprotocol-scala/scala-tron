@@ -59,8 +59,7 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def initDB(): Unit = {
-    resetDbLock.writeLock.lock()
-    try {
+    withWriteLock(() => {
       if (alive)
         return
 
@@ -87,9 +86,7 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
         case ioe: IOException =>
           throw new RuntimeException("Can't initialize database", ioe)
       }
-    } finally {
-      resetDbLock.writeLock.unlock()
-    }
+    })
   }
 
   def resetDB() = Future.successful {
@@ -99,35 +96,24 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def destroyDB(fileLocation: File): Unit = {
-    resetDbLock.writeLock.lock()
-    try factory.destroy(fileLocation, new Options)
-    finally resetDbLock.writeLock.unlock()
+    withWriteLock(factory.destroy(fileLocation, new Options))
   }
 
   def get(key: Array[Byte]) =  Future.successful {
-    resetDbLock.readLock.lock()
-    try {
-      Option(database.get.get(key))
-    } finally resetDbLock.readLock.unlock()
+    withReadLock(Option(database.get.get(key)))
   }
 
   def put(key: Array[Byte], value: Array[Byte]) = Future.successful {
-    resetDbLock.readLock.lock()
-    try database.get.put(key, value)
-    finally resetDbLock.readLock.unlock()
+    withReadLock(database.get.put(key, value))
   }
 
   def delete(key: Array[Byte]) = Future.successful {
-    resetDbLock.readLock.lock()
-    try database.get.delete(key)
-    finally resetDbLock.readLock.unlock()
+    withReadLock(database.get.delete(key))
   }
 
   def allKeys = Future.successful {
     resetDbLock.readLock.lock()
     val iterator = database.get.iterator
-
-
     try {
       iterator.seekToFirst()
       val result = mutable.HashSet[Array[Byte]]()
@@ -148,13 +134,24 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def close(): Unit = {
-
-    try {
+    withWriteLock(() => {
       resetDbLock.writeLock.lock()
       if (alive) {
         database.get.close()
         alive = false
       }
-    } finally resetDbLock.writeLock.unlock()
+    })
+  }
+
+  def withReadLock[T](action: => T): T = {
+    resetDbLock.readLock.lock()
+    try action
+    finally resetDbLock.readLock.unlock()
+  }
+
+  def withWriteLock[T](action: => T): T = {
+    resetDbLock.writeLock.lock()
+    try action
+    finally resetDbLock.writeLock.unlock()
   }
 }
