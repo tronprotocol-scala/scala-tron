@@ -35,10 +35,11 @@ import org.iq80.leveldb._
 import org.tron.utils.FileUtil
 
 import scala.collection.mutable
+import scala.concurrent.Future
 
 class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends DataSource[Array[Byte], Array[Byte]] {
 
-  var database: DB = null
+  var database: Option[DB] = None
 
   @volatile
   var alive = false
@@ -70,13 +71,13 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
 
           val path = new File(dbFolder.getAbsolutePath, name)
           path.mkdirs()
-          database = factory.open(path, dbOptions)
+          database = Some(factory.open(path, dbOptions))
         }
         catch {
           case e: IOException =>
             if (e.getMessage.contains("Corruption:")) {
               factory.repair(dbFolder, dbOptions)
-              database = factory.open(dbFolder, dbOptions)
+              database = Some(factory.open(dbFolder, dbOptions))
             } else {
               throw e
             }
@@ -91,7 +92,7 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
     }
   }
 
-  def resetDB(): Unit = {
+  def resetDB() = Future.successful {
     close()
     FileUtil.recursiveDelete(new File(dbFolder.getAbsolutePath, name).getAbsolutePath)
     initDB()
@@ -103,28 +104,28 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
     finally resetDbLock.writeLock.unlock()
   }
 
-  def get(key: Array[Byte]): Option[Array[Byte]] = {
+  def get(key: Array[Byte]) =  Future.successful {
     resetDbLock.readLock.lock()
     try {
-      Option(database.get(key))
+      Option(database.get.get(key))
     } finally resetDbLock.readLock.unlock()
   }
 
-  def put(key: Array[Byte], value: Array[Byte]): Unit = {
+  def put(key: Array[Byte], value: Array[Byte]) = Future.successful {
     resetDbLock.readLock.lock()
-    try database.put(key, value)
+    try database.get.put(key, value)
     finally resetDbLock.readLock.unlock()
   }
 
-  def delete(key: Array[Byte]): Unit = {
+  def delete(key: Array[Byte]) = Future.successful {
     resetDbLock.readLock.lock()
-    try database.delete(key)
+    try database.get.delete(key)
     finally resetDbLock.readLock.unlock()
   }
 
-  def allKeys: Set[Array[Byte]] = {
+  def allKeys = Future.successful {
     resetDbLock.readLock.lock()
-    val iterator = database.iterator
+    val iterator = database.get.iterator
 
 
     try {
@@ -147,10 +148,11 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def close(): Unit = {
+
     try {
       resetDbLock.writeLock.lock()
       if (alive) {
-        database.close()
+        database.get.close()
         alive = false
       }
     } finally resetDbLock.writeLock.unlock()

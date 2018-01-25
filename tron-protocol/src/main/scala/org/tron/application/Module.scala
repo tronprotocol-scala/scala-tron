@@ -1,37 +1,44 @@
 package org.tron.application
 
 import java.nio.file.Paths
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 import akka.actor.ActorSystem
 import com.google.inject.{AbstractModule, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
 import org.tron.core.{Blockchain, BlockchainImpl, Constant, Key}
-import org.tron.storage.DbFactory
+import org.tron.storage.{DbFactory, LevelDbFactory, RedisDbFactory}
 
-class Module(mode: String = "test") extends AbstractModule {
+class Module(mode: String = Constant.TEST) extends AbstractModule {
 
-  def configure() = {
-
-  }
+  def configure() = {}
 
   @Provides
   @Singleton
   def buildConfig(): Config = {
     mode match {
-      case "test" =>
-        ConfigFactory.load("tron-test.conf")
+      case Constant.TEST =>
+        ConfigFactory.load(Constant.TEST_CONF)
       case _ =>
-        ConfigFactory.load("tron.conf")
+        ConfigFactory.load(Constant.NORMAL_CONF)
     }
   }
 
   @Provides
   @Singleton
+  @Inject
   def buildDbFactory(): DbFactory = {
     val config = buildConfig()
-    val file = config.getString("database.directory")
-    new DbFactory(Paths.get(file))
+    val file = config.getString(Constant.DATABASE_DIR)
+    val name = Paths.get(file)
+    val dbType = config.getString(Constant.DATABASE_TYPE)
+
+    dbType match {
+      case Constant.DATABASE_TYPE_LEVELDB =>
+        new LevelDbFactory(name)
+      case Constant.DATABASE_TYPE_REDIS =>
+        new RedisDbFactory(buildActorSystem(), name)
+    }
   }
 
   @Provides

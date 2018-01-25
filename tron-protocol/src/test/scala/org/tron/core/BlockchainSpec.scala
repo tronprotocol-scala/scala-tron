@@ -7,14 +7,15 @@ import org.tron.wallet.Wallet
 
 class BlockchainSpec extends Specification {
 
-  val module = new Module()
-  val dbFactory = module.buildDbFactory()
 
   sequential
 
   "Blockchain" should {
 
     "start blockchain with new genesis block" in {
+
+      val module = new Module()
+      val dbFactory = module.buildDbFactory()
 
       val blockchain = module.buildBlockchain()
       val key = KeyUtils.generateKey
@@ -33,6 +34,9 @@ class BlockchainSpec extends Specification {
     }
 
     "make a transaction between addresses" in {
+
+      val module = new Module()
+      val dbFactory = module.buildDbFactory()
 
       val blockchain = module.buildBlockchain().asInstanceOf[BlockchainImpl]
       val sender = KeyUtils.generateKey

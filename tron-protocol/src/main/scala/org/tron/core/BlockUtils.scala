@@ -4,11 +4,15 @@ import java.math.BigInteger
 
 import com.google.protobuf.ByteString
 import org.spongycastle.util.{Arrays, BigIntegers}
+import org.tron.awaitResult
 import org.tron.crypto.Hash.sha3
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronBlockHeader.BlockHeader
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.utils.ByteArrayUtils
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 object BlockUtils {
 
@@ -121,10 +125,9 @@ object BlockUtils {
     * @return long number
     */
   def getIncreaseNumber(blockchain: Blockchain): Long = {
-
     val nextNumber = for {
-      lastHash <- blockchain.blockDB.get(Constant.LAST_HASH)
-      value <- blockchain.blockDB.get(lastHash)
+      lastHash <- awaitResult(blockchain.blockDB.get(Constant.LAST_HASH))
+      value <- awaitResult(blockchain.blockDB.get(lastHash))
     } yield Block.parseFrom(value).getBlockHeader.number + 1
 
     nextNumber.getOrElse(0)
