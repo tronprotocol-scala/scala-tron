@@ -56,9 +56,9 @@ class UTXOSet(
       // Find all outputs
       .flatMap { txData =>
         TXOutputs.parseFrom(txData).outputs.filter(txOutput => {
-          val txOutputHex = txOutput.pubKeyHash.hex
-          address.hex == txOutputHex
+          val tXOutputHex = txOutput.pubKeyHash.hex
+          address == tXOutputHex
         })
-      }
+      }.toSet
   }
 }
