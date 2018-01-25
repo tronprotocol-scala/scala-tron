@@ -29,8 +29,7 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
   @Provides
   @Singleton
   @Inject
-  def buildDbFactory(): DbFactory = {
-    val config = buildConfig()
+  def buildDbFactory(config: Config): DbFactory = {
     val file = config.getString(Constant.DATABASE_DIR)
     val name = Paths.get(file)
     val dbType = config.getString(Constant.DATABASE_TYPE)
@@ -47,7 +46,6 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
   @Singleton
   @Inject
   def buildBlockchain(dbFactory: DbFactory): Blockchain = {
-    println("build blockchain")
     new BlockchainImpl(dbFactory.build(Constant.BLOCK_DB_NAME))
   }
 
