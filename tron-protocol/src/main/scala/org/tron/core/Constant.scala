@@ -48,7 +48,7 @@ object Constant { // whole
   val DATABASE_CONF_SECTION = "database"
   val DATABASE_DIR = s"$DATABASE_CONF_SECTION.directory"
   val DATABASE_TYPE = s"$DATABASE_CONF_SECTION.type"
-  val DATABASE_TYPE_LEVELDB = "levelDB"
+  val DATABASE_TYPE_LEVELDB = "leveldb"
   val DATABASE_TYPE_REDIS = "redis"
 
   val GENESIS_COINBASE_DATA = "0x10"
