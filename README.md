@@ -131,6 +131,10 @@ Join cluster as client
 
 Starts the Web API server. After starting the API it can be reached at http://localhost:9000
 
+### `grpc`
+
+Starts the [GRPC](https://grpc.io/) server
+
 ## Cluster
 
 Cluster is based on Akka.  

@@ -2,9 +2,7 @@ package org.tron.cli
 
 import com.google.inject.Guice
 import org.tron.application.{Application, CliGlobals, Module, PeerApplication}
-import org.tron.cli.commands._
 import org.tron.peer.{Peer, PeerBuilder}
-import scopt.OptionParser
 
 import scala.io.StdIn
 import scala.util.{Failure, Success, Try}
