@@ -13,11 +13,9 @@ import scala.concurrent.Future
 
 class RedisDbDataSourceImpl(
   client: RedisClient,
-  dbFolder: File,
   name: String = "default") extends DataSource[Array[Byte], Array[Byte]] {
 
-  def initDB() = {
-  }
+  def initDB() = {}
 
   def get(key: Array[Byte]): Future[Option[Array[Byte]]] = {
     client.hget[Array[Byte]](name, ByteArrayUtils.toHexString(key)).map {

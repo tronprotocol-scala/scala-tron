@@ -38,7 +38,7 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
       case Constant.DATABASE_TYPE_LEVELDB =>
         new LevelDbFactory(name)
       case Constant.DATABASE_TYPE_REDIS =>
-        new RedisDbFactory(buildActorSystem(), name)
+        new RedisDbFactory(buildActorSystem())
     }
   }
 

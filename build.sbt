@@ -51,6 +51,13 @@ val defaultSettings = Seq(
   "org.specs2" %% "specs2-core" % "4.0.2" % "test",
 ) ++ akkaDeps ++ grpcDeps
 
+lazy val benchmarks = (project in file("tron-benchmark"))
+  .settings(
+    libraryDependencies ++= defaultSettings
+  )
+  .dependsOn(protocol)
+  .aggregate(protocol)
+
 lazy val protocol = (project in file("tron-protocol"))
   .settings(
     libraryDependencies ++= defaultSettings,
