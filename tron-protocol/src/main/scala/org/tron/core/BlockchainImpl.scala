@@ -13,9 +13,7 @@ import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 
 import scala.collection.mutable
-import scala.concurrent
-import scala.concurrent.Await
-import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable[Block] {
 
@@ -79,7 +77,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
   }
 
   def addBlock(block: Block): Unit = {
-    awaitResult(blockDB.get(block.getBlockHeader.hash.toByteArray)) match {
+    blockDB.get(block.getBlockHeader.hash.toByteArray).map {
       case Some(blockInDB) if blockInDB.nonEmpty =>
 
         blockDB.put(block.getBlockHeader.hash.toByteArray, block.toByteArray)
@@ -110,8 +108,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
     val number = BlockUtils.getIncreaseNumber(this)
     // get difficulty
     val difficulty = ByteString.copyFromUtf8(Constant.DIFFICULTY)
-    val block = BlockUtils.newBlock(transactions, parentHash, difficulty, number)
-    block
+    BlockUtils.newBlock(transactions, parentHash, difficulty, number)
   }
 
   def signTransaction(transaction: Transaction, key: ECKey): Either[TransactionException, Transaction] = {

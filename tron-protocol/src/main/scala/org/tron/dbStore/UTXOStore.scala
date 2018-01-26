@@ -10,5 +10,4 @@ class UTXOStore(db: DataSource[Array[Byte], Array[Byte]]) {
   def save(key: Array[Byte], data: Array[Byte]) = {
     awaitResult(db.put(key, data))
   }
-
 }
