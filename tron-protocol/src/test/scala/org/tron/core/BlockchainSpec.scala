@@ -1,4 +1,5 @@
-package org.tron.core
+package org.tron
+package core
 
 import org.specs2.mutable._
 import org.tron.application.{AppFactory, Module}
@@ -52,7 +53,7 @@ class BlockchainSpec extends Specification {
       // Make transaction
       TransactionUtils.newTransaction(senderWallet, receiverWallet.address, 10, utxoSet).map { transaction =>
         val newBlock = blockchain.addBlock(List(transaction))
-        blockchain.receiveBlock(newBlock, utxoSet)
+        awaitResult(blockchain.receiveBlock(newBlock, utxoSet))
       }
 
       utxoSet.getBalance(sender) must equalTo(0L)

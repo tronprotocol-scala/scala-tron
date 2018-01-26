@@ -7,13 +7,14 @@ import org.tron.core.TransactionUtils._
 import org.tron.crypto.ECKey
 import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
-import org.tron.protos.core.TronTransaction
 import org.tron.protos.core.TronTransaction.Transaction
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 
+import scala.async.Async._
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable[Block] {
 
@@ -27,7 +28,7 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
     val bi = new BlockchainIterator(this)
 
     bi
-      .flatMap { block => block.transactions }
+      .flatMap(_.transactions)
       .find { tx =>
         val txID = ByteArrayUtils.toHexString(tx.id.toByteArray)
         val idStr = ByteArrayUtils.toHexString(id)
@@ -76,28 +77,27 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
     utxo.toMap
   }
 
-  def addBlock(block: Block): Unit = {
-    blockDB.get(block.getBlockHeader.hash.toByteArray).map {
+  def addBlock(block: Block) = async {
+    await(blockDB.get(block.getBlockHeader.hash.toByteArray)) match {
       case Some(blockInDB) if blockInDB.nonEmpty =>
 
-        blockDB.put(block.getBlockHeader.hash.toByteArray, block.toByteArray)
+        await(blockDB.put(block.getBlockHeader.hash.toByteArray, block.toByteArray))
 
         val lashHash = ByteArrayUtils.fromString("lashHash")
 
-        val lastHash = awaitResult(blockDB.get(lashHash)).get
-        val lastBlockData = awaitResult(blockDB.get(lastHash)).get
+        val lastHash = await(blockDB.get(lashHash)).get
+        val lastBlockData = await(blockDB.get(lastHash)).get
         val lastBlock = Block.parseFrom(lastBlockData)
 
         if (block.getBlockHeader.number > lastBlock.getBlockHeader.number) {
-          blockDB.put(lashHash, block.getBlockHeader.hash.toByteArray)
+          await(blockDB.put(lashHash, block.getBlockHeader.hash.toByteArray))
           this.lastHash = block.getBlockHeader.hash.toByteArray
           this.currentHash = this.lastHash
         }
 
       case _ =>
-        // ignore
+      // ignore
     }
-
   }
 
   def addBlock(transactions: List[Transaction]): Block = {
@@ -126,36 +126,23 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
   /**
     * Recieve block
     */
-  def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit = {
-    val lastHash = awaitResult(blockDB.get(LAST_HASH)).get
-    if (block.getBlockHeader.parentHash.hex != ByteArrayUtils.toHexString(lastHash))
-      return
+  def receiveBlock(block: Block, uTXOSet: UTXOSet): Future[Unit] = async {
+    val lastHash = await(blockDB.get(LAST_HASH)).get
 
-    // save the block into the database
-    val blockHashKey = block.getBlockHeader.hash.toByteArray
-    val blockVal = block.toByteArray
-    blockDB.put(blockHashKey, blockVal)
-    val ch = block.getBlockHeader.hash.toByteArray
+    if (block.getBlockHeader.parentHash.hex == ByteArrayUtils.toHexString(lastHash)) {
+      // save the block into the database
+      val blockHashKey = block.getBlockHeader.hash.toByteArray
+      val blockVal = block.toByteArray
+      await(blockDB.put(blockHashKey, blockVal))
+      val ch = block.getBlockHeader.hash.toByteArray
 
-    blockDB.put(LAST_HASH, ch)
+      await(blockDB.put(LAST_HASH, ch))
 
-    this.lastHash = ch
-    this.currentHash = ch
+      this.lastHash = ch
+      this.currentHash = ch
 
-    uTXOSet.reindex()
-  }
-
-  def addBlock(transactions: List[TronTransaction.Transaction], net: Net): Unit = {
-    // get lastHash
-    val lastHash = awaitResult(blockDB.get(LAST_HASH)).get
-    val parentHash = ByteString.copyFrom(lastHash)
-    // get number
-    val number = BlockUtils.getIncreaseNumber(this)
-    // get difficulty
-    val difficulty = ByteString.copyFromUtf8(Constant.DIFFICULTY)
-
-    BlockUtils.newBlock(transactions, parentHash, difficulty, number)
-    // TODO send to kafka
+      uTXOSet.reindex()
+    }
   }
 
   def addGenesisBlock(account: Address): Unit = {
@@ -163,9 +150,9 @@ class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable
 
     val genesisBlock = BlockUtils.newGenesisBlock(transactions)
     val hashArray = genesisBlock.blockHeader.get.hash.toByteArray
-    blockDB.put(hashArray, genesisBlock.toByteArray)
+    awaitResult(blockDB.put(hashArray, genesisBlock.toByteArray))
     val lastHash = hashArray
-    blockDB.put(Constant.LAST_HASH, lastHash)
+    awaitResult(blockDB.put(Constant.LAST_HASH, lastHash))
 
     this.lastHash = lastHash
     this.currentHash = lastHash
