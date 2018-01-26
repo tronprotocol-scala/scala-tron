@@ -25,6 +25,10 @@
   <a href="https://github.com/rovak/scala-tron/pulls">
     <img src="https://img.shields.io/github/issues-pr/rovak/scala-tron.svg">
   </a>
+  
+  <a href='https://coveralls.io/github/Rovak/scala-tron?branch=develop'>
+    <img src='https://coveralls.io/repos/github/Rovak/scala-tron/badge.svg?branch=develop' alt='Coverage Status'>
+  </a>
 
   <a href="https://github.com/rovak/scala-tron/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/rovak/scala-tron.svg">
