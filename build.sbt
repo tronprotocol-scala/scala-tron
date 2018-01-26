@@ -49,6 +49,8 @@ val defaultSettings = Seq(
 
   // Test
   "org.specs2" %% "specs2-core" % "4.0.2" % "test",
+
+  "org.scala-lang.modules" %% "scala-async" % "0.9.6"
 ) ++ akkaDeps ++ grpcDeps
 
 lazy val protocol = (project in file("tron-protocol"))
