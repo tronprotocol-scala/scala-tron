@@ -19,7 +19,8 @@ package org.tron.core;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.primitives.*;
-import org.tron.utils.ByteArray;
+import org.tron.utils.ByteArrayUtils;
+import scala.Byte;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,7 +58,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
     @Deprecated
     public Sha256Hash(String hexString) {
         checkArgument(hexString.length() == LENGTH * 2);
-        this.bytes = ByteArray.fromHexString(hexString);
+        this.bytes = ByteArrayUtils.fromHexString(hexString);
     }
 
     /**
@@ -81,7 +82,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
      *         hex string, or if it does not represent exactly 32 bytes
      */
     public static Sha256Hash wrap(String hexString) {
-        return wrap(ByteArray.fromHexString(hexString));
+        return wrap(ByteArrayUtils.fromHexString(hexString));
     }
 
     /**
@@ -93,7 +94,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
      */
     @SuppressWarnings("deprecation") // the constructor will be made private in the future
     public static Sha256Hash wrapReversed(byte[] rawHashBytes) {
-        return wrap(ByteArray.reverseBytes(rawHashBytes));
+        return wrap(ByteArrayUtils.reverseBytes(rawHashBytes));
     }
 
     /** Use {@link #of(byte[])} instead: this old name is ambiguous. */
@@ -244,7 +245,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
 
     @Override
     public String toString() {
-        return ByteArray.toHexString(bytes);
+        return ByteArrayUtils.toHexString(bytes);
     }
 
     /**
@@ -265,7 +266,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
      * Returns a reversed copy of the internal byte array.
      */
     public byte[] getReversedBytes() {
-        return ByteArray.reverseBytes(bytes);
+        return ByteArrayUtils.reverseBytes(bytes);
     }
 
     @Override

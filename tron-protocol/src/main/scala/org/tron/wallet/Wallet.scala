@@ -6,5 +6,5 @@ import org.tron.utils.Utils
 
 case class Wallet(
   key: ECKey = new ECKey(Utils.getRandom)) {
-  def address = Key(key)
+  def address = Key(key).address
 }

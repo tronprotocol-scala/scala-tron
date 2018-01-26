@@ -1,12 +1,20 @@
 package org.tron.storage
 
+import scala.concurrent.Future
+
 trait DataSource[K, V] {
 
-  def put(key: K, value: V): Unit
+  def initDB(): Unit
+  def resetDB(): Future[Unit]
 
-  def get(key: K): Option[V]
+  def allKeys: Future[Set[Array[Byte]]]
 
-  def delete(key: K): Unit
+  def put(key: K, value: V): Future[Unit]
+
+  def get(key: K): Future[Option[V]]
+
+  def delete(key: K): Future[Unit]
 
   def close(): Unit
+
 }

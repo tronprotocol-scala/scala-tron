@@ -12,8 +12,6 @@ scalacOptions in Test ++= Seq("-Yrangepos")
 fork in Test := true
 
 val defaultSettings = Seq(
-  // Test
-
   // Main
   "org.slf4j" % "slf4j-api" % "1.7.25",
   "org.slf4j" % "jcl-over-slf4j" % "1.7.25",
@@ -32,6 +30,7 @@ val defaultSettings = Seq(
   "org.apache.commons" % "commons-lang3" % "3.4",
   "org.apache.commons" % "commons-collections4" % "4.0",
   "com.beust" % "jcommander" % "1.72",
+  "com.github.etaty" %% "rediscala" % "1.8.0",
 
   "org.apache.kafka" %% "kafka" % "0.11.0.2",
 
@@ -40,10 +39,13 @@ val defaultSettings = Seq(
 
   "com.google.inject" % "guice" % "4.1.0",
 
+  //
+  "commons-io" % "commons-io" % "2.6",
+
+  // Cats
   "org.typelevel" %% "cats-core" % "1.0.1",
   "org.typelevel" %% "cats-effect" % "0.5",
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.18",
-  "commons-io" % "commons-io" % "2.6",
 
   // Test
   "org.specs2" %% "specs2-core" % "4.0.2" % "test",

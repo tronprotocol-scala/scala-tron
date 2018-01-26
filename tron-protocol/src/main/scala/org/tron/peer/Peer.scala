@@ -16,8 +16,7 @@ case class Peer(
   key: ECKey,
   wallet: Wallet,
   blockchain: Blockchain,
-  uTXOSet: UTXOSet,
-  peerType: String) {
+  uTXOSet: UTXOSet) {
 
   def addReceiveTransaction(transaction: Transaction): Unit = {
     val block = blockchain.addBlock(List(transaction))

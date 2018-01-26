@@ -1,25 +1,24 @@
 package org.tron.core
 
 import org.specs2.mutable._
-import org.tron.application.Module
+import org.tron.application.{AppFactory, Module}
+import org.tron.storage.DbFactory
 import org.tron.utils.KeyUtils
 import org.tron.wallet.Wallet
 
 class BlockchainSpec extends Specification {
-
-  val module = new Module()
-  val dbFactory = module.buildDbFactory()
 
   sequential
 
   "Blockchain" should {
 
     "start blockchain with new genesis block" in {
-
-      val blockchain = module.buildBlockchain()
+      val injector = AppFactory.buildInjector
+      val dbFactory = injector.getInstance(classOf[DbFactory])
+      val blockchain = injector.getInstance(classOf[Blockchain])
       val key = KeyUtils.generateKey
 
-      blockchain.addGenesisBlock(key.addressHex)
+      blockchain.addGenesisBlock(key.address)
 
       val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
       utxoSet.reindex()
@@ -33,14 +32,16 @@ class BlockchainSpec extends Specification {
     }
 
     "make a transaction between addresses" in {
+      val injector = AppFactory.buildInjector
+      val dbFactory = injector.getInstance(classOf[DbFactory])
+      val blockchain = injector.getInstance(classOf[Blockchain]).asInstanceOf[BlockchainImpl]
 
-      val blockchain = module.buildBlockchain().asInstanceOf[BlockchainImpl]
       val sender = KeyUtils.generateKey
       val senderWallet = Wallet(sender.ecKey)
       val receiver = KeyUtils.generateKey
       val receiverWallet = Wallet(receiver.ecKey)
 
-      blockchain.addGenesisBlock(sender.addressHex)
+      blockchain.addGenesisBlock(sender.address)
 
       val utxoSet = new UTXOSet(dbFactory.build(Constant.TRANSACTION_DB_NAME), blockchain)
       utxoSet.reindex()
@@ -49,10 +50,10 @@ class BlockchainSpec extends Specification {
       utxoSet.getBalance(sender) must equalTo(10L)
 
       // Make transaction
-      val transaction = TransactionUtils.newTransaction(senderWallet, receiverWallet.address.addressHex, 10, utxoSet)
-
-      val newBlock = blockchain.addBlock(List(transaction))
-      blockchain.receiveBlock(newBlock, utxoSet)
+      TransactionUtils.newTransaction(senderWallet, receiverWallet.address, 10, utxoSet).map { transaction =>
+        val newBlock = blockchain.addBlock(List(transaction))
+        blockchain.receiveBlock(newBlock, utxoSet)
+      }
 
       utxoSet.getBalance(sender) must equalTo(0L)
       utxoSet.getBalance(receiver) must equalTo(10L)

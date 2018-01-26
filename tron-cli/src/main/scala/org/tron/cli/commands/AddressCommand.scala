@@ -12,9 +12,9 @@ case class AddressCommand(key: Option[String] = None) extends Command {
     app match  {
       case cli: CliGlobals =>
         key.foreach { privateKey =>
-          val address = KeyUtils.fromPrivateKey(privateKey)
-          cli.activeAddress = Some(address)
-          println("Opened address " + address.addressHex)
+          val privKey = KeyUtils.fromPrivateKey(privateKey)
+          cli.activeAddress = Some(privKey)
+          println("Opened address " + privKey.address.hex)
         }
     }
   }

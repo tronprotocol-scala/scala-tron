@@ -2,7 +2,6 @@ package org.tron.cli.commands
 
 import org.tron.application.{Application, CliGlobals, PeerApplication}
 import org.tron.core.Key
-import org.tron.peer.Peer
 
 case class GetBalanceCommand() extends Command {
   def execute(app: Application, parameters: Array[String]): Unit = {
@@ -15,7 +14,7 @@ case class GetBalanceCommand() extends Command {
         val wallet = cli.activeAddress.get
 
         val pubKeyHash = Key(wallet.ecKey)
-        val utxos = peer.uTXOSet.findUTXO(pubKeyHash.addressHex)
+        val utxos = peer.uTXOSet.findUTXO(pubKeyHash.address)
 
         val balance = utxos.map(_.value).sum
 

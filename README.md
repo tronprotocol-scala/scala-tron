@@ -6,7 +6,7 @@
 </h1>
 
 <h4 align="center">
-  Scala implementation of the <a href="https://github.com/tronprotocol/wiki/blob/master/Home.md">Tron Protocol</a>
+  Scala implementation of the <a href="http://wiki.tron.network">Tron Protocol</a>
 </h4>
 
 <p align="center">
@@ -25,6 +25,10 @@
   <a href="https://github.com/rovak/scala-tron/pulls">
     <img src="https://img.shields.io/github/issues-pr/rovak/scala-tron.svg">
   </a>
+  
+  <a href='https://coveralls.io/github/Rovak/scala-tron?branch=develop'>
+    <img src='https://coveralls.io/repos/github/Rovak/scala-tron/badge.svg?branch=develop' alt='Coverage Status'>
+  </a>
 
   <a href="https://github.com/rovak/scala-tron/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/rovak/scala-tron.svg">
@@ -33,6 +37,7 @@
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
+  <a href="#goals">Goals</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#cluster">Cluster</a> •
   <a href="#wiki">Wiki</a> •
@@ -47,10 +52,17 @@ TRON is a block chain-based decentralized smart protocol and an application deve
 
 TRON is a product of Web 4.0 and the decentralized internet of next generation.
 
+# Goals
+
+* Compatible with [java-tron](https://github.com/tronprotocol/java-tron)
+* Non-blocking
+* Functional programming approach
+* User-friendly interface
+
 # Quick Start
 
-This project requires SBT<br />
-SBT (Simple Build Tool) is an open-source build tool for Scala and Java projects, similar to Java's Maven and Ant.<br />
+This project requires SBT  
+SBT (Simple Build Tool) is an open-source build tool for Scala and Java projects, similar to Java's Maven and Ant.  
 Follow the instructions [installing SBT](http://www.scala-sbt.org/1.0/docs/Setup.html) to install SBT
 
 ```
@@ -123,10 +135,14 @@ Join cluster as client
 
 Starts the Web API server. After starting the API it can be reached at http://localhost:9000
 
+### `grpc`
+
+Starts the [GRPC](https://grpc.io/) server
+
 ## Cluster
 
-Cluster is based on Akka.<br />
-Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala<br />
+Cluster is based on Akka.  
+Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala  
 
 To start a cluster follow the following steps:
 
@@ -180,8 +196,7 @@ __Response__
 
 ## Wiki
 
-* [Introduction (Tron Protocol)](https://github.com/tronprotocol/wiki/blob/master/Home.md)
-* [ReadTheDocs](http://tron-wiki.readthedocs.io/introduction.html)
+* [Introduction (Tron Protocol)](http://wiki.tron.network)
 
 ## Contact
 
