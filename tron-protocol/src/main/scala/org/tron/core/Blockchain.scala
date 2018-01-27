@@ -6,15 +6,17 @@ import org.tron.protos.core.TronBlock.Block
 import org.tron.protos.core.TronTXOutputs.TXOutputs
 import org.tron.protos.core.TronTransaction.Transaction
 
+import scala.concurrent.Future
+
 trait Blockchain {
 
   def findTransaction(id: TXID): Option[Transaction]
 
   def findUTXO(): Map[String, TXOutputs]
 
-  def addBlock(block: Block): Unit
+  def addBlock(block: Block): Future[Unit]
   def addBlock(transactions: List[Transaction]): Block
-  def receiveBlock(block: Block, uTXOSet: UTXOSet): Unit
+  def receiveBlock(block: Block, uTXOSet: UTXOSet): Future[Unit]
 
   def signTransaction(transaction: Transaction, key: ECKey): Either[Exception, Transaction]
 
