@@ -59,7 +59,7 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def initDB(): Unit = {
-    withWriteLock(() => {
+    withWriteLock{
       if (alive)
         return
 
@@ -86,7 +86,7 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
         case ioe: IOException =>
           throw new RuntimeException("Can't initialize database", ioe)
       }
-    })
+    }
   }
 
   def resetDB() = Future.successful {
@@ -96,50 +96,58 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def destroyDB(fileLocation: File): Unit = {
-    withWriteLock(factory.destroy(fileLocation, new Options))
+    withWriteLock{
+      factory.destroy(fileLocation, new Options)
+    }
   }
 
   def get(key: Array[Byte]) =  Future.successful {
-    withReadLock(Option(database.get.get(key)))
+    withReadLock{
+      Option(database.get.get(key))
+    }
   }
 
   def put(key: Array[Byte], value: Array[Byte]) = Future.successful {
-    withReadLock(database.get.put(key, value))
+    withReadLock{
+      database.get.put(key, value)
+    }
   }
 
   def delete(key: Array[Byte]) = Future.successful {
-    withReadLock(database.get.delete(key))
+    withReadLock{
+      database.get.delete(key)
+    }
   }
 
   def allKeys = Future.successful {
-    resetDbLock.readLock.lock()
-    val iterator = database.get.iterator
-    try {
-      iterator.seekToFirst()
-      val result = mutable.HashSet[Array[Byte]]()
-      while (iterator.hasNext) {
-        result.add(iterator.peekNext.getKey)
-        iterator.next
-      }
-      result.toSet
-    } catch {
-      case e: IOException =>
-        throw new RuntimeException(e)
-    } finally {
-      resetDbLock.readLock.unlock()
-      if (iterator != null) {
-        iterator.close()
+    withReadLock{
+      val iterator = database.get.iterator
+      try {
+        iterator.seekToFirst()
+        val result = mutable.HashSet[Array[Byte]]()
+        while (iterator.hasNext) {
+          result.add(iterator.peekNext.getKey)
+          iterator.next
+        }
+        result.toSet
+      } catch {
+        case e: IOException =>
+          throw new RuntimeException(e)
+      } finally {
+        if (iterator != null) {
+          iterator.close()
+        }
       }
     }
   }
 
   def close(): Unit = {
-    withWriteLock(() => {
+    withWriteLock{
       if (alive) {
         database.get.close()
         alive = false
       }
-    })
+    }
   }
 
   def withReadLock[T](action: => T): T = {
