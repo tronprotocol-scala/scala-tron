@@ -43,7 +43,7 @@ object TXInputUtils {
     * @return { @link TXInput}
     */
     def newTXInput(txID: Array[Byte], vout: Long, signature: Array[Byte], pubKey: Array[Byte]) = {
-      new TXInput(
+      TXInput(
         ByteString.copyFrom(txID),
         vout,
         ByteString.copyFrom(signature),

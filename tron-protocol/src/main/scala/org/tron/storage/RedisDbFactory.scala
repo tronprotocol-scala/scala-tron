@@ -10,8 +10,6 @@ class RedisDbFactory(actorSystem: ActorSystem, databaseFolder: Path) extends DbF
 
   override def build(name: String): BlockChainDb = {
     implicit val system = actorSystem
-    val db = new RedisDbDataSourceImpl(RedisClient(), databaseFolder.toFile, name)
-    db.initDB()
-    db
+    new RedisDbDataSourceImpl(RedisClient(), databaseFolder.toFile, name)
   }
 }

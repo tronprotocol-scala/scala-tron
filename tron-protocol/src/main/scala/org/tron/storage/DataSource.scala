@@ -4,7 +4,6 @@ import scala.concurrent.Future
 
 trait DataSource[K, V] {
 
-  def initDB(): Unit
   def resetDB(): Future[Unit]
 
   def allKeys: Future[Set[Array[Byte]]]

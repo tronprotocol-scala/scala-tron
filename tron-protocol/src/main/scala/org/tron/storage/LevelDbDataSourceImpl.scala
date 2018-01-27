@@ -36,16 +36,16 @@ import org.tron.utils.FileUtil
 
 import scala.collection.mutable
 import scala.concurrent.Future
+import scala.util.{Failure, Try}
 
 class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends DataSource[Array[Byte], Array[Byte]] {
 
-  var database: Option[DB] = None
-
-  @volatile
-  var alive = false
   val resetDbLock = new ReentrantReadWriteLock
 
-  def buildOptions = {
+  @volatile
+  private var db: Option[DB] = None
+
+  val options = {
     val dbOptions = new Options
     dbOptions.createIfMissing(true)
     dbOptions.compressionType(CompressionType.NONE)
@@ -58,70 +58,76 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
     dbOptions
   }
 
-  def initDB(): Unit = {
-    withWriteLock{
-      if (alive)
-        return
-
-      val dbOptions = buildOptions
-
-      try {
-        try {
-
-          val path = new File(dbFolder.getAbsolutePath, name)
-          path.mkdirs()
-          database = Some(factory.open(path, dbOptions))
-        }
-        catch {
-          case e: IOException =>
-            if (e.getMessage.contains("Corruption:")) {
-              factory.repair(dbFolder, dbOptions)
-              database = Some(factory.open(dbFolder, dbOptions))
-            } else {
-              throw e
-            }
-        }
-        alive = true
-      } catch {
-        case ioe: IOException =>
-          throw new RuntimeException("Can't initialize database", ioe)
+  private def database: DB = {
+    db.getOrElse {
+      buildDb() match {
+        case Right(newDb) =>
+          db = Some(newDb)
+          newDb
+        case Left(e) =>
+          throw e
       }
     }
+  }
+
+  def openDb() = {
+    val path = new File(dbFolder.getAbsolutePath, name)
+    path.mkdirs()
+    factory.open(path, options)
+  }
+
+  def repairDb(): Unit = {
+    factory.repair(dbFolder, options)
+  }
+
+  def buildDb(): Either[Throwable, DB] = {
+    Try(openDb()).recoverWith {
+      case e: IOException if e.getMessage.contains("Corruption:") =>
+        repairDb()
+        Try(openDb())
+      case e =>
+        Failure(e)
+    }.toEither
   }
 
   def resetDB() = Future.successful {
     close()
     FileUtil.recursiveDelete(new File(dbFolder.getAbsolutePath, name).getAbsolutePath)
-    initDB()
+    buildDb() match {
+      case Right(newDb) =>
+        db = Some(newDb)
+      case Left(e) =>
+        throw e
+    }
   }
 
   def destroyDB(fileLocation: File): Unit = {
-    withWriteLock{
+    withWriteLock {
       factory.destroy(fileLocation, new Options)
     }
   }
 
-  def get(key: Array[Byte]) =  Future.successful {
-    withReadLock{
-      Option(database.get.get(key))
+  def get(key: Array[Byte]) = Future.successful {
+    withReadLock {
+      Option(database.get(key))
     }
   }
 
   def put(key: Array[Byte], value: Array[Byte]) = Future.successful {
-    withReadLock{
-      database.get.put(key, value)
+    withReadLock {
+      database.put(key, value)
     }
   }
 
   def delete(key: Array[Byte]) = Future.successful {
-    withReadLock{
-      database.get.delete(key)
+    withReadLock {
+      database.delete(key)
     }
   }
 
   def allKeys = Future.successful {
-    withReadLock{
-      val iterator = database.get.iterator
+    withReadLock {
+      val iterator = database.iterator
       try {
         iterator.seekToFirst()
         val result = mutable.HashSet[Array[Byte]]()
@@ -142,10 +148,10 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
   }
 
   def close(): Unit = {
-    withWriteLock{
-      if (alive) {
-        database.get.close()
-        alive = false
+    withWriteLock {
+      if (db.nonEmpty) {
+        database.close()
+        db = None
       }
     }
   }
