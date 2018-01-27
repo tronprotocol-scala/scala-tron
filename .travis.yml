@@ -18,6 +18,12 @@ before_cache:
 script:
    - sbt ++$TRAVIS_SCALA_VERSION test
    - sbt ++$TRAVIS_SCALA_VERSION scalastyle
+   - sbt clean coverage test
+   - sbt coverageReport
+   - sbt coverageAggregate
+
+after_succes:
+   - sbt coveralls
 
 notifications:
   email: false
