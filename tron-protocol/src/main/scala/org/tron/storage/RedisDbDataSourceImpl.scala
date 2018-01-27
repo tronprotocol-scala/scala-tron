@@ -17,12 +17,7 @@ class RedisDbDataSourceImpl(
   name: String = "default") extends DataSource[Array[Byte], Array[Byte]] {
 
   def get(key: Array[Byte]): Future[Option[Array[Byte]]] = {
-    client.hget[Array[Byte]](name, ByteArrayUtils.toHexString(key)).map {
-      case Some(result) =>
-        Some(result)
-      case None =>
-        None
-    }
+    client.hget[Array[Byte]](name, ByteArrayUtils.toHexString(key))
   }
 
   def put(key: Array[Byte], value: Array[Byte]): Future[Unit] = {
