@@ -14,11 +14,7 @@
  */
 package org.tron.utils;
 
-
-import org.tron.dbStore.ByteArrayWrapper;
-
 import java.util.*;
-
 
 public class ByteArrayMap<V> implements Map<byte[], V> {
     private final Map<ByteArrayWrapper, V> delegate;

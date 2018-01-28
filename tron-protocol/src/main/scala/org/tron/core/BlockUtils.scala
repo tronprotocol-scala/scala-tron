@@ -104,8 +104,7 @@ object BlockUtils {
     * @return byte[] mine value
     */
   def getMineValue(block: Block): Array[Byte] = {
-    val concat = Arrays.concatenate(prepareData(block), block.getBlockHeader.nonce.toByteArray)
-    sha3(concat)
+    sha3(prepareData(block) ++ block.getBlockHeader.nonce.toByteArray)
   }
 
   /**
@@ -128,7 +127,8 @@ object BlockUtils {
     val nextNumber = for {
       lastHash <- awaitResult(blockchain.blockDB.get(Constant.LAST_HASH))
       value <- awaitResult(blockchain.blockDB.get(lastHash))
-    } yield Block.parseFrom(value).getBlockHeader.number + 1
+      blockHeader <- Block.parseFrom(value).blockHeader
+    } yield blockHeader.number + 1
 
     nextNumber.getOrElse(0)
   }

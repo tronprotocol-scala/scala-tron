@@ -1,6 +1,6 @@
-package org.tron
-package dbStore
+package org.tron.db
 
+import org.tron.awaitResult
 import org.tron.storage.DataSource
 
 class UTXOStore(db: DataSource[Array[Byte], Array[Byte]]) {

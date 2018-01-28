@@ -15,8 +15,6 @@
 package org.tron.utils;
 
 
-import org.tron.dbStore.ByteArrayWrapper;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
