@@ -39,6 +39,7 @@
   <a href="#quick-start">Quick Start</a> •
   <a href="#goals">Goals</a> •
   <a href="#how-to-use">How To Use</a> •
+  <a href="#dsl">DSL</a> •
   <a href="#cluster">Cluster</a> •
   <a href="#wiki">Wiki</a> •
   <a href="CONTRIBUTING.md">Contributing</a> •
@@ -192,6 +193,33 @@ __Response__
   "address": "fa7c845598653c11f01edda16d923b5ba7942e1e",
   "private_key": "GWCuQQCz7v9vXkn3BJMTmA86kj58UCdHmSw1tBu4DLe1"
 }
+```
+
+## DSL
+
+The framework provides a simple DSL to do calculations and create transactions 
+
+### Calculations
+
+```scala
+scala> Ether(1) + Ether(1)
+res0: org.tron.core.DSL.Ether = Ether(2.0)
+
+scala> Wei(500) + Wei(1500)
+res1: org.tron.core.DSL.Wei = Wei(2000.0)
+```
+
+### Transactions
+
+```scala
+scala> val wallet = Wallet()
+wallet: org.tron.wallet.Wallet = Wallet(pub:04433f084a89e5e42784ecce3530f844cc7effb727fcb0f56a65192eb247925ea6d4d780c988aa37d5c44f10eeb5e8ed6f583f10a1d670c24f09a2c89c0e351824)
+
+scala> val receivingAddress = KeyUtils.generateKey.address
+receivingAddress: org.tron.core.Address = Address([B@5585611c)
+
+scala> wallet send 1.ether to receivingAddress
+transaction: org.tron.core.DSL.TransactionBuilder = TransactionBuilder(Wallet(pub:[B@1]),Ether(1.0),Address([B@5585611c))
 ```
 
 ## Wiki
