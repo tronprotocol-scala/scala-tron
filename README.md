@@ -19,19 +19,19 @@
   </a>
 
   <a href="https://github.com/rovak/scala-tron/issues">
-    <img src="https://img.shields.io/github/issues/rovak/scala-tron.svg">
+    <img src="https://img.shields.io/github/issues/tronprotocol-scala/scala-tron.svg">
   </a>
 
   <a href="https://github.com/rovak/scala-tron/pulls">
-    <img src="https://img.shields.io/github/issues-pr/rovak/scala-tron.svg">
+    <img src="https://img.shields.io/github/issues-pr/tronprotocol-scala/scala-tron.svg">
   </a>
   
-  <a href='https://coveralls.io/github/Rovak/scala-tron?branch=develop'>
-    <img src='https://coveralls.io/repos/github/Rovak/scala-tron/badge.svg?branch=develop' alt='Coverage Status'>
+  <a href='https://coveralls.io/github/tronprotocol-scala/scala-tron?branch=develop'>
+    <img src='https://coveralls.io/repos/github/tronprotocol-scala/scala-tron/badge.svg?branch=develop' alt='Coverage Status'>
   </a>
 
   <a href="https://github.com/rovak/scala-tron/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/rovak/scala-tron.svg">
+    <img src="https://img.shields.io/github/contributors/tronprotocol-scala/scala-tron.svg">
   </a>
 </p>
 
@@ -66,7 +66,7 @@ SBT (Simple Build Tool) is an open-source build tool for Scala and Java projects
 Follow the instructions [installing SBT](http://www.scala-sbt.org/1.0/docs/Setup.html) to install SBT
 
 ```
-git clone http://github.com/rovak/scala-tron
+git clone http://github.com/tronprotocol-scala/scala-tron
 cd scala-tron
 sbt "project cli" run
 ```
