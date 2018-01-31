@@ -18,7 +18,8 @@
 
 package org.tron.db
 
-import org.tron.protos.core.TronBlock.Block
+import org.tron.protos.Tron.Block
+
 
 trait BlockStoreInput {
 

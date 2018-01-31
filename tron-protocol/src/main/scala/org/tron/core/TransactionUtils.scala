@@ -30,9 +30,7 @@ package org.tron.core
 import com.google.protobuf.ByteString
 import org.tron.crypto.ECKey
 import org.tron.crypto.Hash.sha256
-import org.tron.protos.core.TronTXInput.TXInput
-import org.tron.protos.core.TronTXOutput.TXOutput
-import org.tron.protos.core.TronTransaction.Transaction
+import org.tron.protos.Tron._
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 import org.tron.utils.Utils.getRandom

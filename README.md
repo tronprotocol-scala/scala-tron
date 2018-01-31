@@ -10,19 +10,19 @@
 </h4>
 
 <p align="center">
-  <a href="https://travis-ci.org/Rovak/scala-tron">
-    <img src="https://travis-ci.org/Rovak/scala-tron.svg?branch=master">
+  <a href="https://travis-ci.org/tronprotocol-scala/scala-tron">
+    <img src="https://travis-ci.org/tronprotocol-scala/scala-tron.svg?branch=master">
   </a>
 
-  <a href="https://gitter.im/rovak/scala-tron">
+  <a href="https://gitter.im/tronprotocol-scala/scala-tron">
     <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg">
   </a>
 
-  <a href="https://github.com/rovak/scala-tron/issues">
+  <a href="https://github.com/tronprotocol-scala/scala-tron/issues">
     <img src="https://img.shields.io/github/issues/tronprotocol-scala/scala-tron.svg">
   </a>
 
-  <a href="https://github.com/rovak/scala-tron/pulls">
+  <a href="https://github.com/tronprotocol-scala/scala-tron/pulls">
     <img src="https://img.shields.io/github/issues-pr/tronprotocol-scala/scala-tron.svg">
   </a>
   
@@ -30,7 +30,7 @@
     <img src='https://coveralls.io/repos/github/tronprotocol-scala/scala-tron/badge.svg?branch=develop' alt='Coverage Status'>
   </a>
 
-  <a href="https://github.com/rovak/scala-tron/graphs/contributors">
+  <a href="https://github.com/tronprotocol-scala/scala-tron/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/tronprotocol-scala/scala-tron.svg">
   </a>
 </p>
@@ -200,5 +200,5 @@ __Response__
 
 ## Contact
 
-* [Gitter](https://gitter.im/Rovak/scala-tron)
+* [Gitter](https://gitter.im/tronprotocol-scala/scala-tron)
 * [Telegram](https://t.me/joinchat/CP8XKBIjEc0RqzJdl61OlQ)

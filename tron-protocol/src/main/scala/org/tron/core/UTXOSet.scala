@@ -1,8 +1,7 @@
 package org.tron
 package core
 
-import org.tron.protos.core.TronTXOutput.TXOutput
-import org.tron.protos.core.TronTXOutputs.TXOutputs
+import org.tron.protos.Tron.{TXOutput, TXOutputs}
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 

@@ -28,8 +28,7 @@
 package org.tron.core
 
 import com.google.protobuf.ByteString
-import org.tron.protos.core.TronTXInput.TXInput
-import org.tron.utils.ByteArrayUtils
+import org.tron.protos.Tron.TXInput
 
 object TXInputUtils {
 

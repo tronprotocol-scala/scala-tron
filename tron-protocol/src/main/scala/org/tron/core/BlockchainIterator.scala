@@ -1,8 +1,7 @@
 package org.tron
 package core
 
-import org.tron.protos.core.TronBlock.Block
-import org.tron.utils.ByteArrayUtils
+import org.tron.protos.Tron.Block
 
 class BlockchainIterator(blockchain: Blockchain) extends Iterator[Block] {
 

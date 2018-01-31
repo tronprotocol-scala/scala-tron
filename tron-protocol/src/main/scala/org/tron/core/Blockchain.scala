@@ -2,9 +2,7 @@ package org.tron
 package core
 
 import org.tron.crypto.ECKey
-import org.tron.protos.core.TronBlock.Block
-import org.tron.protos.core.TronTXOutputs.TXOutputs
-import org.tron.protos.core.TronTransaction.Transaction
+import org.tron.protos.Tron.{Block, TXOutputs, Transaction}
 
 import scala.concurrent.Future
 

@@ -3,16 +3,11 @@ package org.tron.core
 import java.math.BigInteger
 
 import com.google.protobuf.ByteString
-import org.spongycastle.util.{Arrays, BigIntegers}
+import org.spongycastle.util.BigIntegers
 import org.tron.awaitResult
 import org.tron.crypto.Hash.sha3
-import org.tron.protos.core.TronBlock.Block
-import org.tron.protos.core.TronBlockHeader.BlockHeader
-import org.tron.protos.core.TronTransaction.Transaction
+import org.tron.protos.Tron._
 import org.tron.utils.ByteArrayUtils
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 object BlockUtils {
 

@@ -1,6 +1,6 @@
 package org.tron.core
 
-import org.tron.protos.core.TronTransaction.Transaction
+import org.tron.protos.Tron.Transaction
 
 trait TransactionStrategy {
 

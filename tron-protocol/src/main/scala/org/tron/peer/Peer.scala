@@ -2,8 +2,7 @@ package org.tron.peer
 
 import org.tron.core.{Blockchain, UTXOSet}
 import org.tron.crypto.ECKey
-import org.tron.protos.core.TronBlock.Block
-import org.tron.protos.core.TronTransaction.Transaction
+import org.tron.protos.Tron.{Block, Transaction}
 import org.tron.wallet.Wallet
 
 object Peer {

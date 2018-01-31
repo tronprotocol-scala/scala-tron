@@ -30,7 +30,7 @@ package db
 
 import java.io.File
 
-import org.tron.protos.core.TronTransaction.Transaction
+import org.tron.protos.Tron.Transaction
 import org.tron.storage.LevelDbDataSourceImpl
 
 import scala.collection.mutable
