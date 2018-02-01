@@ -57,6 +57,7 @@ TRON is a product of Web 4.0 and the decentralized internet of next generation.
 * Compatible with [java-tron](https://github.com/tronprotocol/java-tron)
 * Non-blocking
 * Functional programming approach
+* Reactive
 * User-friendly interface
 
 # Quick Start
