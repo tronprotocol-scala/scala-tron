@@ -10,7 +10,7 @@ package object tron {
   /**
     * Blockchain DataSource
     */
-  type BlockChainDb = DataSource[Array[Byte], Array[Byte]]
+  type DefaultDB = DataSource[Array[Byte], Array[Byte]]
 
   /**
     * Transaction Identifier

@@ -6,8 +6,8 @@ import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
 
 class UTXOSet(
-   val txDB: BlockChainDb,
-   val blockchain: Blockchain) {
+               val txDB: DefaultDB,
+               val blockchain: Blockchain) {
 
   def reindex(): Unit = {
     awaitResult(txDB.resetDB())

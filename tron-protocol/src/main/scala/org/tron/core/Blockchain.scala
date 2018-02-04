@@ -20,7 +20,7 @@ trait Blockchain {
 
   def currentHash: Array[Byte]
 
-  def blockDB: BlockChainDb
+  def blockDB: DefaultDB
 
   def addGenesisBlock(account: Address): Unit
 

@@ -14,7 +14,7 @@ import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class BlockchainImpl(val blockDB: BlockChainDb) extends Blockchain with Iterable[Block] {
+class BlockchainImpl(val blockDB: DefaultDB) extends Blockchain with Iterable[Block] {
 
   var lastHash = awaitResult(blockDB.get(Constant.LAST_HASH)).getOrElse(null)
   var currentHash = lastHash

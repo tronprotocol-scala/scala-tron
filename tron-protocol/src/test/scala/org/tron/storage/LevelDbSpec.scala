@@ -11,7 +11,7 @@ class LevelDbSpec extends Specification with DatabaseContext {
 
   "Level DB" should {
 
-    "put and get data" in { db: BlockChainDb =>
+    "put and get data" in { db: DefaultDB =>
       val key = "000134yyyhy".getBytes
 
       val value = "50000".getBytes
@@ -24,7 +24,7 @@ class LevelDbSpec extends Specification with DatabaseContext {
       ByteArrayUtils.toString(value) must equalTo(s)
     }
 
-    "put data" in { dataSource: BlockChainDb =>
+    "put data" in { dataSource: DefaultDB =>
       val key1 = "000134yyyhy"
       val key = key1.getBytes
 
@@ -37,7 +37,7 @@ class LevelDbSpec extends Specification with DatabaseContext {
       awaitResult(dataSource.allKeys).size must equalTo(1)
     }
 
-    "reset data" in { dataSource: BlockChainDb =>
+    "reset data" in { dataSource: DefaultDB =>
       awaitResult(dataSource.resetDB())
       ok
     }
