@@ -22,14 +22,21 @@ import java.util
 
 object FileUtils {
 
-  def recursiveList(path: String): util.List[String] = {
-    val paths = Paths.get(path)
+  def getRelativeDirectory(): File = {
+    new File(".").getCanonicalFile
+  }
 
-    require(paths.toFile.exists(), "path must exist")
+  def recursiveList(file: File): util.List[String] = {
+    recursiveList(file.getAbsolutePath)
+  }
+
+  def recursiveList(path: String): util.List[String] = {
+    val file = new File(path)
+    require(file.exists(), "path must exist")
 
     val files = new util.ArrayList[String]
 
-    Files.walkFileTree(paths, new FileVisitor[Path]() {
+    Files.walkFileTree(file.toPath, new FileVisitor[Path]() {
 
       def preVisitDirectory(dir: Path, attrs: BasicFileAttributes) = FileVisitResult.CONTINUE
 
@@ -45,12 +52,16 @@ object FileUtils {
     files
   }
 
-  def recursiveDelete(fileName: String): Boolean = {
-    val file = new File(fileName)
+  def recursiveDelete(file: File): Boolean = {
+    recursiveDelete(file.getAbsolutePath)
+  }
+
+  def recursiveDelete(path: String): Boolean = {
+    val file = new File(path)
     if (file.exists) { // check if the file is a directory
       if (file.isDirectory) if (file.list.length > 0) {
         for (s <- file.list) { // call deletion of file individually
-          recursiveDelete(fileName + System.getProperty("file.separator") + s)
+          recursiveDelete(s"$path${System.getProperty("file.separator")}$s")
         }
       }
       file.setWritable(true)
