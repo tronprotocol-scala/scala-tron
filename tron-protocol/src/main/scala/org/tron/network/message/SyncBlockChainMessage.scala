@@ -8,6 +8,6 @@ object SyncBlockChainMessage extends MessageReader {
   }
 }
 
-case class SyncBlockChainMessage(override val inventory: Inventory) extends InventoryMessage(inventory) {
-  override val messageType = MessageTypes.SYNC_BLOCK_CHAIN
+case class SyncBlockChainMessage(override val inventory: Inventory) extends Message with InventoryBaseMessage {
+  val messageType = MessageTypes.SYNC_BLOCK_CHAIN
 }

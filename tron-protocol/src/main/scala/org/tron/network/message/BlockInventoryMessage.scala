@@ -12,6 +12,6 @@ object BlockInventoryMessage extends MessageReader {
   }
 }
 
-case class BlockInventoryMessage(override val inventory: Inventory) extends InventoryMessage(inventory) {
-  override val messageType = MessageTypes.BLOCK_INVENTORY
+case class BlockInventoryMessage(inventory: Inventory) extends Message with InventoryBaseMessage {
+  val messageType = MessageTypes.BLOCK_INVENTORY
 }

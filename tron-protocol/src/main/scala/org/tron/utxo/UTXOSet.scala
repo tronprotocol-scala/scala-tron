@@ -1,9 +1,11 @@
-package org.tron
-package core
+package org.tron.utxo
 
+import org.tron.blockchain.Blockchain
+import org.tron.core.{Address, Key}
 import org.tron.protos.Tron.{TXOutput, TXOutputs}
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
+import org.tron.{DefaultDB, awaitResult}
 
 class UTXOSet(
                val txDB: DefaultDB,

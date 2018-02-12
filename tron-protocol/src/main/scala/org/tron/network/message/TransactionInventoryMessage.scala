@@ -12,6 +12,6 @@ object TransactionInventoryMessage extends MessageReader {
   }
 }
 
-case class TransactionInventoryMessage(override val inventory: Inventory) extends InventoryMessage(inventory) {
-  override val messageType = MessageTypes.TRX_INVENTORY
+case class TransactionInventoryMessage(inventory: Inventory) extends Message with InventoryBaseMessage {
+  val messageType = MessageTypes.TRX_INVENTORY
 }

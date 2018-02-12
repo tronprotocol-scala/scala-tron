@@ -43,7 +43,7 @@ class NodeImpl(
   /**
     * Periodically sends a message to start advertising messages
     */
-  val advertisePoller = context.system.scheduler.schedule(3.seconds, 1.second, self, Advertise())
+  val advertisePoller = context.system.scheduler.schedule(3.seconds, 1.second, self, Advertise())(context.dispatcher)
 
   def connect(): Unit = {
 

@@ -5,6 +5,7 @@ import java.math.BigInteger
 import com.google.protobuf.ByteString
 import org.spongycastle.util.BigIntegers
 import org.tron.awaitResult
+import org.tron.blockchain.Blockchain
 import org.tron.crypto.Hash.sha3
 import org.tron.protos.Tron._
 import org.tron.utils.ByteArrayUtils

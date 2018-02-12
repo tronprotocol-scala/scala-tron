@@ -22,8 +22,7 @@ object FetchInvDataMessage extends MessageReader {
   }
 }
 
-case class FetchInvDataMessage(override val inventory: Inventory) extends InventoryMessage(inventory) {
-  override val messageType = MessageTypes.FETCH_INV_DATA
-
+case class FetchInvDataMessage(inventory: Inventory) extends Message with InventoryBaseMessage {
+  val messageType = MessageTypes.FETCH_INV_DATA
   def fetchType = if (messageType == MessageTypes.BLOCK) MessageTypes.BLOCK else MessageTypes.TRX
 }

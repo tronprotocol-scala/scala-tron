@@ -1,13 +1,16 @@
 package org.tron
-package core
+package blockchain
 
 import com.google.protobuf.ByteString
+import org.tron.awaitResult
 import org.tron.core.Constant.LAST_HASH
-import org.tron.core.TransactionUtils._
+import org.tron.utxo.TransactionUtils._
+import org.tron.core._
 import org.tron.crypto.ECKey
 import org.tron.protos.Tron._
 import org.tron.utils.ByteArrayUtils
 import org.tron.utils.ByteStringUtils._
+import org.tron.utxo.{TransactionUtils, UTXOSet}
 
 import scala.async.Async._
 import scala.collection.mutable

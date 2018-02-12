@@ -3,8 +3,10 @@ package core
 
 import org.specs2.mutable._
 import org.tron.application.{AppFactory, Module}
+import org.tron.blockchain.{Blockchain, BlockchainImpl}
 import org.tron.storage.DbFactory
 import org.tron.utils.KeyUtils
+import org.tron.utxo.{TransactionUtils, UTXOSet}
 import org.tron.wallet.Wallet
 
 class BlockchainSpec extends Specification {

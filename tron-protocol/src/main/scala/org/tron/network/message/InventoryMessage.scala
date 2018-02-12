@@ -14,9 +14,12 @@ object InventoryMessage extends MessageReader {
   }
 }
 
-case class InventoryMessage(inventory: Inventory) extends Message {
-  def hashes = inventory.ids.map(id => Sha256Hash.wrap(id.toByteArray)).toList
-
+case class InventoryMessage(inventory: Inventory) extends Message with InventoryBaseMessage {
   val messageType = MessageTypes.INVENTORY
+}
+
+trait InventoryBaseMessage {
+  val inventory: Inventory
+  def hashes = inventory.ids.map(id => Sha256Hash.wrap(id.toByteArray)).toList
   def toBytes = inventory.toByteArray
 }
