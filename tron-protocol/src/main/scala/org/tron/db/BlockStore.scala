@@ -37,6 +37,7 @@ import scala.collection.mutable
 
 class BlockStore(dbFolder: File) {
 
+
   private val blockDbDataSource = new LevelDbDataSourceImpl(dbFolder, "block")
   private val unSpendCache = new LevelDbDataSourceImpl(dbFolder, "trx")
   private val pendingTrans = mutable.ListBuffer[Transaction]()
@@ -83,10 +84,20 @@ class BlockStore(dbFolder: File) {
 
   }
 
+  def isBlockIncluded(hash: Hash): Boolean = ???
+
+  def getBlockNumByHash(lastKnownHash: Hash): Long = ???
+
+  def headBlockNum: Long = ???
+
+  def getBlockHashByNum(num: Long): Hash = ???
+
+
   /** *
     * resetDB the database
     */
   def reset(): Unit = blockDbDataSource.resetDB()
 
   def close(): Unit = blockDbDataSource.close()
+
 }
