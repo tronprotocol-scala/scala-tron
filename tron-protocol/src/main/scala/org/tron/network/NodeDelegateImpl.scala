@@ -1,23 +1,30 @@
 package org.tron
 package network
 
-import org.tron.db.BlockStore
+import org.tron.db.{BlockStore, DynamicPropertiesStore}
 import org.tron.network.message.{Message, MessageTypes}
 import org.tron.protos.Tron.{Block, Transaction}
 
 class NodeDelegateImpl(
-  blockStore: BlockStore) extends NodeDelegate {
+  blockStore: BlockStore,
+  propertiesStore: DynamicPropertiesStore) extends NodeDelegate {
 
+  def getBlockChainSummary(refPoint: Hash, numberOfHashes: Int): List[Hash] = ???
 
-  override def handleTransation(trx: Transaction): Unit = ???
+  def getData(hash: Hash, messageType: MessageTypes): Message = ???
 
-
-  override def getBlockChainSummary(refPoint: Hash, numberOfHashes: Int): List[Hash] = ???
-
-  override def getData(hash: Hash, messageType: MessageTypes): Message = ???
+  def handleTransation(trx: Transaction): Unit = {
+    blockStore.pushTransactions(trx)
+  }
 
   def handleBlock(block: Block): Unit = {
+    // Save latest block to blockstore
+    blockStore.saveBlock("".getBytes, block.toByteArray)
 
+    // Save latest block to properties store
+    propertiesStore.latestBlockHeaderTimestamp = block.getBlockHeader.timestamp
+    propertiesStore.latestBlockHeaderNumber = block.getBlockHeader.number
+    propertiesStore.latestBlockHeaderHash = block.getBlockHeader.hash
   }
 
   def getBlockHashes(blockChainSummary: List[Hash]): List[Hash] = {
