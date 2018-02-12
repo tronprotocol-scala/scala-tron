@@ -1,14 +1,16 @@
 package org.tron.utils
 
-import java.io.File
-import java.nio.file.Path
-
 import org.specs2.mutable._
 
 class FileUtilsSpec extends Specification {
   "FileUtils Spec" should {
+    "getRelativePath" in {
+      val directory = FileUtils.getRelativeDirectory()
+      directory.exists() must beTrue
+      directory.isDirectory must beTrue
+    }
     "recursiveList" in {
-      1 mustEqual 1
+      FileUtils.recursiveList("") must throwAn[IllegalArgumentException]
     }
     "recursiveDelete" in {
       1 mustEqual 1
