@@ -8,7 +8,7 @@ trait NodeDelegate {
 
   def handleBlock(block: Block): Unit
 
-  def handleTransation(trx: Transaction): Unit
+  def handleTransaction(trx: Transaction): Unit
 
   def getBlockHashes(blockChainSummary: List[Sha256Hash]): List[Sha256Hash]
 

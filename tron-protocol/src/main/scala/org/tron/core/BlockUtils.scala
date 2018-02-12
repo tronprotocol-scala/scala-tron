@@ -1,4 +1,5 @@
-package org.tron.core
+package org.tron
+package core
 
 import java.math.BigInteger
 
@@ -11,6 +12,11 @@ import org.tron.protos.Tron._
 import org.tron.utils.ByteArrayUtils
 
 object BlockUtils {
+
+  implicit class BlockImplicits(block: Block) {
+    def hash: Hash = Sha256Hash.of(block.toByteArray)
+    def parentHash: Hash = Sha256Hash.wrap(this.block.getBlockHeader.parentHash)
+  }
 
   /**
     * getData a new block

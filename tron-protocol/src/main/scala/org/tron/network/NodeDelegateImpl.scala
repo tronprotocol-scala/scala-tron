@@ -4,6 +4,7 @@ package network
 import org.tron.db.{BlockStore, DynamicPropertiesStore}
 import org.tron.network.message.{Message, MessageTypes}
 import org.tron.protos.Tron.{Block, Transaction}
+import org.tron.core.BlockUtils._
 
 class NodeDelegateImpl(
   blockStore: BlockStore,
@@ -13,13 +14,16 @@ class NodeDelegateImpl(
 
   def getData(hash: Hash, messageType: MessageTypes): Message = ???
 
-  def handleTransation(trx: Transaction): Unit = {
+  def handleTransaction(trx: Transaction): Unit = {
     blockStore.pushTransactions(trx)
   }
 
+  /**
+    * Handle incoming block
+    */
   def handleBlock(block: Block): Unit = {
     // Save latest block to blockstore
-    blockStore.saveBlock("".getBytes, block.toByteArray)
+    blockStore.saveBlock(block.hash, block)
 
     // Save latest block to properties store
     propertiesStore.latestBlockHeaderTimestamp = block.getBlockHeader.timestamp

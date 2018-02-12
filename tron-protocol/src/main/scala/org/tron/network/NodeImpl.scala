@@ -95,7 +95,7 @@ class NodeImpl(
     * @param message the message containing the transaction
     */
   def handleTransactionMessage(peer: PeerConnection, message: TransactionMessage) = {
-    nodeDelegate.handleTransation(message.transaction)
+    nodeDelegate.handleTransaction(message.transaction)
   }
 
   /**
