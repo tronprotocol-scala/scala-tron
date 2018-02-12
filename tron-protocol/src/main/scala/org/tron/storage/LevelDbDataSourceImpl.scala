@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 
 import org.fusesource.leveldbjni.JniDBFactory.factory
 import org.iq80.leveldb._
-import org.tron.utils.FileUtil
+import org.tron.utils.FileUtils
 
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -92,7 +92,7 @@ class LevelDbDataSourceImpl(dbFolder: File, name: String = "default") extends Da
 
   def resetDB() = Future.successful {
     close()
-    FileUtil.recursiveDelete(new File(dbFolder.getAbsolutePath, name).getAbsolutePath)
+    FileUtils.recursiveDelete(new File(dbFolder.getAbsolutePath, name).getAbsolutePath)
     buildDb() match {
       case Right(newDb) =>
         db = Some(newDb)

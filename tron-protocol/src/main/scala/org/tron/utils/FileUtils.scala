@@ -20,7 +20,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util
 
 
-object FileUtil {
+object FileUtils {
 
   def recursiveList(path: String): util.List[String] = {
     val paths = Paths.get(path)
