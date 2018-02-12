@@ -7,9 +7,7 @@ class WalletSpec extends Specification {
   "Wallet Spec" should {
 
     "Generate new address" in {
-
       val wallet = Wallet()
-
       wallet.address.hex must not beEmpty
     }
   }
