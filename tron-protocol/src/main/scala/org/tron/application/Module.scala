@@ -11,7 +11,7 @@ import org.tron.core.Constant
 import org.tron.grpc.GrpcServer
 import org.tron.storage.{DbFactory, LevelDbFactory, RedisDbFactory}
 
-class Module(mode: String = Constant.TEST) extends AbstractModule {
+class Module(mode: String = Constant.ENV_NORMAL) extends AbstractModule {
 
   def configure() = {}
 
@@ -19,7 +19,7 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
   @Singleton
   def buildConfig(): Config = {
     mode match {
-      case Constant.TEST =>
+      case Constant.ENV_TEST =>
         ConfigFactory.load(Constant.TEST_CONF)
       case _ =>
         ConfigFactory.load(Constant.NORMAL_CONF)
