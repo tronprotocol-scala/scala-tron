@@ -8,18 +8,23 @@ import com.typesafe.config.Config
 import io.scalecube.cluster.membership.MembershipEvent.Type
 import io.scalecube.cluster.{Cluster, ClusterConfig, Member}
 import io.scalecube.transport.{Address, Message}
-import org.tron.network.GossipLocalNodeActor.{Connect, Connected, NodeState}
+import org.tron.network.GossipLocalNodeActor._
 import org.tron.network.message.{MessageDeserializer, MessageTypes, Message => TronMessage}
 import org.tron.network.peer.PeerConnection
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
+import akka.pattern._
 
 import scala.collection.JavaConverters._
+import scala.concurrent.{Future, Promise}
 
 object GossipLocalNodeActor {
 
   case class Connect(seedAddresses: Seq[Address] = List.empty)
   case class Connected()
+  case class Disconnect()
+  case class Disconnected()
+  case class RequestState()
 
   def props(port: Int, config: Config) = Props(classOf[GossipLocalNodeActor], port, config)
 
@@ -96,15 +101,20 @@ class GossipLocalNodeActor(
     state = NodeState(cluster)
         .addPeers(cluster.otherMembers().asScala.toSeq)
 
+    println(s"$port INITIAL STATE", state.members.size)
+
     subscribe {
       cluster.listenMembership()
         .subscribe(event => {
           println(s"$port: MEMBERSHIP", event)
           event.`type`() match {
             case Type.REMOVED =>
+
+              println(s"$port: REMOVE", event.oldMember().address().port())
               state = state.removePeer(event.oldMember())
 
             case Type.ADDED | Type.UPDATED =>
+              println(s"$port: ADD", event.newMember().address().port())
               state = state.addPeer(event.newMember())
           }
         })
@@ -125,12 +135,25 @@ class GossipLocalNodeActor(
   /**
     * Disconnects from the cluster
     */
-  def disconnect() = {
-    println(s"$port: DISCONNECTING SHUTDOWN")
-    cluster.shutdown()
-    subscriptions.clear()
-    listeners.values.foreach(_ ! PoisonPill)
-    listeners = Map.empty
+  def disconnect(): Future[Boolean] = {
+
+    val promise = Promise[Boolean]()
+
+    if (cluster != null) {
+      subscriptions.clear()
+      listeners.values.foreach(_ ! PoisonPill)
+      listeners = Map.empty
+
+      cluster.shutdown().whenComplete { (done, x) =>
+        promise.success(true)
+      }
+      state = state.copy(cluster = null)
+
+    } else {
+      promise.success(false)
+    }
+
+    promise.future
   }
 
 
@@ -150,21 +173,28 @@ class GossipLocalNodeActor(
   }
 
   override def postStop(): Unit = {
-    if (cluster != null) {
-      disconnect()
-    }
+    disconnect()
   }
 
   def receive = {
     case Connect(addresses) =>
       val clusterConfig  = buildClusterConfig
         .seedMembers(addresses.asJava)
-
       connect(clusterConfig.build)
-
       sender() ! Connected()
+
+    case RequestState() =>
+      println(s"$port: STATE REQUEST", state)
+      sender() ! state
 
     case Terminated(ref) =>
       listeners = listeners - ref.hashCode()
+
+    case Disconnect() =>
+      import context.dispatcher
+      val reply = sender()
+      disconnect().foreach { _ =>
+        reply ! Disconnected()
+      }
   }
 }

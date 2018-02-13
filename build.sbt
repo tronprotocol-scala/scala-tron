@@ -63,6 +63,7 @@ lazy val protocol = (project in file("tron-protocol"))
     PB.targets in Compile := Seq(
       scalapb.gen() -> (sourceManaged in Compile).value
     ),
+    parallelExecution in Test := false,
     fork in Test := true
   )
 
