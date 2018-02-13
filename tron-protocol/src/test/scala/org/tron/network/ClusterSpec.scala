@@ -28,6 +28,8 @@ class ClusterSpec extends TestKit(ActorSystem()) with ImplicitSender with WordSp
       val masterNode = system.actorOf(GossipLocalNodeActor.props(7000, config))
       masterNode ! Connect()
 
+      expectMsg(Connected())
+
       val clientNode = system.actorOf(GossipLocalNodeActor.props(7001, config))
       clientNode ! Connect(List(Address.from("127.0.0.1:7000")))
 
