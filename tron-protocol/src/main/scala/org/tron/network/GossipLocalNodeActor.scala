@@ -56,7 +56,9 @@ class GossipLocalNodeActor(
   port: Int,
   config: Config) extends Actor {
 
+  // TODO replace null
   var state = NodeState(cluster = null)
+
   var listeners = Map[Int, ActorRef]()
   val subscriptions = new CompositeSubscription()
   val messageSerializer = new MessageDeserializer
@@ -137,9 +139,8 @@ class GossipLocalNodeActor(
     */
   def disconnect(): Future[Boolean] = {
 
-    val promise = Promise[Boolean]()
-
     if (cluster != null) {
+      val promise = Promise[Boolean]()
       subscriptions.clear()
       listeners.values.foreach(_ ! PoisonPill)
       listeners = Map.empty
@@ -147,13 +148,13 @@ class GossipLocalNodeActor(
       cluster.shutdown().whenComplete { (done, x) =>
         promise.success(true)
       }
+
       state = state.copy(cluster = null)
 
+      promise.future
     } else {
-      promise.success(false)
+      Future.successful(false)
     }
-
-    promise.future
   }
 
 
