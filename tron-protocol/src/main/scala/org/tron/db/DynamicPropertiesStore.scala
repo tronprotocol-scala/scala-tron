@@ -19,7 +19,7 @@ class DynamicPropertiesStore(val dbSource: DefaultDB) extends TronDatabase {
     }
   }
 
-  def latestBlockHeaderTimestamp_=(timestamp: Long) {
+  def latestBlockHeaderTimestamp_=(timestamp: Long): Unit = {
     awaitResult(dbSource.put(LATEST_BLOCK_HEADER_TIMESTAMP, ByteArrayUtils.fromLong(timestamp)))
   }
 
@@ -30,7 +30,7 @@ class DynamicPropertiesStore(val dbSource: DefaultDB) extends TronDatabase {
     }
   }
 
-  def latestBlockHeaderNumber_=(number: Long) {
+  def latestBlockHeaderNumber_=(number: Long): Unit = {
     awaitResult(dbSource.put(LATEST_BLOCK_HEADER_NUMBER, ByteArrayUtils.fromLong(number)))
   }
 
@@ -41,7 +41,7 @@ class DynamicPropertiesStore(val dbSource: DefaultDB) extends TronDatabase {
     }
   }
 
-  def latestBlockHeaderHash_=(number: ByteString) {
+  def latestBlockHeaderHash_=(number: ByteString): Unit = {
     awaitResult(dbSource.put(LATEST_BLOCK_HEADER_HASH, number.toByteArray))
   }
 
