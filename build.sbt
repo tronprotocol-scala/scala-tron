@@ -83,4 +83,3 @@ lazy val cli = (project in file("tron-cli"))
     )
   .dependsOn(protocol, api)
   .aggregate(protocol, api)
-
