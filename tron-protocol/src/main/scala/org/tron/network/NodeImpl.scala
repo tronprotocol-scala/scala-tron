@@ -2,6 +2,7 @@ package org.tron.network
 
 import akka.actor.Actor
 import akka.stream.ActorMaterializer
+import org.tron.Hash
 import org.tron.core.Sha256Hash
 import org.tron.network.NodeImpl.Advertise
 import org.tron.network.message._
@@ -20,22 +21,22 @@ class NodeImpl(
   nodeDelegate: NodeDelegate,
   gossipNode: LocalNode) extends Actor {
 
-  var syncMap = Map[Sha256Hash, PeerConnection]()
+  var syncMap = Map[Hash, PeerConnection]()
 
   /**
     * Peers from which data is being fetched
     */
-  var fetchMap = Map[Sha256Hash, PeerConnection]()
+  var fetchMap = Map[Hash, PeerConnection]()
 
   /**
     * Transactions which needs to be advertised to other peers
     */
-  val trxToAdvertise = mutable.ListBuffer[Sha256Hash]()
+  val trxToAdvertise = mutable.ListBuffer[Hash]()
 
   /**
     * Blocks which need to be advertised to other peers
     */
-  val blockToAdvertise = mutable.ListBuffer[Sha256Hash]()
+  val blockToAdvertise = mutable.ListBuffer[Hash]()
 
   /**
     * Periodically sends a message to start advertising messages
@@ -134,7 +135,7 @@ class NodeImpl(
   /**
     * Syncs from the given hash
     */
-  def syncFrom(hash: Sha256Hash) = {
+  def syncFrom(hash: Hash) = {
 
     import context.dispatcher
 

@@ -1,6 +1,6 @@
 package org.tron.network
 
-import org.tron.core.Sha256Hash
+import org.tron.Hash
 import org.tron.network.message.Message
 
 trait Node {
@@ -8,6 +8,6 @@ trait Node {
   def broadcast(msg: Message): Unit
   def listen(): Unit
   def connectToP2PNetWork(): Unit
-  def syncFrom(blockHash: Sha256Hash): Unit
+  def syncFrom(blockHash: Hash): Unit
   def close(): Unit
 }

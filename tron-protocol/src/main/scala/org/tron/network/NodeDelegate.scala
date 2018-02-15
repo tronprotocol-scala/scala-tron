@@ -1,5 +1,6 @@
 package org.tron.network
 
+import org.tron.Hash
 import org.tron.core.Sha256Hash
 import org.tron.network.message.{Message, MessageTypes}
 import org.tron.protos.Tron.{Block, Transaction}
@@ -10,10 +11,10 @@ trait NodeDelegate {
 
   def handleTransaction(trx: Transaction): Unit
 
-  def getBlockHashes(blockChainSummary: List[Sha256Hash]): List[Sha256Hash]
+  def getBlockHashes(blockChainSummary: List[Hash]): List[Hash]
 
-  def getBlockChainSummary(refPoint: Sha256Hash, numberOfHashes: Int): List[Sha256Hash]
+  def getBlockChainSummary(refPoint: Hash, numberOfHashes: Int): List[Hash]
 
-  def getData(hash: Sha256Hash, messageType: MessageTypes): Message
+  def getData(hash: Hash, messageType: MessageTypes): Message
 
 }

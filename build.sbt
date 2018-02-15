@@ -52,6 +52,8 @@ val defaultSettings = Seq(
   // Test
   "org.specs2" %% "specs2-core" % "4.0.2" % "test",
 
+  "com.google.protobuf" % "protobuf-java" % "3.4.0" % "protobuf",
+
   "org.scala-lang.modules" %% "scala-async" % "0.9.6",
 
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,

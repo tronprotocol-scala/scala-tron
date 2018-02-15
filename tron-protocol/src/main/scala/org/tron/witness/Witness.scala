@@ -15,6 +15,8 @@ class Witness(node: Node) extends Actor {
 
   val interval = 1.second
 
+  import context.dispatcher
+
   val productionSchedule = context.system.scheduler.schedule(interval, interval, self, RunProduction())
 
   def firstSlotTime: DateTime = DateTime.now
