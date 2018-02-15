@@ -18,16 +18,15 @@
 
 package org.tron.crypto;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.tron.crypto.jce.TronCastleProvider;
+import static java.util.Arrays.copyOfRange;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
-
-import static java.util.Arrays.copyOfRange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tron.crypto.jce.TronCastleProvider;
 
 public class Hash {
 

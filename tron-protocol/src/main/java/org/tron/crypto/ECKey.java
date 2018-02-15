@@ -62,7 +62,6 @@ import java.util.Arrays;
 import static org.tron.utils.BIUtil.isLessThan;
 import static org.tron.utils.ByteUtil.bigIntegerToBytes;
 
-
 public class ECKey implements Serializable {
 
   /**
@@ -848,7 +847,7 @@ public class ECKey implements Serializable {
     }
     if (privKey instanceof BCECPrivateKey) {
       ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new
-              SHA256Digest()));
+          SHA256Digest()));
       ECPrivateKeyParameters privKeyParams = new ECPrivateKeyParameters
           (((BCECPrivateKey) privKey).getD(), CURVE);
       signer.init(true, privKeyParams);

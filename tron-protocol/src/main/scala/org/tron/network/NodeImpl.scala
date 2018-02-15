@@ -1,8 +1,5 @@
 package org.tron.network
 
-import java.util
-import java.util.List
-
 import akka.actor.Actor
 import akka.stream.ActorMaterializer
 import org.tron.core.Sha256Hash
@@ -12,8 +9,8 @@ import org.tron.network.peer.PeerConnection
 import org.tron.protos.Tron.Inventory
 import org.tron.protos.Tron.Inventory.InventoryType
 
-import scala.concurrent.duration._
 import scala.collection.mutable
+import scala.concurrent.duration._
 
 object NodeImpl {
   case class Advertise()
@@ -47,11 +44,12 @@ class NodeImpl(
 
   def connect(): Unit = {
 
+    import context.dispatcher
     implicit val materializer = ActorMaterializer()(context)
 
-    gossipNode
-      .subscribe()
-      .runForeach(onPeerMessage)
+    gossipNode.subscribe().foreach { source =>
+      source.runForeach(onPeerMessage)
+    }
   }
 
   /**
@@ -137,6 +135,9 @@ class NodeImpl(
     * Syncs from the given hash
     */
   def syncFrom(hash: Sha256Hash) = {
+
+    import context.dispatcher
+
     val hashList = nodeDelegate.getBlockChainSummary(hash, 100)
 
     val inventory = Inventory(
@@ -145,10 +146,12 @@ class NodeImpl(
 
     val syncBlockChainMessage = SyncBlockChainMessage(inventory)
 
-    // Make sure there are other peers to sync from
-    if (gossipNode.peers.nonEmpty) {
-      syncMap.get(syncBlockChainMessage.hash).foreach { peer =>
-        peer.send(syncBlockChainMessage)
+    for (peers <- gossipNode.peers) {
+      // Make sure there are other peers to sync from
+      if (peers.nonEmpty) {
+        syncMap.get(syncBlockChainMessage.hash).foreach { peer =>
+          peer.send(syncBlockChainMessage)
+        }
       }
     }
   }
@@ -175,16 +178,13 @@ class NodeImpl(
   def advertise() = {
     if (blockToAdvertise.nonEmpty) {
       val inventoryMessage = BlockInventoryMessage.fromHashes(blockToAdvertise.toList)
-      gossipNode.syncablePeers
-        .foreach(_.send(inventoryMessage))
-
+      gossipNode.advertise(inventoryMessage)
       blockToAdvertise.clear()
     }
 
     if (trxToAdvertise.nonEmpty) {
       val inventoryMessage = TransactionInventoryMessage.fromHashes(trxToAdvertise.toList)
-      gossipNode.syncablePeers
-        .foreach(_.send(inventoryMessage))
+      gossipNode.advertise(inventoryMessage)
 
       trxToAdvertise.clear()
     }

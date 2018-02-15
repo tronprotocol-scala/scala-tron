@@ -7,26 +7,30 @@ import akka.stream.scaladsl.Source
 import com.typesafe.config.Config
 import io.scalecube.cluster.membership.MembershipEvent.Type
 import io.scalecube.cluster.{Cluster, ClusterConfig, Member}
-import io.scalecube.transport.{Address, Message}
+import io.scalecube.transport.Address
 import org.tron.network.GossipLocalNodeActor._
-import org.tron.network.message.{MessageDeserializer, MessageTypes, Message => TronMessage}
+import org.tron.network.message.{InventoryBaseMessage, MessageDeserializer, MessageTypes, Message => TronMessage}
 import org.tron.network.peer.PeerConnection
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
-import akka.pattern._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{Future, Promise}
 
 object GossipLocalNodeActor {
 
+  // Connection Requests
   case class Connect(seedAddresses: Seq[Address] = List.empty)
   case class Connected()
   case class Disconnect()
   case class Disconnected()
   case class RequestState()
+  case class RequestStream()
 
-  def props(port: Int, config: Config) = Props(classOf[GossipLocalNodeActor], port, config)
+  case class BroadcastInventory(inventory: InventoryBaseMessage)
+  case class Broadcast(message: TronMessage)
+
+  def props(port: Int, config: Config) = Props(new GossipLocalNodeActor(port, config))
 
   case class NodeState(cluster: Cluster, members: Map[String, PeerConnection] = Map.empty) {
     def addPeer(member: Member) = {
@@ -96,27 +100,20 @@ class GossipLocalNodeActor(
     * Connects to the cluster
     */
   def connect(clusterConfig: ClusterConfig) = {
-    println(s"$port: CONNECTING: ", clusterConfig.getSeedMembers)
 
     val cluster = Cluster.joinAwait(clusterConfig)
 
     state = NodeState(cluster)
         .addPeers(cluster.otherMembers().asScala.toSeq)
 
-    println(s"$port INITIAL STATE", state.members.size)
-
     subscribe {
       cluster.listenMembership()
         .subscribe(event => {
-          println(s"$port: MEMBERSHIP", event)
           event.`type`() match {
             case Type.REMOVED =>
-
-              println(s"$port: REMOVE", event.oldMember().address().port())
               state = state.removePeer(event.oldMember())
 
             case Type.ADDED | Type.UPDATED =>
-              println(s"$port: ADD", event.newMember().address().port())
               state = state.addPeer(event.newMember())
           }
         })
@@ -124,7 +121,6 @@ class GossipLocalNodeActor(
 
     subscribe {
       cluster.listen().subscribe(msg => {
-        println(s"$port: MESSAGE", msg)
         val key = msg.header("type")
         val messageType = MessageTypes.valueOf(key)
         val newValueBytes = msg.data.toString.getBytes("ISO-8859-1")
@@ -157,7 +153,6 @@ class GossipLocalNodeActor(
     }
   }
 
-
   def subscribe(subscription: Subscription): Unit = {
     subscriptions.add(subscription)
   }
@@ -185,7 +180,6 @@ class GossipLocalNodeActor(
       sender() ! Connected()
 
     case RequestState() =>
-      println(s"$port: STATE REQUEST", state)
       sender() ! state
 
     case Terminated(ref) =>
@@ -197,5 +191,13 @@ class GossipLocalNodeActor(
       disconnect().foreach { _ =>
         reply ! Disconnected()
       }
+
+    case RequestStream() =>
+      sender() ! listen
+
+    case BroadcastInventory(inventory) =>
+      otherMembers
+        .filter(_.needSyncFrom)
+        .foreach(_.send(inventory))
   }
 }
