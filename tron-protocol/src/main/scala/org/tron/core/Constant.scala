@@ -40,9 +40,10 @@ object Constant { // whole
   val TOPIC_BLOCK = "block"
   val TOPIC_TRANSACTION = "transaction"
   val PARTITION = 0
-  //config
-  val NORMAL = "normal"
-  val TEST = "test"
+
+  val ENV_NORMAL = "normal"
+  val ENV_TEST = "test"
+
   val NORMAL_CONF = "tron.conf"
   val TEST_CONF = "tron-test.conf"
   val DATABASE_CONF_SECTION = "database"

@@ -1,3 +1,5 @@
+package org.tron.core;
+
 /*
  * Copyright 2011 Google Inc.
  * Copyright 2014 Andreas Schildbach
@@ -15,13 +17,11 @@
  * limitations under the License.
  */
 
-package org.tron.core;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.primitives.*;
-import org.tron.utils.ByteArrayUtils;
-import scala.Byte;
-
+import com.google.common.primitives.Ints;
+import com.google.protobuf.ByteString;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,8 +30,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A Sha256Hash just wraps a byte[] so that equals and hashcode work correctly, allowing it to be used as keys in a
@@ -53,15 +51,6 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
     }
 
     /**
-     * Use {@link #wrap(String)} instead.
-     */
-    @Deprecated
-    public Sha256Hash(String hexString) {
-        checkArgument(hexString.length() == LENGTH * 2);
-        this.bytes = ByteArrayUtils.fromHexString(hexString);
-    }
-
-    /**
      * Creates a new instance that wraps the given hash value.
      *
      * @param rawHashBytes the raw hash bytes to wrap
@@ -73,29 +62,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
         return new Sha256Hash(rawHashBytes);
     }
 
-    /**
-     * Creates a new instance that wraps the given hash value (represented as a hex string).
-     *
-     * @param hexString a hash value represented as a hex string
-     * @return a new instance
-     * @throws IllegalArgumentException if the given string is not a valid
-     *         hex string, or if it does not represent exactly 32 bytes
-     */
-    public static Sha256Hash wrap(String hexString) {
-        return wrap(ByteArrayUtils.fromHexString(hexString));
-    }
-
-    /**
-     * Creates a new instance that wraps the given hash value, but with byte order reversed.
-     *
-     * @param rawHashBytes the raw hash bytes to wrap
-     * @return a new instance
-     * @throws IllegalArgumentException if the given array length is not exactly 32
-     */
-    @SuppressWarnings("deprecation") // the constructor will be made private in the future
-    public static Sha256Hash wrapReversed(byte[] rawHashBytes) {
-        return wrap(ByteArrayUtils.reverseBytes(rawHashBytes));
-    }
+    public static Sha256Hash wrap(ByteString rawHashByteString) { return wrap(rawHashByteString.toByteArray()); }
 
     /** Use {@link #of(byte[])} instead: this old name is ambiguous. */
     @Deprecated
@@ -243,10 +210,10 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
         return Ints.fromBytes(bytes[LENGTH - 4], bytes[LENGTH - 3], bytes[LENGTH - 2], bytes[LENGTH - 1]);
     }
 
-    @Override
-    public String toString() {
-        return ByteArrayUtils.toHexString(bytes);
-    }
+//  @Override
+//  public String toString() {
+//    return Utils.HEX.encode(bytes);
+//  }
 
     /**
      * Returns the bytes interpreted as a positive integer.
@@ -263,11 +230,19 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
     }
 
     /**
-     * Returns a reversed copy of the internal byte array.
+     * For pb return ByteString.
+     * @return
      */
-    public byte[] getReversedBytes() {
-        return ByteArrayUtils.reverseBytes(bytes);
+    public ByteString getByteString() {
+        return ByteString.copyFrom(bytes);
     }
+
+//  /**
+//   * Returns a reversed copy of the internal byte array.
+//   */
+//  public byte[] getReversedBytes() {
+//    return Utils.reverseBytes(bytes);
+//  }
 
     @Override
     public int compareTo(final Sha256Hash other) {

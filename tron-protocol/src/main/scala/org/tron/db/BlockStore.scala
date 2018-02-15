@@ -30,7 +30,7 @@ package db
 
 import java.io.File
 
-import org.tron.protos.Tron.Transaction
+import org.tron.protos.Tron.{Block, Transaction}
 import org.tron.storage.LevelDbDataSourceImpl
 
 import scala.collection.mutable
@@ -52,19 +52,13 @@ class BlockStore(dbFolder: File) {
 
   /**
     * save a block
-    *
-    * @param blockHash
-    * @param blockData
     */
-  def saveBlock(blockHash: Array[Byte], blockData: Array[Byte]): Unit = {
-    blockDbDataSource.put(blockHash, blockData)
+  def saveBlock(blockHash: Hash, blockData: Block): Unit = {
+    blockDbDataSource.put(blockHash.getBytes, blockData.toByteArray)
   }
 
   /**
     * find a block by it's hash
-    *
-    * @param blockHash
-    * @return
     */
   def findBlockByHash(blockHash: Array[Byte]): Array[Byte] = {
     awaitResult(blockDbDataSource.get(blockHash)).get
@@ -83,10 +77,20 @@ class BlockStore(dbFolder: File) {
 
   }
 
+  def isBlockIncluded(hash: Hash): Boolean = ???
+
+  def getBlockNumByHash(lastKnownHash: Hash): Long = ???
+
+  def headBlockNum: Long = ???
+
+  def getBlockHashByNum(num: Long): Hash = ???
+
+
   /** *
     * resetDB the database
     */
   def reset(): Unit = blockDbDataSource.resetDB()
 
   def close(): Unit = blockDbDataSource.close()
+
 }

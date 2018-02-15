@@ -2,7 +2,8 @@ package org.tron.cli.commands
 
 import org.tron.application.{Application, CliGlobals, PeerApplication}
 import org.tron.cluster.ClusterTransactionStrategy
-import org.tron.core.{Address, TransactionFacade}
+import org.tron.core.Address
+import org.tron.utxo.TransactionFacade
 
 case class SendCommand(to: String = "", amount: Int = 0) extends Command {
   def execute(app: Application, parameters: Array[String]): Unit = {

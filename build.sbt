@@ -50,8 +50,12 @@ val defaultSettings = Seq(
   // Test
   "org.specs2" %% "specs2-core" % "4.0.2" % "test",
 
-  "org.scala-lang.modules" %% "scala-async" % "0.9.6"
-) ++ akkaDeps ++ grpcDeps
+  "org.scala-lang.modules" %% "scala-async" % "0.9.6",
+
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
+  "org.scalatest" %% "scalatest" % "3.0.4" % Test
+
+) ++ akkaDeps ++ grpcDeps ++ scaleCubeDeps
 
 lazy val protocol = (project in file("tron-protocol"))
   .settings(
@@ -59,6 +63,7 @@ lazy val protocol = (project in file("tron-protocol"))
     PB.targets in Compile := Seq(
       scalapb.gen() -> (sourceManaged in Compile).value
     ),
+    parallelExecution in Test := false,
     fork in Test := true
   )
 

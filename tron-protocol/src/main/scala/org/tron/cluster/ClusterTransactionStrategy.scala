@@ -4,8 +4,8 @@ import javax.inject.Inject
 
 import akka.actor.ActorSystem
 import org.tron.cluster.pubsub.ActorPubSubPublisher
-import org.tron.core.TransactionStrategy
 import org.tron.protos.Tron.Transaction
+import org.tron.utxo.TransactionStrategy
 
 class ClusterTransactionStrategy @Inject() (system: ActorSystem) extends TransactionStrategy {
 

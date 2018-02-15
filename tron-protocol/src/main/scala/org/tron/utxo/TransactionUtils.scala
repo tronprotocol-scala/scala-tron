@@ -25,9 +25,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.tron.core
+package org.tron.utxo
 
 import com.google.protobuf.ByteString
+import org.tron.core.{Address, Exception, InsufficientFunds, TransactionException}
 import org.tron.crypto.ECKey
 import org.tron.crypto.Hash.sha256
 import org.tron.protos.Tron._

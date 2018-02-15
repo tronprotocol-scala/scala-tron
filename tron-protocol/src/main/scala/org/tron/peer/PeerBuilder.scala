@@ -2,9 +2,11 @@ package org.tron.peer
 
 import javax.inject.Inject
 
+import org.tron.blockchain.BlockchainImpl
 import org.tron.core._
 import org.tron.storage.DbFactory
 import org.tron.utils.{ByteArrayUtils, KeyUtils}
+import org.tron.utxo.UTXOSet
 import org.tron.wallet.Wallet
 
 

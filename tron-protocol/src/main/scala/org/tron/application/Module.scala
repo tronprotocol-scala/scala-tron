@@ -6,12 +6,12 @@ import javax.inject.{Inject, Singleton}
 import akka.actor.ActorSystem
 import com.google.inject.{AbstractModule, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
-import org.tron.core.{Blockchain, BlockchainImpl, Constant, Key}
-import org.tron.storage.{DbFactory, LevelDbFactory, RedisDbFactory}
+import org.tron.blockchain.{Blockchain, BlockchainImpl}
+import org.tron.core.Constant
 import org.tron.grpc.GrpcServer
-import org.tron.storage.DbFactory
+import org.tron.storage.{DbFactory, LevelDbFactory, RedisDbFactory}
 
-class Module(mode: String = Constant.TEST) extends AbstractModule {
+class Module(mode: String = Constant.ENV_NORMAL) extends AbstractModule {
 
   def configure() = {}
 
@@ -19,7 +19,7 @@ class Module(mode: String = Constant.TEST) extends AbstractModule {
   @Singleton
   def buildConfig(): Config = {
     mode match {
-      case Constant.TEST =>
+      case Constant.ENV_TEST =>
         ConfigFactory.load(Constant.TEST_CONF)
       case _ =>
         ConfigFactory.load(Constant.NORMAL_CONF)

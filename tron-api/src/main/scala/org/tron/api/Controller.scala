@@ -1,7 +1,9 @@
 package org.tron.api
 
-import org.tron.core.{Address, Blockchain, UTXOSet}
+import org.tron.blockchain.Blockchain
+import org.tron.core.Address
 import org.tron.utils.KeyUtils
+import org.tron.utxo.UTXOSet
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._

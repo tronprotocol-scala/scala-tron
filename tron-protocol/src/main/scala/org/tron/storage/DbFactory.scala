@@ -1,9 +1,8 @@
-package org.tron.storage
+package org.tron
+package storage
 
 import java.io.File
 import java.nio.file.Path
-
-import org.tron.BlockChainDb
 
 abstract class DbFactory(databaseFolder: Path) {
 
@@ -12,5 +11,5 @@ abstract class DbFactory(databaseFolder: Path) {
     dbFile.exists()
   }
 
-  def build(name: String): BlockChainDb
+  def build(name: String): DefaultDB
 }

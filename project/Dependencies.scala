@@ -8,6 +8,7 @@ object Dependencies {
   val akkaVersion = "2.5.9"
   val catsVersion = "0.9.0"
   val grpcVersion = "1.9.0"
+  val scaleCubeVersion = "1.0.7"
 
   val akkaStreamsContribDeps = Seq(
     "com.typesafe.akka" %% "akka-stream-contrib" % "0.8"
@@ -46,4 +47,9 @@ object Dependencies {
     "com.trueaccord.scalapb" %% "scalapb-runtime-grpc" % com.trueaccord.scalapb.compiler.Version.scalapbVersion
   )
 
+  val scaleCubeDeps = Seq(
+    "io.scalecube" % "scalecube-services",
+    "io.scalecube" % "scalecube-cluster",
+    "io.scalecube" % "scalecube-transport"
+  ).map(_ % scaleCubeVersion)
 }

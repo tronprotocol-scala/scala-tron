@@ -1,11 +1,10 @@
-package org.tron.storage
+package org.tron
+package storage
 
 import java.nio.file.Path
 
-import org.tron.BlockChainDb
-
 class LevelDbFactory(databaseFolder: Path) extends DbFactory(databaseFolder) {
-  override def build(name: String): BlockChainDb = {
+  override def build(name: String): DefaultDB = {
     new LevelDbDataSourceImpl(databaseFolder.toFile, name)
   }
 }

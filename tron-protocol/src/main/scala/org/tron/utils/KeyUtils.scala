@@ -10,7 +10,7 @@ object KeyUtils {
   def fromPrivateKey(key: String) = {
     require(key.nonEmpty, "private key can't be empty")
 
-    val wallet = org.tron.crypto.ECKey.fromPrivate(org.tron.core.Base58.decodeToBigInteger(key), true)
+    val wallet = org.tron.crypto.ECKey.fromPrivate(org.tron.core.Base58.decodeToBigInteger(key))
     Key(wallet)
   }
 

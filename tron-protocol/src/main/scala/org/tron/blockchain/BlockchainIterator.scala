@@ -1,5 +1,5 @@
 package org.tron
-package core
+package blockchain
 
 import org.tron.protos.Tron.Block
 

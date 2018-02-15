@@ -1,8 +1,10 @@
-package org.tron
-package core
+package org.tron.blockchain
 
+import org.tron.core.{Address, Exception}
 import org.tron.crypto.ECKey
 import org.tron.protos.Tron.{Block, TXOutputs, Transaction}
+import org.tron.utxo.UTXOSet
+import org.tron.{DefaultDB, TXID}
 
 import scala.concurrent.Future
 
@@ -20,7 +22,7 @@ trait Blockchain {
 
   def currentHash: Array[Byte]
 
-  def blockDB: BlockChainDb
+  def blockDB: DefaultDB
 
   def addGenesisBlock(account: Address): Unit
 
