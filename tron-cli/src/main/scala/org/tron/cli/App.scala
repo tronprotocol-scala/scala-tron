@@ -1,6 +1,7 @@
 package org.tron.cli
 
 import com.google.inject.Guice
+import com.typesafe.config.Config
 import org.tron.application.{Application, CliGlobals, Module, PeerApplication}
 import org.tron.peer.{Peer, PeerBuilder}
 
@@ -12,8 +13,8 @@ object App {
   def main(args: Array[String]): Unit = {
 
     val injector = Guice.createInjector(new Module())
-
-    val app = new Application(injector) with PeerApplication with CliGlobals {
+    val config = injector.getInstance(classOf[Config])
+    val app = new Application(injector, config) with PeerApplication with CliGlobals {
       val peer: Peer = injector.getInstance(classOf[PeerBuilder]).build()
     }
 

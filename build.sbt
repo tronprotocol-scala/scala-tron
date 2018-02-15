@@ -31,8 +31,10 @@ val defaultSettings = Seq(
   "org.apache.commons" % "commons-collections4" % "4.0",
   "com.beust" % "jcommander" % "1.72",
   "com.github.etaty" %% "rediscala" % "1.8.0",
+  "joda-time" % "joda-time" % "2.3",
 
-  "org.apache.kafka" %% "kafka" % "0.11.0.2",
+
+"org.apache.kafka" %% "kafka" % "0.11.0.2",
 
   // Alpakka
   "com.lightbend.akka" %% "akka-stream-alpakka-file" % "0.15.1",
