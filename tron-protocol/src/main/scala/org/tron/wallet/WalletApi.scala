@@ -25,7 +25,7 @@ class WalletApi(wallet: Wallet) extends WalletGrpc.Wallet {
     val amount = request.amount
     if (fromBs != null && toBs != null && amount > 0) {
       val fromAddress = Address(fromBs)
-      val toAddress = Address(fromBs)
+      val toAddress = Address(toBs)
       wallet.createTransaction(fromAddress, toAddress, amount)
     } else {
       null
